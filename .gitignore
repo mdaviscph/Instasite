@@ -16,8 +16,8 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-**/Keys.h
-**/Keys.m
+*/*/Keys.h
+*/*/Keys.m
 .DS_Store
 
 # CocoaPods

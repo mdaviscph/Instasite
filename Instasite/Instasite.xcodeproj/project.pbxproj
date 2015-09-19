@@ -15,6 +15,7 @@
 		22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22EFFDEC1BADC11800E28ACB /* LaunchScreen.storyboard */; };
 		22EFFDF91BADC11800E28ACB /* InstasiteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDF81BADC11800E28ACB /* InstasiteTests.m */; };
 		22EFFE041BADC11800E28ACB /* InstasiteUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFE031BADC11800E28ACB /* InstasiteUITests.m */; };
+		22EFFE141BADC16D00E28ACB /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFE131BADC16D00E28ACB /* Keys.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,8 @@
 		22EFFDFF1BADC11800E28ACB /* InstasiteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InstasiteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		22EFFE031BADC11800E28ACB /* InstasiteUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InstasiteUITests.m; sourceTree = "<group>"; };
 		22EFFE051BADC11800E28ACB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		22EFFE121BADC16D00E28ACB /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
+		22EFFE131BADC16D00E28ACB /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +112,7 @@
 				22EFFDEA1BADC11800E28ACB /* Assets.xcassets */,
 				22EFFDEC1BADC11800E28ACB /* LaunchScreen.storyboard */,
 				22EFFDEF1BADC11800E28ACB /* Info.plist */,
+				22EFFE111BADC15900E28ACB /* Secrets */,
 				22EFFDDE1BADC11800E28ACB /* Supporting Files */,
 			);
 			path = Instasite;
@@ -138,6 +142,15 @@
 				22EFFE051BADC11800E28ACB /* Info.plist */,
 			);
 			path = InstasiteUITests;
+			sourceTree = "<group>";
+		};
+		22EFFE111BADC15900E28ACB /* Secrets */ = {
+			isa = PBXGroup;
+			children = (
+				22EFFE121BADC16D00E28ACB /* Keys.h */,
+				22EFFE131BADC16D00E28ACB /* Keys.m */,
+			);
+			name = Secrets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,6 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22EFFDE61BADC11800E28ACB /* ViewController.m in Sources */,
+				22EFFE141BADC16D00E28ACB /* Keys.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
 				22EFFDE01BADC11800E28ACB /* main.m in Sources */,
 			);
