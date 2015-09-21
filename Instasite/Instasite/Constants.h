@@ -1,5 +1,5 @@
 //
-//  GitHubService.h
+//  Constants.h
 //  Instasite
 //
 //  Created by Sam Wilskey on 9/21/15.
@@ -8,8 +8,4 @@
 
 #import <Foundation/Foundation.h>
 
-@interface GitHubService : NSObject
-
-+ (void)exchangeCodeInURL:(NSURL *)url;
-
-@end
+extern NSString *const kCloseSafariViewControllerNotification;

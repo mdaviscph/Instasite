@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Constants.h"
 
 @interface AppDelegate ()
 
@@ -22,6 +23,8 @@
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
   
+  NSLog(@"In Open URL");
+  [[NSNotificationCenter defaultCenter] postNotificationName:kCloseSafariViewControllerNotification object:url];
   return true;
 }
 
