@@ -3,6 +3,7 @@
 
 target 'Instasite' do
 	pod "AFNetworking", "~> 2.0"
+	pod "SSKeychain"
 end
 
 target 'InstasiteTests' do
