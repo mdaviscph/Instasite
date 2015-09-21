@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 227C86761BB0774800799CD3 /* Oauth.storyboard */; settings = {ASSET_TAGS = (); }; };
+		227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867B1BB077D400799CD3 /* OauthViewController.m */; settings = {ASSET_TAGS = (); }; };
+		227C86801BB07B3500799CD3 /* GitHubService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867F1BB07B3500799CD3 /* GitHubService.m */; settings = {ASSET_TAGS = (); }; };
 		22EFFDE01BADC11800E28ACB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDDF1BADC11800E28ACB /* main.m */; };
 		22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDE21BADC11800E28ACB /* AppDelegate.m */; };
 		22EFFDE61BADC11800E28ACB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDE51BADC11800E28ACB /* ViewController.m */; };
@@ -37,6 +40,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		227C86761BB0774800799CD3 /* Oauth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Oauth.storyboard; sourceTree = "<group>"; };
+		227C867A1BB077D400799CD3 /* OauthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OauthViewController.h; sourceTree = "<group>"; };
+		227C867B1BB077D400799CD3 /* OauthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OauthViewController.m; sourceTree = "<group>"; };
+		227C867E1BB07B3500799CD3 /* GitHubService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GitHubService.h; sourceTree = "<group>"; };
+		227C867F1BB07B3500799CD3 /* GitHubService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GitHubService.m; sourceTree = "<group>"; };
 		22EFFDDB1BADC11800E28ACB /* Instasite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instasite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22EFFDDF1BADC11800E28ACB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		22EFFDE11BADC11800E28ACB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -86,6 +94,43 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		227C86731BB0770800799CD3 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				22EFFDE41BADC11800E28ACB /* ViewController.h */,
+				22EFFDE51BADC11800E28ACB /* ViewController.m */,
+				227C867A1BB077D400799CD3 /* OauthViewController.h */,
+				227C867B1BB077D400799CD3 /* OauthViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		227C86741BB0771800799CD3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				22EFFDEC1BADC11800E28ACB /* LaunchScreen.storyboard */,
+				22EFFDE71BADC11800E28ACB /* Main.storyboard */,
+				227C86761BB0774800799CD3 /* Oauth.storyboard */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		227C86751BB0772E00799CD3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		227C867D1BB07B1500799CD3 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				227C867E1BB07B3500799CD3 /* GitHubService.h */,
+				227C867F1BB07B3500799CD3 /* GitHubService.m */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
 		22EFFDD21BADC11800E28ACB = {
 			isa = PBXGroup;
 			children = (
@@ -113,12 +158,10 @@
 			children = (
 				22EFFDE11BADC11800E28ACB /* AppDelegate.h */,
 				22EFFDE21BADC11800E28ACB /* AppDelegate.m */,
-				22EFFDE41BADC11800E28ACB /* ViewController.h */,
-				22EFFDE51BADC11800E28ACB /* ViewController.m */,
-				22EFFDE71BADC11800E28ACB /* Main.storyboard */,
-				22EFFDEA1BADC11800E28ACB /* Assets.xcassets */,
-				22EFFDEC1BADC11800E28ACB /* LaunchScreen.storyboard */,
-				22EFFDEF1BADC11800E28ACB /* Info.plist */,
+				227C86731BB0770800799CD3 /* Controllers */,
+				227C86741BB0771800799CD3 /* Views */,
+				227C86751BB0772E00799CD3 /* Models */,
+				227C867D1BB07B1500799CD3 /* Services */,
 				22EFFE111BADC15900E28ACB /* Secrets */,
 				22EFFDDE1BADC11800E28ACB /* Supporting Files */,
 			);
@@ -128,6 +171,8 @@
 		22EFFDDE1BADC11800E28ACB /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				22EFFDEA1BADC11800E28ACB /* Assets.xcassets */,
+				22EFFDEF1BADC11800E28ACB /* Info.plist */,
 				22EFFDDF1BADC11800E28ACB /* main.m */,
 			);
 			name = "Supporting Files";
@@ -241,6 +286,7 @@
 		22EFFDD31BADC11800E28ACB /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Instasite;
 				TargetAttributes = {
@@ -282,6 +328,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */,
 				22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */,
 				22EFFDEB1BADC11800E28ACB /* Assets.xcassets in Resources */,
 				22EFFDE91BADC11800E28ACB /* Main.storyboard in Resources */,
@@ -345,6 +392,8 @@
 				22EFFDE61BADC11800E28ACB /* ViewController.m in Sources */,
 				22EFFE141BADC16D00E28ACB /* Keys.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
+				227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */,
+				227C86801BB07B3500799CD3 /* GitHubService.m in Sources */,
 				22EFFDE01BADC11800E28ACB /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -487,10 +536,12 @@
 			baseConfigurationReference = 6EE31DEC5172B73AABFD04F9 /* Pods-Instasite.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Instasite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.instasite.Instasite;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -499,6 +550,7 @@
 			baseConfigurationReference = A42CA43213D7E88DB56F5FD1 /* Pods-Instasite.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Instasite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.instasite.Instasite;
