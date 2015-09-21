@@ -16,6 +16,7 @@
 		22EFFDF91BADC11800E28ACB /* InstasiteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDF81BADC11800E28ACB /* InstasiteTests.m */; };
 		22EFFE041BADC11800E28ACB /* InstasiteUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFE031BADC11800E28ACB /* InstasiteUITests.m */; };
 		22EFFE141BADC16D00E28ACB /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFE131BADC16D00E28ACB /* Keys.m */; settings = {ASSET_TAGS = (); }; };
+		A3B14F545D372A79A9897B4B /* libPods-Instasite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C094285F042763CE3DF8F210 /* libPods-Instasite.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,9 @@
 		22EFFE051BADC11800E28ACB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		22EFFE121BADC16D00E28ACB /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
 		22EFFE131BADC16D00E28ACB /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
+		6EE31DEC5172B73AABFD04F9 /* Pods-Instasite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instasite.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Instasite/Pods-Instasite.debug.xcconfig"; sourceTree = "<group>"; };
+		A42CA43213D7E88DB56F5FD1 /* Pods-Instasite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instasite.release.xcconfig"; path = "Pods/Target Support Files/Pods-Instasite/Pods-Instasite.release.xcconfig"; sourceTree = "<group>"; };
+		C094285F042763CE3DF8F210 /* libPods-Instasite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Instasite.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3B14F545D372A79A9897B4B /* libPods-Instasite.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +93,8 @@
 				22EFFDF71BADC11800E28ACB /* InstasiteTests */,
 				22EFFE021BADC11800E28ACB /* InstasiteUITests */,
 				22EFFDDC1BADC11800E28ACB /* Products */,
+				893A92E35F2724D853226A78 /* Pods */,
+				26F3F2D6E2882DE79B2BEC5E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -153,6 +160,23 @@
 			name = Secrets;
 			sourceTree = "<group>";
 		};
+		26F3F2D6E2882DE79B2BEC5E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C094285F042763CE3DF8F210 /* libPods-Instasite.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		893A92E35F2724D853226A78 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6EE31DEC5172B73AABFD04F9 /* Pods-Instasite.debug.xcconfig */,
+				A42CA43213D7E88DB56F5FD1 /* Pods-Instasite.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -160,9 +184,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22EFFE081BADC11800E28ACB /* Build configuration list for PBXNativeTarget "Instasite" */;
 			buildPhases = (
+				816F3882153177A1367665C1 /* Check Pods Manifest.lock */,
 				22EFFDD71BADC11800E28ACB /* Sources */,
 				22EFFDD81BADC11800E28ACB /* Frameworks */,
 				22EFFDD91BADC11800E28ACB /* Resources */,
+				104EBEC7ED0A6AB094B98C4B /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -277,6 +303,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		104EBEC7ED0A6AB094B98C4B /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Instasite/Pods-Instasite-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		816F3882153177A1367665C1 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		22EFFDD71BADC11800E28ACB /* Sources */ = {
@@ -425,6 +484,7 @@
 		};
 		22EFFE091BADC11800E28ACB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6EE31DEC5172B73AABFD04F9 /* Pods-Instasite.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Instasite/Info.plist;
@@ -436,6 +496,7 @@
 		};
 		22EFFE0A1BADC11800E28ACB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A42CA43213D7E88DB56F5FD1 /* Pods-Instasite.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Instasite/Info.plist;
@@ -512,6 +573,7 @@
 				22EFFE0A1BADC11800E28ACB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		22EFFE0B1BADC11800E28ACB /* Build configuration list for PBXNativeTarget "InstasiteTests" */ = {
 			isa = XCConfigurationList;
@@ -520,6 +582,7 @@
 				22EFFE0D1BADC11800E28ACB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		22EFFE0E1BADC11800E28ACB /* Build configuration list for PBXNativeTarget "InstasiteUITests" */ = {
 			isa = XCConfigurationList;
@@ -528,6 +591,7 @@
 				22EFFE101BADC11800E28ACB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
