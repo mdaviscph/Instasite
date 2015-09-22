@@ -19,47 +19,28 @@
 + (void)exchangeCodeInURL:(NSURL *)url {
   
   NSString *code = url.query;
-  NSString *requestURL = [NSString stringWithFormat:@"https://github.com/login/oauth/access_token?%@&client_id=%@&client_secret=%@", code, kClientId, kClientSecret];
+  NSString *requestURL = [NSString stringWithFormat:@"https://github.com/login/oauth/access_token?%@",code];
   
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:requestURL]];
-  [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-  [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-    NSError *jsonError;
-    NSDictionary *rootData = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-
-    NSString *accessToken = rootData[@"access_token"];
+  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+  AFHTTPResponseSerializer *serializer = [AFHTTPResponseSerializer serializer];
+  NSSet *acceptable = [NSSet setWithObjects:@"application/x-www-form-urlencoded", nil];
+  serializer.acceptableContentTypes = acceptable;
+  manager.responseSerializer = serializer;
+  
+  NSDictionary *parameters = @{@"code": code, @"client_id": kClientId, @"client_secret": kClientSecret};
+  
+  [manager POST:requestURL parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    NSString *parameters = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+    NSArray *substrings = [parameters componentsSeparatedByString:@"&"];
+    NSString *accessTokenString = substrings[0];
     
+    substrings = [accessTokenString componentsSeparatedByString:@"="];
+    NSString *accessToken = [substrings lastObject];
     [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"access_token"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-  }] resume];
-  
-  
-  
-//  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-//  
-//  [manager POST:requestURL parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-//    NSLog(@"%@",responseObject);
-//  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
-//    NSLog(@"%@", error);
-//  }];
-  
-//  let request = NSMutableURLRequest(URL: NSURL(string: "https://github.com/login/oauth/access_token?\(code)&client_id=\(kClientId)&client_secret=\(kClientSecret)")!)
-//  request.HTTPMethod = "POST"
-//  request.setValue("application/json", forHTTPHeaderField: "Accept")
-//  NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
-//    if let httpResponse = response as? NSHTTPURLResponse {
-//      
-//      var jsonError: NSError?
-//      if let rootObject = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &jsonError) as? [String : AnyObject],
-//        token = rootObject["access_token"] as? String {
-//          KeychainService.saveToken(token)
-//          
-//          NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-//            NSNotificationCenter.defaultCenter().postNotificationName(kTokenNotification, object: nil)
-//          })
-//        }
-//    }
-//  }).resume()
+    
+  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+    NSLog(@"Error: %@", error);
+  }];
   
 }
 

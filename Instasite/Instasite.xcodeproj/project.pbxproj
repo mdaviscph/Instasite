@@ -18,6 +18,7 @@
 		227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867B1BB077D400799CD3 /* OauthViewController.m */; settings = {ASSET_TAGS = (); }; };
 		227C86801BB07B3500799CD3 /* GitHubService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867F1BB07B3500799CD3 /* GitHubService.m */; settings = {ASSET_TAGS = (); }; };
 		227C86831BB0876900799CD3 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C86821BB0876900799CD3 /* Constants.m */; settings = {ASSET_TAGS = (); }; };
+		227C86861BB1B9FF00799CD3 /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C86851BB1B9FF00799CD3 /* Keys.m */; settings = {ASSET_TAGS = (); }; };
 		22EFFDE01BADC11800E28ACB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDDF1BADC11800E28ACB /* main.m */; };
 		22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDE21BADC11800E28ACB /* AppDelegate.m */; };
 		22EFFDE61BADC11800E28ACB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDE51BADC11800E28ACB /* ViewController.m */; };
@@ -68,6 +69,8 @@
 		227C867F1BB07B3500799CD3 /* GitHubService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GitHubService.m; sourceTree = "<group>"; };
 		227C86811BB0876900799CD3 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		227C86821BB0876900799CD3 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		227C86841BB1B9FF00799CD3 /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
+		227C86851BB1B9FF00799CD3 /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
 		22EFFDDB1BADC11800E28ACB /* Instasite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instasite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22EFFDDF1BADC11800E28ACB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		22EFFDE11BADC11800E28ACB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
