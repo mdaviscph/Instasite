@@ -39,6 +39,10 @@
   
   [self.safariVC dismissViewControllerAnimated:true completion:nil];
 }
+- (IBAction)printAction:(UIButton *)sender {
+  NSString *token = [SSKeychain passwordForService:@"githubToken" account:@"github"];
+  NSLog(@"Token: %@",token);
+}
 
 - (IBAction)signupAction:(UIButton *)sender {
   NSURL *signupURL = [NSURL URLWithString:@"https://github.com/join"];

@@ -8,6 +8,7 @@
 
 #import "GitHubService.h"
 #import "Keys.h"
+#import "Constants.h"
 #import <AFNetworking/AFNetworking.h>
 #import <SSKeychain/SSKeychain.h>
 
@@ -38,7 +39,7 @@
     NSString *accessToken = [substrings lastObject];
     NSString *token = [NSString stringWithFormat:@"token %@", accessToken];
     
-    [[NSUserDefaults standardUserDefaults] setObject:token forKey:@"access_token"];
+    [SSKeychain setPassword:token forService:kSSKeychainService account:kSSKeychainAccount];
     
   } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
     NSLog(@"Error: %@", error);
@@ -48,13 +49,9 @@
 
 +(void)serviceForRepoNameInput:(NSString *)repoNameInput completionHandler:(void (^) (NSError *))completionHandler{
   
-  NSString *access_token = [[NSUserDefaults standardUserDefaults]objectForKey:@"access_token"];
- 
+  NSString *access_token = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
   
   NSString *url = [NSString stringWithFormat:@"https://api.github.com/user/repos"];
-  
-  NSLog(@"%@",url);
-  NSLog(@"%@",access_token);
   
   // Test comment
   
