@@ -13,6 +13,7 @@
 		00E928A11BB1AA5900383BD0 /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928A01BB1AA5900383BD0 /* Keys.m */; settings = {ASSET_TAGS = (); }; };
 		00E928A41BB1AB0100383BD0 /* TemplateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928A31BB1AB0100383BD0 /* TemplateData.m */; settings = {ASSET_TAGS = (); }; };
 		00E928A71BB1AEA200383BD0 /* Sample.json in Resources */ = {isa = PBXBuildFile; fileRef = 00E928A61BB1AEA200383BD0 /* Sample.json */; settings = {ASSET_TAGS = (); }; };
+		00E928A91BB1C41300383BD0 /* WonderTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 00E928A81BB1C41300383BD0 /* WonderTemplate.html */; settings = {ASSET_TAGS = (); }; };
 		227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 227C86761BB0774800799CD3 /* Oauth.storyboard */; settings = {ASSET_TAGS = (); }; };
 		227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867B1BB077D400799CD3 /* OauthViewController.m */; settings = {ASSET_TAGS = (); }; };
 		227C86801BB07B3500799CD3 /* GitHubService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867F1BB07B3500799CD3 /* GitHubService.m */; settings = {ASSET_TAGS = (); }; };
@@ -57,6 +58,7 @@
 		00E928A21BB1AB0100383BD0 /* TemplateData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateData.h; sourceTree = "<group>"; };
 		00E928A31BB1AB0100383BD0 /* TemplateData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateData.m; sourceTree = "<group>"; };
 		00E928A61BB1AEA200383BD0 /* Sample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Sample.json; sourceTree = "<group>"; };
+		00E928A81BB1C41300383BD0 /* WonderTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = WonderTemplate.html; sourceTree = "<group>"; };
 		227C86761BB0774800799CD3 /* Oauth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Oauth.storyboard; sourceTree = "<group>"; };
 		227C867A1BB077D400799CD3 /* OauthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OauthViewController.h; sourceTree = "<group>"; };
 		227C867B1BB077D400799CD3 /* OauthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OauthViewController.m; sourceTree = "<group>"; };
@@ -143,7 +145,6 @@
 				00E928A31BB1AB0100383BD0 /* TemplateData.m */,
 				00E928991BB1A8BE00383BD0 /* JsonData.h */,
 				00E9289A1BB1A8BE00383BD0 /* JsonData.m */,
-				00E928A61BB1AEA200383BD0 /* Sample.json */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -197,6 +198,8 @@
 		22EFFDDE1BADC11800E28ACB /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				00E928A81BB1C41300383BD0 /* WonderTemplate.html */,
+				00E928A61BB1AEA200383BD0 /* Sample.json */,
 				22EFFDEA1BADC11800E28ACB /* Assets.xcassets */,
 				22EFFDEF1BADC11800E28ACB /* Info.plist */,
 				22EFFDDF1BADC11800E28ACB /* main.m */,
@@ -359,6 +362,7 @@
 				227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */,
 				00E928A71BB1AEA200383BD0 /* Sample.json in Resources */,
 				22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */,
+				00E928A91BB1C41300383BD0 /* WonderTemplate.html in Resources */,
 				22EFFDEB1BADC11800E28ACB /* Assets.xcassets in Resources */,
 				22EFFDE91BADC11800E28ACB /* Main.storyboard in Resources */,
 			);
