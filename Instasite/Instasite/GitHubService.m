@@ -36,7 +36,9 @@
     
     substrings = [accessTokenString componentsSeparatedByString:@"="];
     NSString *accessToken = [substrings lastObject];
-    [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"access_token"];
+    NSString *token = [NSString stringWithFormat:@"token %@", accessToken];
+    
+    [[NSUserDefaults standardUserDefaults] setObject:token forKey:@"access_token"];
     
   } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
     NSLog(@"Error: %@", error);
@@ -47,33 +49,31 @@
 +(void)serviceForRepoNameInput:(NSString *)repoNameInput completionHandler:(void (^) (NSError *))completionHandler{
   
   NSString *access_token = [[NSUserDefaults standardUserDefaults]objectForKey:@"access_token"];
+ 
   
-  NSString *url = [NSString stringWithFormat:@"https://api.github.com/user/repos?name=%@",repoNameInput];
+  NSString *url = [NSString stringWithFormat:@"https://api.github.com/user/repos"];
   
   NSLog(@"%@",url);
+  NSLog(@"%@",access_token);
   
   // Test comment
   
   AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
   
-  AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+  AFJSONRequestSerializer *serializer = [AFJSONRequestSerializer serializer];
   
   [serializer setValue:access_token forHTTPHeaderField:@"Authorization"];
+  manager.requestSerializer = serializer;
   
-  NSDictionary *params = @{@"name": @"testRepo"};
+  NSDictionary *repo = @{@"name": repoNameInput};
   
-  [manager POST:url parameters:params success:^ void(AFHTTPRequestOperation * operation, id responseObject) {
+  [manager POST:url parameters:repo success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
-    NSLog(@"Status Code: %ld",operation.response.statusCode);
-    NSLog(@"Response Object: %@",responseObject);
-    //NSArray *infos = [GitHubJSONParser createRepoWithJSON:responseObject];
+    NSLog(@"Result: %@", responseObject);
     
-    completionHandler(nil);
-    
-  } failure:^ void(AFHTTPRequestOperation * operation, NSError * error) {
+  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
     
     NSLog(@"Error: %@", error);
-    
   }];
   
 }

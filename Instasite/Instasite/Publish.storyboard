@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Be8-Pu-jtH">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A282b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Be8-Pu-jtH">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -19,34 +19,40 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AIH-et-hnU">
                                 <rect key="frame" x="277" y="285" width="46" height="30"/>
+                                <animations/>
                                 <state key="normal" title="Button"/>
                                 <connections>
                                     <action selector="createRepoAction:" destination="Be8-Pu-jtH" eventType="touchUpInside" id="O4a-ri-uRH"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wmA-Xn-Qy6">
-                                <rect key="frame" x="216" y="208" width="168" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Repo Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lNF-gT-0gG">
-                                <rect key="frame" x="105" y="212" width="103" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sFw-ML-8oQ">
+                                <rect key="frame" x="20" y="212" width="560" height="30"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Repo Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lNF-gT-0gG">
+                                        <rect key="frame" x="0.0" y="0.0" width="89" height="30"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wmA-Xn-Qy6">
+                                        <rect key="frame" x="89" y="0.0" width="471" height="30"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                                <animations/>
+                            </stackView>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="sFw-ML-8oQ" firstAttribute="top" secondItem="vgJ-oQ-rAV" secondAttribute="bottom" constant="192" id="2R4-9a-83K"/>
                             <constraint firstItem="AIH-et-hnU" firstAttribute="centerX" secondItem="jNv-x7-yZj" secondAttribute="centerX" id="3Jy-gn-bNp"/>
-                            <constraint firstItem="GO7-kV-mWD" firstAttribute="top" secondItem="lNF-gT-0gG" secondAttribute="bottom" constant="367" id="4i3-bd-Y9b"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="wmA-Xn-Qy6" secondAttribute="trailing" constant="196" id="KRK-Jw-6Bw"/>
-                            <constraint firstItem="wmA-Xn-Qy6" firstAttribute="leading" secondItem="lNF-gT-0gG" secondAttribute="trailing" constant="8" id="Kfn-Es-SmD"/>
-                            <constraint firstItem="lNF-gT-0gG" firstAttribute="top" secondItem="vgJ-oQ-rAV" secondAttribute="bottom" constant="192" id="SwG-e2-tUr"/>
-                            <constraint firstItem="AIH-et-hnU" firstAttribute="top" secondItem="wmA-Xn-Qy6" secondAttribute="bottom" constant="47" id="UA4-6X-XgT"/>
-                            <constraint firstItem="AIH-et-hnU" firstAttribute="centerX" secondItem="wmA-Xn-Qy6" secondAttribute="centerX" id="bxT-Uq-GdW"/>
-                            <constraint firstItem="lNF-gT-0gG" firstAttribute="leading" secondItem="jNv-x7-yZj" secondAttribute="leadingMargin" constant="85" id="ir8-gr-K5i"/>
-                            <constraint firstItem="wmA-Xn-Qy6" firstAttribute="top" secondItem="vgJ-oQ-rAV" secondAttribute="bottom" constant="188" id="ixP-dq-LE3"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="sFw-ML-8oQ" secondAttribute="trailing" id="HfS-cV-hR3"/>
+                            <constraint firstItem="AIH-et-hnU" firstAttribute="centerY" secondItem="jNv-x7-yZj" secondAttribute="centerY" id="Qia-Tz-3li"/>
+                            <constraint firstItem="sFw-ML-8oQ" firstAttribute="leading" secondItem="jNv-x7-yZj" secondAttribute="leadingMargin" id="csv-Tv-4MO"/>
                         </constraints>
                     </view>
                     <connections>
