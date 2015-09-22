@@ -76,6 +76,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="textFieldDescription" destination="meg-zB-ngd" id="gGh-OK-huV"/>
                         <outlet property="textFieldRepoName" destination="wmA-Xn-Qy6" id="JCg-i3-XLv"/>
                     </connections>
                 </viewController>

@@ -47,7 +47,7 @@
   
 }
 
-+(void)serviceForRepoNameInput:(NSString *)repoNameInput completionHandler:(void (^) (NSError *))completionHandler{
++(void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completionHandler:(void (^) (NSError *))completionHandler{
   
   NSString *access_token = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
   
@@ -62,7 +62,7 @@
   [serializer setValue:access_token forHTTPHeaderField:@"Authorization"];
   manager.requestSerializer = serializer;
   
-  NSDictionary *repo = @{@"name": repoNameInput};
+  NSDictionary *repo = @{@"name": repoNameInput, @"description": descriptionInput};
   
   [manager POST:url parameters:repo success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
