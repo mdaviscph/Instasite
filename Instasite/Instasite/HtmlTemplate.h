@@ -17,6 +17,8 @@ enum HtmlTemplatePlacement {
 };
 typedef enum HtmlTemplatePlacement HtmlTemplatePlacement;
 
+// Very basic HTML template support. Initial version not efficient, see comment in .m file.
+
 @interface HtmlTemplate : NSObject
 
 - (instancetype)initWithPath:(NSString *)path ofType:(NSString *)type;
