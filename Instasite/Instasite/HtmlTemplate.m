@@ -22,7 +22,7 @@ static NSString *const kMarkerBody2      = @"INSTASITE-BODY-2";
 static NSString *const kMarkerImage2     = @"INSTASITE-IMAGE-2";
 
 static NSString *const kMarkerHead3      = @"INSTASITE-HEAD-3";
-static NSString *const kMarkerSub3       = @"INSTASITE-SUB-3";
+static NSString *const kMarkerSub3       = @"INSTASITE-HEAD-3";
 static NSString *const kMarkerBody3      = @"INSTASITE-BODY-3";
 static NSString *const kMarkerImage3     = @"INSTASITE-IMAGE-3";
 

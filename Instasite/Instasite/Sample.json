@@ -1,0 +1,25 @@
+{
+templates:
+    [
+     {
+     title: "sample title"
+     subtitle: "sample subtitle"
+     feature:
+         [
+          {
+              headline: "sample headline"
+              subheadline: "sample subheadline"
+              body: "sample body"
+              imageSrc: "sample/imagesrc/file.jpg"
+          },
+          {
+              headline: "sample headline"
+              subheadline: "sample subheadline"
+              body: "sample body"
+              imageSrc: "sample/imagesrc/file.jpg"
+          }
+          ]
+     copyright: "2015 sample copyright"
+     }
+     ]
+}
