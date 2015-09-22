@@ -5,10 +5,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Publish View Controller-->
         <scene sceneID="RiV-CY-znR">
             <objects>
-                <viewController id="Be8-Pu-jtH" sceneMemberID="viewController">
+                <viewController id="Be8-Pu-jtH" customClass="PublishViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="vgJ-oQ-rAV"/>
                         <viewControllerLayoutGuide type="bottom" id="GO7-kV-mWD"/>
@@ -20,6 +20,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AIH-et-hnU">
                                 <rect key="frame" x="277" y="285" width="46" height="30"/>
                                 <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="createRepoAction:" destination="Be8-Pu-jtH" eventType="touchUpInside" id="O4a-ri-uRH"/>
+                                </connections>
                             </button>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wmA-Xn-Qy6">
                                 <rect key="frame" x="216" y="208" width="168" height="30"/>
@@ -46,6 +49,9 @@
                             <constraint firstItem="wmA-Xn-Qy6" firstAttribute="top" secondItem="vgJ-oQ-rAV" secondAttribute="bottom" constant="188" id="ixP-dq-LE3"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="textFieldRepoName" destination="wmA-Xn-Qy6" id="JCg-i3-XLv"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r88-Qs-fFU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

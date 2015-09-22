@@ -44,4 +44,38 @@
   
 }
 
++(void)serviceForRepoNameInput:(NSString *)repoNameInput completionHandler:(void (^) (NSError *))completionHandler{
+  
+  NSString *access_token = [[NSUserDefaults standardUserDefaults]objectForKey:@"access_token"];
+  
+  NSString *url = [NSString stringWithFormat:@"https://api.github.com/user/repos?name=%@",repoNameInput];
+  
+  NSLog(@"%@",url);
+  
+  // Test comment
+  
+  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+  
+  AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+  
+  [serializer setValue:access_token forHTTPHeaderField:@"Authorization"];
+  
+  NSDictionary *params = @{@"name": @"testRepo"};
+  
+  [manager POST:url parameters:params success:^ void(AFHTTPRequestOperation * operation, id responseObject) {
+    
+    NSLog(@"Status Code: %ld",operation.response.statusCode);
+    NSLog(@"Response Object: %@",responseObject);
+    //NSArray *infos = [GitHubJSONParser createRepoWithJSON:responseObject];
+    
+    completionHandler(nil);
+    
+  } failure:^ void(AFHTTPRequestOperation * operation, NSError * error) {
+    
+    NSLog(@"Error: %@", error);
+    
+  }];
+  
+}
+
 @end
