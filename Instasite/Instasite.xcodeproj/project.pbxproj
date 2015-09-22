@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928971BB1A07200383BD0 /* HtmlTemplate.m */; settings = {ASSET_TAGS = (); }; };
+		00E9289B1BB1A8BE00383BD0 /* JsonData.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E9289A1BB1A8BE00383BD0 /* JsonData.m */; settings = {ASSET_TAGS = (); }; };
+		00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E9289D1BB1A9BA00383BD0 /* Feature.m */; settings = {ASSET_TAGS = (); }; };
+		00E928A11BB1AA5900383BD0 /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928A01BB1AA5900383BD0 /* Keys.m */; settings = {ASSET_TAGS = (); }; };
+		00E928A41BB1AB0100383BD0 /* TemplateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928A31BB1AB0100383BD0 /* TemplateData.m */; settings = {ASSET_TAGS = (); }; };
+		00E928A71BB1AEA200383BD0 /* Sample.json in Resources */ = {isa = PBXBuildFile; fileRef = 00E928A61BB1AEA200383BD0 /* Sample.json */; settings = {ASSET_TAGS = (); }; };
 		227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 227C86761BB0774800799CD3 /* Oauth.storyboard */; settings = {ASSET_TAGS = (); }; };
 		227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867B1BB077D400799CD3 /* OauthViewController.m */; settings = {ASSET_TAGS = (); }; };
 		227C86801BB07B3500799CD3 /* GitHubService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867F1BB07B3500799CD3 /* GitHubService.m */; settings = {ASSET_TAGS = (); }; };
@@ -43,6 +48,15 @@
 /* Begin PBXFileReference section */
 		00E928961BB1A07200383BD0 /* HtmlTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HtmlTemplate.h; sourceTree = "<group>"; };
 		00E928971BB1A07200383BD0 /* HtmlTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HtmlTemplate.m; sourceTree = "<group>"; };
+		00E928991BB1A8BE00383BD0 /* JsonData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JsonData.h; sourceTree = "<group>"; };
+		00E9289A1BB1A8BE00383BD0 /* JsonData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JsonData.m; sourceTree = "<group>"; };
+		00E9289C1BB1A9BA00383BD0 /* Feature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Feature.h; sourceTree = "<group>"; };
+		00E9289D1BB1A9BA00383BD0 /* Feature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Feature.m; sourceTree = "<group>"; };
+		00E9289F1BB1AA5900383BD0 /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
+		00E928A01BB1AA5900383BD0 /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
+		00E928A21BB1AB0100383BD0 /* TemplateData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateData.h; sourceTree = "<group>"; };
+		00E928A31BB1AB0100383BD0 /* TemplateData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateData.m; sourceTree = "<group>"; };
+		00E928A61BB1AEA200383BD0 /* Sample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Sample.json; sourceTree = "<group>"; };
 		227C86761BB0774800799CD3 /* Oauth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Oauth.storyboard; sourceTree = "<group>"; };
 		227C867A1BB077D400799CD3 /* OauthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OauthViewController.h; sourceTree = "<group>"; };
 		227C867B1BB077D400799CD3 /* OauthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OauthViewController.m; sourceTree = "<group>"; };
@@ -123,6 +137,13 @@
 			children = (
 				00E928961BB1A07200383BD0 /* HtmlTemplate.h */,
 				00E928971BB1A07200383BD0 /* HtmlTemplate.m */,
+				00E9289C1BB1A9BA00383BD0 /* Feature.h */,
+				00E9289D1BB1A9BA00383BD0 /* Feature.m */,
+				00E928A21BB1AB0100383BD0 /* TemplateData.h */,
+				00E928A31BB1AB0100383BD0 /* TemplateData.m */,
+				00E928991BB1A8BE00383BD0 /* JsonData.h */,
+				00E9289A1BB1A8BE00383BD0 /* JsonData.m */,
+				00E928A61BB1AEA200383BD0 /* Sample.json */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -206,6 +227,8 @@
 		22EFFE111BADC15900E28ACB /* Secrets */ = {
 			isa = PBXGroup;
 			children = (
+				00E9289F1BB1AA5900383BD0 /* Keys.h */,
+				00E928A01BB1AA5900383BD0 /* Keys.m */,
 			);
 			name = Secrets;
 			sourceTree = "<group>";
@@ -334,6 +357,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */,
+				00E928A71BB1AEA200383BD0 /* Sample.json in Resources */,
 				22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */,
 				22EFFDEB1BADC11800E28ACB /* Assets.xcassets in Resources */,
 				22EFFDE91BADC11800E28ACB /* Main.storyboard in Resources */,
@@ -395,9 +419,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				22EFFDE61BADC11800E28ACB /* ViewController.m in Sources */,
+				00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */,
+				00E9289B1BB1A8BE00383BD0 /* JsonData.m in Sources */,
 				00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
+				00E928A11BB1AA5900383BD0 /* Keys.m in Sources */,
 				227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */,
+				00E928A41BB1AB0100383BD0 /* TemplateData.m in Sources */,
 				227C86801BB07B3500799CD3 /* GitHubService.m in Sources */,
 				227C86831BB0876900799CD3 /* Constants.m in Sources */,
 				22EFFDE01BADC11800E28ACB /* main.m in Sources */,
