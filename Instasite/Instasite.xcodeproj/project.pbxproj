@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00E928951BB1A06100383BD0 /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928941BB1A06100383BD0 /* Keys.m */; settings = {ASSET_TAGS = (); }; };
+		00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928971BB1A07200383BD0 /* HtmlTemplate.m */; settings = {ASSET_TAGS = (); }; };
 		227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 227C86761BB0774800799CD3 /* Oauth.storyboard */; settings = {ASSET_TAGS = (); }; };
 		227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867B1BB077D400799CD3 /* OauthViewController.m */; settings = {ASSET_TAGS = (); }; };
 		227C86801BB07B3500799CD3 /* GitHubService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867F1BB07B3500799CD3 /* GitHubService.m */; settings = {ASSET_TAGS = (); }; };
@@ -19,7 +21,6 @@
 		22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22EFFDEC1BADC11800E28ACB /* LaunchScreen.storyboard */; };
 		22EFFDF91BADC11800E28ACB /* InstasiteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDF81BADC11800E28ACB /* InstasiteTests.m */; };
 		22EFFE041BADC11800E28ACB /* InstasiteUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFE031BADC11800E28ACB /* InstasiteUITests.m */; };
-		22EFFE141BADC16D00E28ACB /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFE131BADC16D00E28ACB /* Keys.m */; settings = {ASSET_TAGS = (); }; };
 		A3B14F545D372A79A9897B4B /* libPods-Instasite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C094285F042763CE3DF8F210 /* libPods-Instasite.a */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +42,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		00E928931BB1A06100383BD0 /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
+		00E928941BB1A06100383BD0 /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
+		00E928961BB1A07200383BD0 /* HtmlTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HtmlTemplate.h; sourceTree = "<group>"; };
+		00E928971BB1A07200383BD0 /* HtmlTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HtmlTemplate.m; sourceTree = "<group>"; };
 		227C86761BB0774800799CD3 /* Oauth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Oauth.storyboard; sourceTree = "<group>"; };
 		227C867A1BB077D400799CD3 /* OauthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OauthViewController.h; sourceTree = "<group>"; };
 		227C867B1BB077D400799CD3 /* OauthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OauthViewController.m; sourceTree = "<group>"; };
@@ -64,8 +69,6 @@
 		22EFFDFF1BADC11800E28ACB /* InstasiteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InstasiteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		22EFFE031BADC11800E28ACB /* InstasiteUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InstasiteUITests.m; sourceTree = "<group>"; };
 		22EFFE051BADC11800E28ACB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		22EFFE121BADC16D00E28ACB /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
-		22EFFE131BADC16D00E28ACB /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
 		6EE31DEC5172B73AABFD04F9 /* Pods-Instasite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instasite.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Instasite/Pods-Instasite.debug.xcconfig"; sourceTree = "<group>"; };
 		A42CA43213D7E88DB56F5FD1 /* Pods-Instasite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instasite.release.xcconfig"; path = "Pods/Target Support Files/Pods-Instasite/Pods-Instasite.release.xcconfig"; sourceTree = "<group>"; };
 		C094285F042763CE3DF8F210 /* libPods-Instasite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Instasite.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,6 +124,8 @@
 		227C86751BB0772E00799CD3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				00E928961BB1A07200383BD0 /* HtmlTemplate.h */,
+				00E928971BB1A07200383BD0 /* HtmlTemplate.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -204,8 +209,8 @@
 		22EFFE111BADC15900E28ACB /* Secrets */ = {
 			isa = PBXGroup;
 			children = (
-				22EFFE121BADC16D00E28ACB /* Keys.h */,
-				22EFFE131BADC16D00E28ACB /* Keys.m */,
+				00E928931BB1A06100383BD0 /* Keys.h */,
+				00E928941BB1A06100383BD0 /* Keys.m */,
 			);
 			name = Secrets;
 			sourceTree = "<group>";
@@ -394,8 +399,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00E928951BB1A06100383BD0 /* Keys.m in Sources */,
 				22EFFDE61BADC11800E28ACB /* ViewController.m in Sources */,
-				22EFFE141BADC16D00E28ACB /* Keys.m in Sources */,
+				00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
 				227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */,
 				227C86801BB07B3500799CD3 /* GitHubService.m in Sources */,
