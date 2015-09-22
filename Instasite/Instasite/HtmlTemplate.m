@@ -38,6 +38,7 @@ static NSString *const kMarkerImage5     = @"INSTASITE-IMAGE-5";
 
 static NSString *const kMarkerCopyRight1 = @"INSTASITE-COPYRIGHT-1";
 
+// Very basic HTML template support. Initial version not efficient, see comment below.
 
 @interface HtmlTemplate ()
 
