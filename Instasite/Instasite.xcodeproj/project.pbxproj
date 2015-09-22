@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E928951BB1A06100383BD0 /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928941BB1A06100383BD0 /* Keys.m */; settings = {ASSET_TAGS = (); }; };
 		00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928971BB1A07200383BD0 /* HtmlTemplate.m */; settings = {ASSET_TAGS = (); }; };
 		227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 227C86761BB0774800799CD3 /* Oauth.storyboard */; settings = {ASSET_TAGS = (); }; };
 		227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867B1BB077D400799CD3 /* OauthViewController.m */; settings = {ASSET_TAGS = (); }; };
@@ -42,8 +41,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E928931BB1A06100383BD0 /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
-		00E928941BB1A06100383BD0 /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
 		00E928961BB1A07200383BD0 /* HtmlTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HtmlTemplate.h; sourceTree = "<group>"; };
 		00E928971BB1A07200383BD0 /* HtmlTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HtmlTemplate.m; sourceTree = "<group>"; };
 		227C86761BB0774800799CD3 /* Oauth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Oauth.storyboard; sourceTree = "<group>"; };
@@ -209,8 +206,6 @@
 		22EFFE111BADC15900E28ACB /* Secrets */ = {
 			isa = PBXGroup;
 			children = (
-				00E928931BB1A06100383BD0 /* Keys.h */,
-				00E928941BB1A06100383BD0 /* Keys.m */,
 			);
 			name = Secrets;
 			sourceTree = "<group>";
@@ -399,7 +394,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E928951BB1A06100383BD0 /* Keys.m in Sources */,
 				22EFFDE61BADC11800E28ACB /* ViewController.m in Sources */,
 				00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
