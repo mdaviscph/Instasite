@@ -20,6 +20,7 @@
 		22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22EFFDEC1BADC11800E28ACB /* LaunchScreen.storyboard */; };
 		22EFFDF91BADC11800E28ACB /* InstasiteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDF81BADC11800E28ACB /* InstasiteTests.m */; };
 		22EFFE041BADC11800E28ACB /* InstasiteUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFE031BADC11800E28ACB /* InstasiteUITests.m */; };
+		6C0E6E2D1BB1C18B000C7971 /* Publish.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */; settings = {ASSET_TAGS = (); }; };
 		A3B14F545D372A79A9897B4B /* libPods-Instasite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C094285F042763CE3DF8F210 /* libPods-Instasite.a */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +67,7 @@
 		22EFFDFF1BADC11800E28ACB /* InstasiteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InstasiteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		22EFFE031BADC11800E28ACB /* InstasiteUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InstasiteUITests.m; sourceTree = "<group>"; };
 		22EFFE051BADC11800E28ACB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Publish.storyboard; sourceTree = "<group>"; };
 		6EE31DEC5172B73AABFD04F9 /* Pods-Instasite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instasite.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Instasite/Pods-Instasite.debug.xcconfig"; sourceTree = "<group>"; };
 		A42CA43213D7E88DB56F5FD1 /* Pods-Instasite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instasite.release.xcconfig"; path = "Pods/Target Support Files/Pods-Instasite/Pods-Instasite.release.xcconfig"; sourceTree = "<group>"; };
 		C094285F042763CE3DF8F210 /* libPods-Instasite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Instasite.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -114,6 +116,7 @@
 				22EFFDEC1BADC11800E28ACB /* LaunchScreen.storyboard */,
 				22EFFDE71BADC11800E28ACB /* Main.storyboard */,
 				227C86761BB0774800799CD3 /* Oauth.storyboard */,
+				6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -337,6 +340,7 @@
 				22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */,
 				22EFFDEB1BADC11800E28ACB /* Assets.xcassets in Resources */,
 				22EFFDE91BADC11800E28ACB /* Main.storyboard in Resources */,
+				6C0E6E2D1BB1C18B000C7971 /* Publish.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
