@@ -10,6 +10,7 @@
 #import "Keys.h"
 #import "Constants.h"
 #import "GitHubService.h"
+#import "AppDelegate.h"
 #import <SSKeychain/SSKeychain.h>
 #import <SafariServices/SafariServices.h>
 
@@ -38,10 +39,17 @@
   [GitHubService exchangeCodeInURL:url];
   
   [self.safariVC dismissViewControllerAnimated:true completion:nil];
+  AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+  UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+  UIViewController *vc = [mainStoryboard instantiateInitialViewController];
+  
+  appDelegate.window.rootViewController = vc;
+  
 }
-- (IBAction)printAction:(UIButton *)sender {
-  NSString *token = [SSKeychain passwordForService:@"githubToken" account:@"github"];
-  NSLog(@"Token: %@",token);
+- (IBAction)testUploadAction:(UIButton *)sender {
+  [GitHubService pushFilesToGithub:@"String" completionHandler:^(NSError *error) {
+    
+  }];
 }
 
 - (IBAction)signupAction:(UIButton *)sender {

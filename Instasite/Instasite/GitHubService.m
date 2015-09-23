@@ -47,7 +47,7 @@
   
 }
 
-+(void)serviceForRepoNameInput:(NSString *)repoNameInput completionHandler:(void (^) (NSError *))completionHandler{
++ (void)serviceForRepoNameInput:(NSString *)repoNameInput completionHandler:(void (^) (NSError *))completionHandler{
   
   NSString *access_token = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
   
@@ -71,6 +71,33 @@
   } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
     
     NSLog(@"Error: %@", error);
+  }];
+  
+}
+
++ (void)pushFilesToGithub:(NSString *)repoName username:(NSString *)username templateName:(NSString *)templateName completionHandler:(void(^) (NSError *))completionHandler {
+  NSString *accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
+  
+  NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/index.html", username, repoName];
+  
+  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+  AFJSONRequestSerializer *serializer = [AFJSONRequestSerializer serializer];
+  [serializer setValue:accessToken forHTTPHeaderField:@"Authorization"];
+  manager.requestSerializer = serializer;
+  
+  NSString *filePath = [[NSBundle mainBundle] pathForResource:templateName ofType:@"html"];
+  NSString *htmlString = [[NSString alloc] initWithContentsOfFile:filePath encoding:0 error:nil];
+  
+  NSData *data = [htmlString dataUsingEncoding:NSUTF8StringEncoding];
+  NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+  
+  NSDictionary *committer = @{@"name": @"sam", @"email": @"swilskey41@gmail.com"};
+  NSDictionary *json = @{@"branch": @"gh-pages", @"message": @"my commit", @"committer": committer, @"content": baseString};
+  
+  [manager PUT:baseURL parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    completionHandler(nil);
+  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+    completionHandler(error);
   }];
   
 }

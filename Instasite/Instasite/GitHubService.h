@@ -12,5 +12,5 @@
 
 + (void)exchangeCodeInURL:(NSURL *)url;
 + (void)serviceForRepoNameInput:(NSString *)repoNameInput completionHandler:(void (^) (NSError *))completionHandler;
-+ (void)repoForSearch;
++ (void)pushFilesToGithub:(NSString *)repoName completionHandler:(void(^) (NSError *))completionHandler; 
 @end
