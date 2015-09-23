@@ -17,7 +17,6 @@
 		227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867B1BB077D400799CD3 /* OauthViewController.m */; settings = {ASSET_TAGS = (); }; };
 		227C86801BB07B3500799CD3 /* GitHubService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867F1BB07B3500799CD3 /* GitHubService.m */; settings = {ASSET_TAGS = (); }; };
 		227C86831BB0876900799CD3 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C86821BB0876900799CD3 /* Constants.m */; settings = {ASSET_TAGS = (); }; };
-		227C86861BB1B9FF00799CD3 /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C86851BB1B9FF00799CD3 /* Keys.m */; settings = {ASSET_TAGS = (); }; };
 		22EFFDE01BADC11800E28ACB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDDF1BADC11800E28ACB /* main.m */; };
 		22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDE21BADC11800E28ACB /* AppDelegate.m */; };
 		22EFFDE61BADC11800E28ACB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDE51BADC11800E28ACB /* ViewController.m */; };
@@ -26,6 +25,7 @@
 		22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22EFFDEC1BADC11800E28ACB /* LaunchScreen.storyboard */; };
 		22EFFDF91BADC11800E28ACB /* InstasiteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDF81BADC11800E28ACB /* InstasiteTests.m */; };
 		22EFFE041BADC11800E28ACB /* InstasiteUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFE031BADC11800E28ACB /* InstasiteUITests.m */; };
+		6B05A0011BB3233D002627BA /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A0001BB3233D002627BA /* Keys.m */; settings = {ASSET_TAGS = (); }; };
 		6C0E6E2D1BB1C18B000C7971 /* Publish.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */; settings = {ASSET_TAGS = (); }; };
 		6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C0E6E321BB1F16F000C7971 /* PublishViewController.m */; settings = {ASSET_TAGS = (); }; };
 		A3B14F545D372A79A9897B4B /* libPods-Instasite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C094285F042763CE3DF8F210 /* libPods-Instasite.a */; };
@@ -66,8 +66,6 @@
 		227C867F1BB07B3500799CD3 /* GitHubService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GitHubService.m; sourceTree = "<group>"; };
 		227C86811BB0876900799CD3 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		227C86821BB0876900799CD3 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
-		227C86841BB1B9FF00799CD3 /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
-		227C86851BB1B9FF00799CD3 /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
 		22EFFDDB1BADC11800E28ACB /* Instasite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instasite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22EFFDDF1BADC11800E28ACB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		22EFFDE11BADC11800E28ACB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -84,6 +82,8 @@
 		22EFFDFF1BADC11800E28ACB /* InstasiteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InstasiteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		22EFFE031BADC11800E28ACB /* InstasiteUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InstasiteUITests.m; sourceTree = "<group>"; };
 		22EFFE051BADC11800E28ACB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6B059FFF1BB3233D002627BA /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
+		6B05A0001BB3233D002627BA /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
 		6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Publish.storyboard; sourceTree = "<group>"; };
 		6C0E6E311BB1F16F000C7971 /* PublishViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishViewController.h; sourceTree = "<group>"; };
 		6C0E6E321BB1F16F000C7971 /* PublishViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishViewController.m; sourceTree = "<group>"; };
@@ -238,8 +238,8 @@
 		22EFFE111BADC15900E28ACB /* Secrets */ = {
 			isa = PBXGroup;
 			children = (
-				227C86841BB1B9FF00799CD3 /* Keys.h */,
-				227C86851BB1B9FF00799CD3 /* Keys.m */,
+				6B059FFF1BB3233D002627BA /* Keys.h */,
+				6B05A0001BB3233D002627BA /* Keys.m */,
 			);
 			name = Secrets;
 			sourceTree = "<group>";
@@ -432,6 +432,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22EFFDE61BADC11800E28ACB /* ViewController.m in Sources */,
+				6B05A0011BB3233D002627BA /* Keys.m in Sources */,
 				00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */,
 				00E9289B1BB1A8BE00383BD0 /* JsonData.m in Sources */,
 				00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */,
@@ -440,7 +441,6 @@
 				00E928A41BB1AB0100383BD0 /* TemplateData.m in Sources */,
 				227C86801BB07B3500799CD3 /* GitHubService.m in Sources */,
 				6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */,
-				227C86861BB1B9FF00799CD3 /* Keys.m in Sources */,
 				227C86831BB0876900799CD3 /* Constants.m in Sources */,
 				22EFFDE01BADC11800E28ACB /* main.m in Sources */,
 			);

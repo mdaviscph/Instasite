@@ -46,11 +46,6 @@
   appDelegate.window.rootViewController = vc;
   
 }
-- (IBAction)testUploadAction:(UIButton *)sender {
-  [GitHubService pushFilesToGithub:@"String" completionHandler:^(NSError *error) {
-    
-  }];
-}
 
 - (IBAction)signupAction:(UIButton *)sender {
   NSURL *signupURL = [NSURL URLWithString:@"https://github.com/join"];
