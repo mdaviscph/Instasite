@@ -47,7 +47,7 @@
   
 }
 
-+ (void)serviceForRepoNameInput:(NSString *)repoNameInput completionHandler:(void (^) (NSError *))completionHandler{
++(void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completionHandler:(void (^) (NSError *))completionHandler{
   
   NSString *access_token = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
   
