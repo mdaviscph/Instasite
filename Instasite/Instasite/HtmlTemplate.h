@@ -48,6 +48,8 @@ extern NSString *const kFeatureArray;
 
 - (instancetype)initWithPath:(NSString *)path ofType:(NSString *)type;
 
+- (NSURL *)genURL: (NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory;
+
 - (void)insertTitle:(NSString *)title withSubtitle:(NSString *)subtitle withSummary:(NSString *)summary;
 - (void)insertFeature:(HtmlTemplatePlacement)place headline:(NSString *)headline subheadline:(NSString *)subhead body:(NSString *)body;
 - (void)insertImageReference:(HtmlTemplatePlacement)place imageSource:(NSString *)imageSrc;

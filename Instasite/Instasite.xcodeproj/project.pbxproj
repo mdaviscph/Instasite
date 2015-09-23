@@ -161,6 +161,8 @@
 				22EFFDE51BADC11800E28ACB /* ViewController.m */,
 				227C867A1BB077D400799CD3 /* OauthViewController.h */,
 				227C867B1BB077D400799CD3 /* OauthViewController.m */,
+				6C0E6E311BB1F16F000C7971 /* PublishViewController.h */,
+				6C0E6E321BB1F16F000C7971 /* PublishViewController.m */,
 				00E928AA1BB1EC0F00383BD0 /* EditViewController.h */,
 				00E928AB1BB1EC0F00383BD0 /* EditViewController.m */,
 			);
@@ -173,6 +175,7 @@
 				22EFFDEC1BADC11800E28ACB /* LaunchScreen.storyboard */,
 				22EFFDE71BADC11800E28ACB /* Main.storyboard */,
 				227C86761BB0774800799CD3 /* Oauth.storyboard */,
+				6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */,
 				000613741BB2FCE600E818B7 /* Extensions.h */,
 				000613751BB2FCE600E818B7 /* Extensions.m */,
 			);
