@@ -40,11 +40,16 @@
   
   [self.safariVC dismissViewControllerAnimated:true completion:nil];
   AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-  UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-  UIViewController *vc = [mainStoryboard instantiateInitialViewController];
+  UIStoryboard *publishStoryboard = [UIStoryboard storyboardWithName:@"Publish" bundle:[NSBundle mainBundle]];
+  UIViewController *vc = [publishStoryboard instantiateInitialViewController];
   
   appDelegate.window.rootViewController = vc;
   
+}
+- (IBAction)testGetUser:(UIButton *)sender {
+  [GitHubService getUsernameFromGithub:^(NSError *error, NSString *username) {
+    
+  }];
 }
 
 - (IBAction)signupAction:(UIButton *)sender {
