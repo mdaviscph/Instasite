@@ -11,6 +11,7 @@
 @interface GitHubService : NSObject
 
 + (void)exchangeCodeInURL:(NSURL *)url;
-+ (void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput privacy:(BOOL)privacy completionHandler:(void (^) (NSError *))completionHandler;
++ (void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completionHandler:(void (^) (NSError *))completionHandler;
+//+ (void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput privacy:(Boolean)privacy completionHandler:(void (^) (NSError *))completionHandler;
 + (void)repoForSearch;
 @end

@@ -34,7 +34,7 @@
 //  [GitHubService repoForSearch];
 
 
-  [GitHubService serviceForRepoNameInput:self.textFieldRepoName.text descriptionInput:self.textFieldDescription.text privacy:self.segmentedPrivacy.selectedSegmentIndex completionHandler:^(NSError *error) {
+  [GitHubService serviceForRepoNameInput:self.textFieldRepoName.text descriptionInput:self.textFieldDescription.text  completionHandler:^(NSError *error) {
     if (error != nil) {
       NSLog(@"Error: %@",error);
     } else {
