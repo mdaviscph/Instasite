@@ -45,7 +45,7 @@
                                 <animations/>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sua-lf-hQm">
-                                <rect key="frame" x="20" y="176" width="560" height="30"/>
+                                <rect key="frame" x="20" y="150" width="560" height="30"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qcb-IE-AQt">
                                         <rect key="frame" x="0.0" y="0.0" width="88" height="30"/>
@@ -60,15 +60,38 @@
                                     </textField>
                                 </subviews>
                             </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KDx-Wk-9it">
+                                <rect key="frame" x="20" y="200" width="560" height="28"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D6M-7N-frG">
+                                        <rect key="frame" x="0.0" y="0.0" width="38" height="28"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="6uC-sF-0KX">
+                                        <rect key="frame" x="38" y="0.0" width="522" height="29"/>
+                                        <segments>
+                                            <segment title="Public"/>
+                                            <segment title="Private"/>
+                                        </segments>
+                                    </segmentedControl>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="sFw-ML-8oQ" firstAttribute="top" secondItem="vgJ-oQ-rAV" secondAttribute="bottom" constant="80" id="2R4-9a-83K"/>
                             <constraint firstItem="AIH-et-hnU" firstAttribute="centerX" secondItem="jNv-x7-yZj" secondAttribute="centerX" id="3Jy-gn-bNp"/>
+                            <constraint firstItem="KDx-Wk-9it" firstAttribute="leading" secondItem="sFw-ML-8oQ" secondAttribute="leading" id="HdF-cq-p1E"/>
                             <constraint firstAttribute="trailingMargin" secondItem="sFw-ML-8oQ" secondAttribute="trailing" id="HfS-cV-hR3"/>
+                            <constraint firstItem="KDx-Wk-9it" firstAttribute="top" secondItem="Sua-lf-hQm" secondAttribute="bottom" constant="20" id="JJe-Xw-bnE"/>
                             <constraint firstItem="AIH-et-hnU" firstAttribute="centerY" secondItem="jNv-x7-yZj" secondAttribute="centerY" id="Qia-Tz-3li"/>
-                            <constraint firstItem="Sua-lf-hQm" firstAttribute="top" secondItem="sFw-ML-8oQ" secondAttribute="bottom" constant="46" id="XJC-CI-5lj"/>
+                            <constraint firstItem="Sua-lf-hQm" firstAttribute="top" secondItem="sFw-ML-8oQ" secondAttribute="bottom" constant="20" id="XJC-CI-5lj"/>
+                            <constraint firstItem="Sua-lf-hQm" firstAttribute="leading" secondItem="sFw-ML-8oQ" secondAttribute="leading" id="Y47-m6-yhi"/>
+                            <constraint firstItem="KDx-Wk-9it" firstAttribute="trailing" secondItem="sFw-ML-8oQ" secondAttribute="trailing" id="aAH-if-OLH"/>
+                            <constraint firstItem="Sua-lf-hQm" firstAttribute="trailing" secondItem="sFw-ML-8oQ" secondAttribute="trailing" id="bti-pg-xXr"/>
                             <constraint firstItem="sFw-ML-8oQ" firstAttribute="leading" secondItem="jNv-x7-yZj" secondAttribute="leadingMargin" id="csv-Tv-4MO"/>
                             <constraint firstItem="Sua-lf-hQm" firstAttribute="trailing" secondItem="sFw-ML-8oQ" secondAttribute="trailing" id="dYM-RM-izb"/>
                             <constraint firstItem="Sua-lf-hQm" firstAttribute="leading" secondItem="jNv-x7-yZj" secondAttribute="leadingMargin" id="fcZ-hF-au0"/>
@@ -76,6 +99,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="segmentedPrivacy" destination="6uC-sF-0KX" id="3wQ-PU-SkJ"/>
                         <outlet property="textFieldDescription" destination="meg-zB-ngd" id="gGh-OK-huV"/>
                         <outlet property="textFieldRepoName" destination="wmA-Xn-Qy6" id="JCg-i3-XLv"/>
                     </connections>

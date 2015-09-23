@@ -12,6 +12,7 @@
 @interface PublishViewController ()<UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *textFieldRepoName;
 @property (weak, nonatomic) IBOutlet UITextField *textFieldDescription;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedPrivacy;
 
 @end
 
@@ -32,7 +33,8 @@
 
 //  [GitHubService repoForSearch];
 
-  [GitHubService serviceForRepoNameInput:self.textFieldRepoName.text descriptionInput:self.textFieldDescription.text completionHandler:^(NSError *error) {
+
+  [GitHubService serviceForRepoNameInput:self.textFieldRepoName.text descriptionInput:self.textFieldDescription.text privacy:self.segmentedPrivacy.selectedSegmentIndex completionHandler:^(NSError *error) {
     if (error != nil) {
       NSLog(@"Error: %@",error);
     } else {
