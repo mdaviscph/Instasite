@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="O3u-K8-0TV">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Oauth View Controller-->
@@ -16,40 +17,67 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MxH-RL-GeW">
-                                <rect key="frame" x="272" y="285" width="55" height="30"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="github_logo" translatesAutoresizingMaskIntoConstraints="NO" id="4KW-fj-hYa">
+                                <rect key="frame" x="20" y="28" width="560" height="112"/>
                                 <animations/>
-                                <state key="normal" title="Sign Up"/>
-                                <connections>
-                                    <action selector="signupAction:" destination="O3u-K8-0TV" eventType="touchUpInside" id="qfg-zh-thW"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hVY-sZ-0zn">
-                                <rect key="frame" x="281" y="323" width="38" height="30"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VjP-qQ-x1B">
+                                <rect key="frame" x="20" y="160" width="560" height="340"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MxH-RL-GeW">
+                                        <rect key="frame" x="8" y="60" width="544" height="30"/>
+                                        <animations/>
+                                        <state key="normal" title="Sign Up"/>
+                                        <connections>
+                                            <action selector="signupAction:" destination="O3u-K8-0TV" eventType="touchUpInside" id="qfg-zh-thW"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hVY-sZ-0zn">
+                                        <rect key="frame" x="8" y="98" width="544" height="30"/>
+                                        <animations/>
+                                        <state key="normal" title="Login"/>
+                                        <connections>
+                                            <action selector="loginAction:" destination="O3u-K8-0TV" eventType="touchUpInside" id="e9G-Xo-cQE"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X8D-BA-UKG">
+                                        <rect key="frame" x="238.5" y="136" width="83" height="30"/>
+                                        <animations/>
+                                        <state key="normal" title="Test Upload"/>
+                                        <connections>
+                                            <action selector="testUploadAction:" destination="O3u-K8-0TV" eventType="touchUpInside" id="hDs-Oq-7QO"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
                                 <animations/>
-                                <state key="normal" title="Login"/>
-                                <connections>
-                                    <action selector="loginAction:" destination="O3u-K8-0TV" eventType="touchUpInside" id="e9G-Xo-cQE"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oZV-pD-FcE">
-                                <rect key="frame" x="261" y="361" width="78" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Print Token"/>
-                                <connections>
-                                    <action selector="printAction:" destination="O3u-K8-0TV" eventType="touchUpInside" id="Wof-ZL-tAq"/>
-                                </connections>
-                            </button>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="MxH-RL-GeW" firstAttribute="top" secondItem="VjP-qQ-x1B" secondAttribute="top" constant="60" id="3sG-wQ-BFH"/>
+                                    <constraint firstAttribute="trailing" secondItem="MxH-RL-GeW" secondAttribute="trailing" constant="8" id="QSH-s8-kb6"/>
+                                    <constraint firstItem="hVY-sZ-0zn" firstAttribute="top" secondItem="MxH-RL-GeW" secondAttribute="bottom" constant="8" id="c29-WQ-taP"/>
+                                    <constraint firstAttribute="trailing" secondItem="hVY-sZ-0zn" secondAttribute="trailing" constant="8" id="dVe-Bf-hiV"/>
+                                    <constraint firstItem="X8D-BA-UKG" firstAttribute="centerX" secondItem="VjP-qQ-x1B" secondAttribute="centerX" id="ejK-sc-0eI"/>
+                                    <constraint firstItem="hVY-sZ-0zn" firstAttribute="leading" secondItem="VjP-qQ-x1B" secondAttribute="leading" constant="8" id="h1x-Bn-Gak"/>
+                                    <constraint firstItem="MxH-RL-GeW" firstAttribute="leading" secondItem="VjP-qQ-x1B" secondAttribute="leading" constant="8" id="j92-oS-oQP"/>
+                                    <constraint firstItem="X8D-BA-UKG" firstAttribute="top" secondItem="hVY-sZ-0zn" secondAttribute="bottom" constant="8" id="yN3-y8-6Wx"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="oZV-pD-FcE" firstAttribute="centerX" secondItem="XB9-mR-3yh" secondAttribute="centerX" id="FkA-d5-nOa"/>
-                            <constraint firstItem="hVY-sZ-0zn" firstAttribute="top" secondItem="MxH-RL-GeW" secondAttribute="bottom" constant="8" id="GfP-O6-hhW"/>
-                            <constraint firstItem="hVY-sZ-0zn" firstAttribute="centerX" secondItem="XB9-mR-3yh" secondAttribute="centerX" id="Gib-Sh-mM0"/>
-                            <constraint firstItem="MxH-RL-GeW" firstAttribute="centerX" secondItem="XB9-mR-3yh" secondAttribute="centerX" id="KAl-qB-Caw"/>
-                            <constraint firstItem="oZV-pD-FcE" firstAttribute="top" secondItem="hVY-sZ-0zn" secondAttribute="bottom" constant="8" id="lgs-6h-H3l"/>
-                            <constraint firstItem="MxH-RL-GeW" firstAttribute="centerY" secondItem="XB9-mR-3yh" secondAttribute="centerY" id="mBv-i9-A4o"/>
+                            <constraint firstItem="VjP-qQ-x1B" firstAttribute="leading" secondItem="XB9-mR-3yh" secondAttribute="leadingMargin" id="E5a-w8-CQr"/>
+                            <constraint firstItem="VjP-qQ-x1B" firstAttribute="top" secondItem="4KW-fj-hYa" secondAttribute="bottom" constant="20" id="IgP-vt-FQJ"/>
+                            <constraint firstItem="4KW-fj-hYa" firstAttribute="top" secondItem="qTB-Se-09e" secondAttribute="bottom" constant="8" id="MDu-rm-e5V"/>
+                            <constraint firstItem="hRJ-8p-Tgv" firstAttribute="top" secondItem="VjP-qQ-x1B" secondAttribute="bottom" constant="100" id="cjX-zA-jgS"/>
+                            <constraint firstItem="4KW-fj-hYa" firstAttribute="trailing" secondItem="XB9-mR-3yh" secondAttribute="trailingMargin" id="nUD-dr-VXd"/>
+                            <constraint firstItem="4KW-fj-hYa" firstAttribute="leading" secondItem="XB9-mR-3yh" secondAttribute="leadingMargin" id="sqW-EQ-4ti"/>
+                            <constraint firstItem="VjP-qQ-x1B" firstAttribute="trailing" secondItem="XB9-mR-3yh" secondAttribute="trailingMargin" id="tFL-cl-5EQ"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -58,4 +86,7 @@
             <point key="canvasLocation" x="387" y="422"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="github_logo" width="414" height="112"/>
+    </resources>
 </document>
