@@ -8,6 +8,7 @@
 
 #import "GitHubService.h"
 #import "Keys.h"
+#import "Constants.h"
 #import <AFNetworking/AFNetworking.h>
 #import <SSKeychain/SSKeychain.h>
 
@@ -19,47 +20,92 @@
 + (void)exchangeCodeInURL:(NSURL *)url {
   
   NSString *code = url.query;
-  NSString *requestURL = [NSString stringWithFormat:@"https://github.com/login/oauth/access_token?%@&client_id=%@&client_secret=%@", code, kClientId, kClientSecret];
+  NSString *requestURL = [NSString stringWithFormat:@"https://github.com/login/oauth/access_token?%@",code];
   
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:requestURL]];
-  [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-  [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-    NSError *jsonError;
-    NSDictionary *rootData = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-
-    NSString *accessToken = rootData[@"access_token"];
+  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+  AFHTTPResponseSerializer *serializer = [AFHTTPResponseSerializer serializer];
+  NSSet *acceptable = [NSSet setWithObjects:@"application/x-www-form-urlencoded", nil];
+  serializer.acceptableContentTypes = acceptable;
+  manager.responseSerializer = serializer;
+  
+  NSDictionary *parameters = @{@"code": code, @"client_id": kClientId, @"client_secret": kClientSecret};
+  
+  [manager POST:requestURL parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    NSString *parameters = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+    NSArray *substrings = [parameters componentsSeparatedByString:@"&"];
+    NSString *accessTokenString = substrings[0];
     
-    [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"access_token"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-  }] resume];
+    substrings = [accessTokenString componentsSeparatedByString:@"="];
+    NSString *accessToken = [substrings lastObject];
+    NSString *token = [NSString stringWithFormat:@"token %@", accessToken];
+    
+    [SSKeychain setPassword:token forService:kSSKeychainService account:kSSKeychainAccount];
+    
+  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+    NSLog(@"Error: %@", error);
+  }];
   
+}
+
++(void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completionHandler:(void (^) (NSError *))completionHandler{
   
+  NSString *access_token = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
   
-//  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-//  
-//  [manager POST:requestURL parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-//    NSLog(@"%@",responseObject);
-//  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
-//    NSLog(@"%@", error);
-//  }];
+  NSString *url = [NSString stringWithFormat:@"https://api.github.com/user/repos"];
   
-//  let request = NSMutableURLRequest(URL: NSURL(string: "https://github.com/login/oauth/access_token?\(code)&client_id=\(kClientId)&client_secret=\(kClientSecret)")!)
-//  request.HTTPMethod = "POST"
-//  request.setValue("application/json", forHTTPHeaderField: "Accept")
-//  NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
-//    if let httpResponse = response as? NSHTTPURLResponse {
-//      
-//      var jsonError: NSError?
-//      if let rootObject = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &jsonError) as? [String : AnyObject],
-//        token = rootObject["access_token"] as? String {
-//          KeychainService.saveToken(token)
-//          
-//          NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-//            NSNotificationCenter.defaultCenter().postNotificationName(kTokenNotification, object: nil)
-//          })
-//        }
-//    }
-//  }).resume()
+  // Test comment
+  //NSString *privateRepo;
+  
+//  if (privacy) {
+//    privateRepo = @"true";
+//  } else {
+//    privateRepo = @"false";
+//  }
+  
+  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+  
+  AFJSONRequestSerializer *serializer = [AFJSONRequestSerializer serializer];
+  
+  [serializer setValue:access_token forHTTPHeaderField:@"Authorization"];
+  manager.requestSerializer = serializer;
+  
+  NSDictionary *repo = @{@"name": repoNameInput, @"description": descriptionInput};
+  
+  [manager POST:url parameters:repo success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    
+    NSLog(@"Result: %@", responseObject);
+    
+  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+    
+    NSLog(@"Error: %@", operation.responseObject);
+  }];
+  
+}
+
++ (void)pushFilesToGithub:(NSString *)repoName username:(NSString *)username templateName:(NSString *)templateName completionHandler:(void(^) (NSError *))completionHandler {
+  NSString *accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
+  
+  NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/index.html", username, repoName];
+  
+  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+  AFJSONRequestSerializer *serializer = [AFJSONRequestSerializer serializer];
+  [serializer setValue:accessToken forHTTPHeaderField:@"Authorization"];
+  manager.requestSerializer = serializer;
+  
+  NSString *filePath = [[NSBundle mainBundle] pathForResource:templateName ofType:@"html"];
+  NSString *htmlString = [[NSString alloc] initWithContentsOfFile:filePath encoding:0 error:nil];
+  
+  NSData *data = [htmlString dataUsingEncoding:NSUTF8StringEncoding];
+  NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+  
+  NSDictionary *committer = @{@"name": @"sam", @"email": @"swilskey41@gmail.com"};
+  NSDictionary *json = @{@"branch": @"gh-pages", @"message": @"my commit", @"committer": committer, @"content": baseString};
+  
+  [manager PUT:baseURL parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    completionHandler(nil);
+  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+    completionHandler(error);
+  }];
   
 }
 

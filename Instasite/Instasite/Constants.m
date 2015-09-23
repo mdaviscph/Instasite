@@ -9,3 +9,7 @@
 #import "Constants.h"
 
 NSString *const kCloseSafariViewControllerNotification = @"kCloseSafariViewControllerNotification";
+NSString *const kSSKeychainAccount = @"github";
+NSString *const kSSKeychainService = @"githubToken";
+
+int const kTabBarHeight = 50;

@@ -73,6 +73,12 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
     return self;
 }
 
+- (NSURL *)genURL: (NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
+  NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:path ofType:type inDirectory:directory]];
+  
+  return url;
+}
+
 // TODO - in a future version we should build a dictionary of requested replacements so that we can be more efficient about this process by searching for instances of INSTASITE and after finding an instance we will look up the matching entry in the dictionary and perform the replacement.
 
 - (void)insertTitle:(NSString *)title withSubtitle:(NSString *)subtitle withSummary:(NSString *)summary {
