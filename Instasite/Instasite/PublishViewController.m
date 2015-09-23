@@ -9,8 +9,10 @@
 #import "PublishViewController.h"
 #import "GitHubService.h"
 
-@interface PublishViewController ()
+@interface PublishViewController ()<UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *textFieldRepoName;
+@property (weak, nonatomic) IBOutlet UITextField *textFieldDescription;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedPrivacy;
 
 @end
 
@@ -19,6 +21,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+  self.textFieldRepoName.delegate = self;
+  self.textFieldDescription.delegate = self;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -28,11 +32,23 @@
 - (IBAction)createRepoAction:(UIButton *)sender {
 
 //  [GitHubService repoForSearch];
-  [GitHubService serviceForRepoNameInput:nil completionHandler:^(NSError *error) {
+
+
+  [GitHubService serviceForRepoNameInput:self.textFieldRepoName.text descriptionInput:self.textFieldDescription.text  completionHandler:^(NSError *error) {
     if (error != nil) {
       NSLog(@"Error: %@",error);
+    } else {
+      
     }
   }];
+}
+
+#pragma mark - UITextFieldDelegate
+-(BOOL)textFieldShouldReturn:(UITextField *)textField{
+  
+  [textField resignFirstResponder];
+  
+  return true;
 }
 
 /*

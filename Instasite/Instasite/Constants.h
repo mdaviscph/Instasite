@@ -8,6 +8,5 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString *const kCloseSafariViewControllerNotification;
 extern NSString *const kSSKeychainAccount;
-extern NSString *const kSSKeychainService;
+extern NSString *const kSSKeychainService;extern NSString *const kCloseSafariViewControllerNotification;

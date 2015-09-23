@@ -47,13 +47,20 @@
   
 }
 
-+(void)serviceForRepoNameInput:(NSString *)repoNameInput completionHandler:(void (^) (NSError *))completionHandler{
++(void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completionHandler:(void (^) (NSError *))completionHandler{
   
   NSString *access_token = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
   
   NSString *url = [NSString stringWithFormat:@"https://api.github.com/user/repos"];
   
   // Test comment
+  //NSString *privateRepo;
+  
+//  if (privacy) {
+//    privateRepo = @"true";
+//  } else {
+//    privateRepo = @"false";
+//  }
   
   AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
   
@@ -62,7 +69,7 @@
   [serializer setValue:access_token forHTTPHeaderField:@"Authorization"];
   manager.requestSerializer = serializer;
   
-  NSDictionary *repo = @{@"name": repoNameInput};
+  NSDictionary *repo = @{@"name": repoNameInput, @"description": descriptionInput};
   
   [manager POST:url parameters:repo success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
@@ -70,7 +77,7 @@
     
   } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
     
-    NSLog(@"Error: %@", error);
+    NSLog(@"Error: %@", operation.responseObject);
   }];
   
 }
