@@ -12,7 +12,7 @@
 @interface PublishViewController ()<UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *textFieldRepoName;
 @property (weak, nonatomic) IBOutlet UITextField *textFieldDescription;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedPrivacy;
+
 
 @end
 
