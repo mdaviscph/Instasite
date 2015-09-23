@@ -76,13 +76,13 @@ static NSString *kCellId = @"cellId";
   return text;
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-  if ([segue.identifier  isEqual: @"ShowTemplate"]) {
-    NSLog(@"shows the template");
-    DisplayTemplateViewController* displayTempVC = (DisplayTemplateViewController*)segue.destinationViewController;
-    displayTempVC.pathItem = self.pathItem;
-  }
-}
+//-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+//  if ([segue.identifier isEqualToString: @"TemplateTabBar"]) {
+//    NSLog(@"shows the template");
+//    DisplayTemplateViewController* displayTempVC = (DisplayTemplateViewController*)segue.destinationViewController;
+//    displayTempVC.pathItem = self.pathItem;
+//  }
+//}
 
 #pragma mark - UICollectionViewDataSource
 
@@ -104,7 +104,8 @@ static NSString *kCellId = @"cellId";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
   NSLog(@" %zd",indexPath.item);
   self.pathItem = indexPath.item;
-  [self performSegueWithIdentifier:@"ShowTemplate" sender:self];
+  UITabBarController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"TemplateTabBar"];
+  [self.navigationController pushViewController:tabBarVC animated:YES];
 }
 
 
