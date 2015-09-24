@@ -7,6 +7,7 @@
 //
 
 #import "GitHubService.h"
+#import "FileEncodingService.h"
 #import "Keys.h"
 #import "Constants.h"
 #import "ParseJSONService.h"
@@ -14,9 +15,6 @@
 #import <SSKeychain/SSKeychain.h>
 
 @implementation GitHubService
-
-//TODO - Fix AFNetworking
-//TODO - Store Access Token in Keychain
 
 + (void)exchangeCodeInURL:(NSURL *)url {
   
@@ -50,25 +48,9 @@
 
 +(void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completionHandler:(void (^) (NSError *))completionHandler{
   
-  NSString *access_token = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
-  
   NSString *url = [NSString stringWithFormat:@"https://api.github.com/user/repos"];
   
-  // Test comment
-  //NSString *privateRepo;
-  
-//  if (privacy) {
-//    privateRepo = @"true";
-//  } else {
-//    privateRepo = @"false";
-//  }
-  
-  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-  
-  AFJSONRequestSerializer *serializer = [AFJSONRequestSerializer serializer];
-  
-  [serializer setValue:access_token forHTTPHeaderField:@"Authorization"];
-  manager.requestSerializer = serializer;
+  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
   
   NSDictionary *repo = @{@"name": repoNameInput, @"description": descriptionInput};
   
@@ -83,24 +65,18 @@
   
 }
 
-+ (void)pushFilesToGithub:(NSString *)repoName username:(NSString *)username templateName:(NSString *)templateName completionHandler:(void(^) (NSError *))completionHandler {
-  NSString *accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
++ (void)pushFilesToGithub:(NSString *)repoName templateName:(NSString *)templateName completionHandler:(void(^) (NSError *))completionHandler {
   
   NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/index.html", username, repoName];
   
-  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-  AFJSONRequestSerializer *serializer = [AFJSONRequestSerializer serializer];
-  [serializer setValue:accessToken forHTTPHeaderField:@"Authorization"];
-  manager.requestSerializer = serializer;
+  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
   
   NSString *filePath = [[NSBundle mainBundle] pathForResource:templateName ofType:@"html"];
-  NSString *htmlString = [[NSString alloc] initWithContentsOfFile:filePath encoding:0 error:nil];
   
-  NSData *data = [htmlString dataUsingEncoding:NSUTF8StringEncoding];
-  NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+  NSString *encodedFile = [FileEncodingService encodeHTML:filePath];
   
-  NSDictionary *committer = @{@"name": @"sam", @"email": @"swilskey41@gmail.com"};
-  NSDictionary *json = @{@"branch": @"gh-pages", @"message": @"my commit", @"committer": committer, @"content": baseString};
+  NSDictionary *committer = @{@"name": username, @"email": email};
+  NSDictionary *json = @{@"branch": @"gh-pages", @"message": @"my commit", @"committer": committer, @"content": encodedFile};
   
   [manager PUT:baseURL parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     completionHandler(nil);
@@ -110,15 +86,39 @@
   
 }
 
-+ (void)getUsernameFromGithub:(void (^) (NSError *error, NSString *username))completionHandler {
-  NSString *accesstoken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
++ (void)pushImagesToGithub:(NSString *)imageName imagePath:(NSString *)imagePath forRepo:(NSString *)repoName{
+  
+  NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/img/", username, repoName];
+  
+  NSString *encodedImage = [FileEncodingService encodeImage:imagePath];
+  
+  NSDictionary *committer = @{@"name": username, @"email": email};
+  NSDictionary *json = @{@"branch": @"gh-pages", @"message": @"Files Push", @"committer": committer, @"content" : encodedImage};
+  
+  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
+  
+  NSString *url = [NSString stringWithFormat:@"%@%@", baseURL,imageName];
+  [manager PUT:url parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    NSLog(@"Success: %@", responseObject);
+  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+    NSLog(@"Failure: %@", operation.responseObject);
+  }];
+  
+}
+
++ (void)pushCSSToGithub:(NSString *)fileName cssPath:(NSString *)cssPath forRepo:(NSString *)repoName {
+  
+}
+
++ (void)pushJSONToGithub:(NSString *)jsonPath forRepo:(NSString *)repoName {
+  
+}
+
++ (void)getUsernameAndEmailFromGithub:(void (^) (NSError *error, NSString *username))completionHandler {
   
   NSString *url = @"https://api.github.com/user";
   
-  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-  AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
-  [requestSerializer setValue:accesstoken forHTTPHeaderField:@"Authorization"];
-  manager.requestSerializer = requestSerializer;
+  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:false];
   
   [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     NSLog(@"Response: %@", responseObject);
@@ -130,4 +130,21 @@
   }];
 }
 
++ (AFHTTPRequestOperationManager *)createManagerWithSerializer:(BOOL)jsonSerializer {
+
+  NSString *accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
+  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+
+  if (jsonSerializer) {
+    AFJSONRequestSerializer *requestSerializer = [AFJSONRequestSerializer serializer];
+    [requestSerializer setValue:accessToken forHTTPHeaderField:@"Authorization"];
+    manager.requestSerializer = requestSerializer;
+  } else {
+    AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
+    [requestSerializer setValue:accessToken forHTTPHeaderField:@"Authorization"];
+    manager.requestSerializer = requestSerializer;
+  }
+  
+  return manager;
+}
 @end

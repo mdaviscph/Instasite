@@ -47,9 +47,8 @@
   
 }
 - (IBAction)testGetUser:(UIButton *)sender {
-  [GitHubService getUsernameFromGithub:^(NSError *error, NSString *username) {
-    
-  }];
+  NSString *filePath = [[NSBundle mainBundle] pathForResource:@"testimage" ofType:@"jpg"];
+  [GitHubService pushImagesToGithub:@"testimage.jpg" imagePath:filePath forUser:@"swilskey" forRepo:@"TestFromApi"];
 }
 
 - (IBAction)signupAction:(UIButton *)sender {
