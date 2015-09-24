@@ -10,7 +10,10 @@
 
 @implementation CSSFile
 - (instancetype)init:(NSString *)filePath fileName:(NSString *)fileName {
-  self.fileName = fileName;
-  self.filePath = filePath
+  if (self = [super init]) {
+    _filePath = filePath;
+    _fileName = fileName;
+  }
+  return self
 }
 @end
