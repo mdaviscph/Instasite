@@ -11,6 +11,7 @@
 #import <WebKit/WebKit.h>
 #import "HtmlTemplate.h"
 #import "Constants.h"
+#import "FileManager.h"
 
 @interface DisplayTemplateViewController () <WKNavigationDelegate>
 
@@ -52,6 +53,13 @@
   }
   
   return [HtmlTemplate genURL:kTemplateIndexFilename ofType:kTemplateIndexFiletype inDirectory:self.tabBarVC.templateDirectory];
+}
+
+// Copy the entire template folder from main bundle to the documents directory
+-(void)copyDirectoryToDocumentsDir {
+  FileManager *fm = [[FileManager alloc]init];
+  [fm copyDirectory: self.tabBarVC.templateDirectory];
+  
 }
 
 #pragma mark - Helper Methods

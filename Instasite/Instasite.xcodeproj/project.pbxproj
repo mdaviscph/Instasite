@@ -43,6 +43,7 @@
 		6B05A01A1BB32C70002627BA /* creative.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0151BB32C70002627BA /* creative.png */; settings = {ASSET_TAGS = (); }; };
 		6B05A01B1BB32C70002627BA /* freelancer.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0161BB32C70002627BA /* freelancer.png */; settings = {ASSET_TAGS = (); }; };
 		6B05A01C1BB32C70002627BA /* one-page-wonder.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0171BB32C70002627BA /* one-page-wonder.png */; settings = {ASSET_TAGS = (); }; };
+		6B05A02E1BB4A0B5002627BA /* FileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A02D1BB4A0B5002627BA /* FileManager.m */; settings = {ASSET_TAGS = (); }; };
 		6C0E6E2D1BB1C18B000C7971 /* Publish.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */; settings = {ASSET_TAGS = (); }; };
 		6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C0E6E321BB1F16F000C7971 /* PublishViewController.m */; settings = {ASSET_TAGS = (); }; };
 		6CAE8E3A1BB4618E00691E48 /* GitHubPullService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CAE8E391BB4618E00691E48 /* GitHubPullService.m */; settings = {ASSET_TAGS = (); }; };
@@ -126,6 +127,8 @@
 		6B05A0151BB32C70002627BA /* creative.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = creative.png; path = templateImg/creative.png; sourceTree = SOURCE_ROOT; };
 		6B05A0161BB32C70002627BA /* freelancer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = freelancer.png; path = templateImg/freelancer.png; sourceTree = SOURCE_ROOT; };
 		6B05A0171BB32C70002627BA /* one-page-wonder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "one-page-wonder.png"; path = "templateImg/one-page-wonder.png"; sourceTree = SOURCE_ROOT; };
+		6B05A02C1BB4A0B5002627BA /* FileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileManager.h; sourceTree = "<group>"; };
+		6B05A02D1BB4A0B5002627BA /* FileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileManager.m; sourceTree = "<group>"; };
 		6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Publish.storyboard; sourceTree = "<group>"; };
 		6C0E6E311BB1F16F000C7971 /* PublishViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishViewController.h; sourceTree = "<group>"; };
 		6C0E6E321BB1F16F000C7971 /* PublishViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishViewController.m; sourceTree = "<group>"; };
@@ -215,6 +218,8 @@
 				00E928A31BB1AB0100383BD0 /* TemplateData.m */,
 				00E928991BB1A8BE00383BD0 /* JsonData.h */,
 				00E9289A1BB1A8BE00383BD0 /* JsonData.m */,
+				6B05A02C1BB4A0B5002627BA /* FileManager.h */,
+				6B05A02D1BB4A0B5002627BA /* FileManager.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -532,6 +537,7 @@
 				6B05A0071BB32765002627BA /* DisplayTemplateViewController.m in Sources */,
 				00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */,
 				00E9289B1BB1A8BE00383BD0 /* JsonData.m in Sources */,
+				6B05A02E1BB4A0B5002627BA /* FileManager.m in Sources */,
 				6B05A0041BB3271A002627BA /* MainViewController.m in Sources */,
 				221BCA1E1BB46B100057A272 /* FileEncodingService.m in Sources */,
 				00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */,
