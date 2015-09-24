@@ -12,8 +12,10 @@
 
 + (void)exchangeCodeInURL:(NSURL *)url;
 + (void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completionHandler:(void (^) (NSError *))completionHandler;
-+ (void)pushFilesToGithub:(NSString *)repoName username:(NSString *)username templateName:(NSString *)templateName completionHandler:(void(^) (NSError *))completionHandler;
-+ (void)getUsernameAndEmailFromGithub:(void (^) (NSError *error, NSString *username))completionHandler;
-+ (void)pushImagesToGithub:(NSString *)imageName imagePath:(NSString *)imagePath forUser:(NSString *)username forRepo:(NSString *)repoName;
-+ (void)pushJSONToGithub:(NSString *)jsonPath forUser:(NSString *)username forRepo:(NSString *)repoName;
++ (void)pushFilesToGithub:(NSString *)repoName templateName:(NSString *)templateName email:(NSString *)userEmail completionHandler:(void(^) (NSError *))completionHandler;
++ (void)getUsernameFromGithub:(void (^) (NSError *error, NSString *username))completionHandler;
++ (void)pushImagesToGithub:(NSString *)imageName imagePath:(NSString *)imagePath email:(NSString *)userEmail forRepo:(NSString *)repoName;
++ (void)pushJSONToGithub:(NSString *)jsonPath forRepo:(NSString *)repoName;
++ (void)pushCSSToGithub:(NSString *)fileName cssPath:(NSString *)cssPath email:(NSString *)userEmail forRepo:(NSString *)repoName;
++ (void)pushJSONToGithub:(NSString *)jsonPath email:(NSString *)userEmail forRepo:(NSString *)repoName;
 @end
