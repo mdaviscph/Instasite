@@ -11,7 +11,8 @@
 #import "HtmlTemplate.h"
 #import "TemplateTabBarController.h"
 
-@interface EditViewController ()
+@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate>
+
 @property (weak, nonatomic) IBOutlet UIStackView *topStackView;
 @property (weak, nonatomic) IBOutlet UIStackView *bottomStackView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *featureSegmentedControl;
@@ -47,26 +48,6 @@
 
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
   self.markers = [self.tabBarVC.workingHtml templateMarkers];
-
-//  // uncomment this text to get console output of the markers dictionary
-//  for (NSString *key in [markers allKeys]) {
-//    if ([key isEqualToString:kFeatureArray]) {
-//      NSArray *features = markers[key];
-//      NSInteger number = 1;
-//      for (NSDictionary *featureDict in features) {
-//        if (featureDict.count > 0) {
-//          for (NSString *featureKey in featureDict) {
-//            NSLog(@"feature: %ld key: %@ count: %ld", number, featureKey, [(NSNumber *)featureDict[featureKey] integerValue]);
-//          }
-//        } else {
-//          NSLog(@"feature: %ld is empty", number);
-//        }
-//        number++;
-//      }
-//    } else {
-//      NSLog(@"key: %@ count: %ld", key, [(NSNumber *)markers[key] integerValue]);
-//    }
-//  }
   
   // turn off the fixed height constraint
   for (NSLayoutConstraint* constraint in self.topStackView.constraints) {
@@ -90,11 +71,13 @@
 
   if (self.markers[kMarkerTitle]) {
     UITextField *titleField = [[UITextField alloc] initWithMarkerType:HtmlMarkerTitle placeholder:@"Title text..." borderStyle:UITextBorderStyleRoundedRect];
+    titleField.delegate = self;
     [self.topStackView addArrangedSubview:titleField];
     topStackHeight += titleField.intrinsicContentSize.height + self.topStackSpacing;
   }
   if (self.markers[kMarkerSubtitle]) {
     UITextField *subtitleField = [[UITextField alloc] initWithMarkerType:HtmlMarkerSubtitle placeholder:@"Subtitle text..." borderStyle:UITextBorderStyleRoundedRect];
+    subtitleField.delegate = self;
     [self.topStackView addArrangedSubview:subtitleField];
     topStackHeight += subtitleField.intrinsicContentSize.height + self.topStackSpacing;
   }
@@ -102,11 +85,13 @@
     UITextView *summaryTextView = [[UITextView alloc] initWithMarkerType:HtmlMarkerSummary placeholder:@"Summary text..." borderStyle:UITextBorderStyleRoundedRect];
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:summaryTextView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.topTextViewHeight];
     constraint.active = YES;
+    summaryTextView.delegate = self;
     [self.topStackView addArrangedSubview:summaryTextView];
     topStackHeight += self.topTextViewHeight + self.topStackSpacing;
   }
   if (self.markers[kMarkerCopyright]) {
     UITextField *copyrightField = [[UITextField alloc] initWithMarkerType:HtmlMarkerCopyright placeholder:@"Copyright text..." borderStyle:UITextBorderStyleRoundedRect];
+    copyrightField.delegate = self;
     [self.topStackView addArrangedSubview:copyrightField];
     topStackHeight += copyrightField.intrinsicContentSize.height + self.topStackSpacing;
   }
@@ -126,6 +111,7 @@
   self.featureSegmentedControl.selectedSegmentIndex = 0;
 }
 
+#pragma mark - Helper Methods
 - (void)addFeatureControlsForFeature:(NSInteger)index {
 
   NSUInteger bottomStackHeight = 0;
@@ -138,26 +124,108 @@
   NSDictionary *featureDict = features[index];
   if (featureDict[kMarkerHead]) {
     UITextField *headlineField = [[UITextField alloc] initWithMarkerType:HtmlMarkerHeadline placeholder:@"Headline text..." borderStyle:UITextBorderStyleRoundedRect];
+    headlineField.delegate = self;
     [self.bottomStackView addArrangedSubview:headlineField];
     bottomStackHeight += headlineField.intrinsicContentSize.height + self.bottomStackSpacing;
   }
   if (featureDict[kMarkerSub]) {
     UITextField *subheadlineField = [[UITextField alloc] initWithMarkerType:HtmlMarkerSubheadline placeholder:@"Subheadline text..." borderStyle:UITextBorderStyleRoundedRect];
+    subheadlineField.delegate = self;
     [self.bottomStackView addArrangedSubview:subheadlineField];
     bottomStackHeight += subheadlineField.intrinsicContentSize.height + self.bottomStackSpacing;
   }
   if (featureDict[kMarkerBody]) {
     UITextView *bodyTextView = [[UITextView alloc] initWithMarkerType:HtmlMarkerBody placeholder:@"Body text..." borderStyle:UITextBorderStyleRoundedRect];
-    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:bodyTextView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.bottomTextViewHeight];
+    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:bodyTextView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.bottomTextViewHeight];
     constraint.active = YES;
+    bodyTextView.delegate = self;
     [self.bottomStackView addArrangedSubview:bodyTextView];
     bottomStackHeight += self.bottomTextViewHeight + self.bottomStackSpacing;
   }
-//  if (featureDict[kMarkerImageSrc]) {
-//    UIButton *imageSrcButton = [[UIButton alloc] initWithMarkerType:HtmlMarkerImageSrc text:@"Select Image" style:UIButtonTypeRoundedRect];
-//    [self.bottomStackView addArrangedSubview:imageSrcButton];
-//    bottomStackHeight += subheadlineField.intrinsicContentSize.height + self.bottomStackSpacing;
-//  }
+  if (featureDict[kMarkerImageSrc]) {
+    UIButton *imageSrcButton = [[UIButton alloc] initWithMarkerType:HtmlMarkerImageSrc text:@"Select Image"];
+    [imageSrcButton addTarget:self action:@selector(selectImageButtonUp:) forControlEvents:UIControlEventTouchUpInside];
+    [imageSrcButton setTitleColor:self.view.tintColor forState:UIControlStateNormal];
+    [self.bottomStackView addArrangedSubview:imageSrcButton];
+    bottomStackHeight += imageSrcButton.frame.size.height + self.bottomStackSpacing;
+  }
+}
+
+- (void)nslogMarkerDictionary {
+  for (NSString *key in [self.markers allKeys]) {
+    if ([key isEqualToString:kFeatureArray]) {
+      NSArray *features = self.markers[key];
+      NSInteger number = 1;
+      for (NSDictionary *featureDict in features) {
+        if (featureDict.count > 0) {
+          for (NSString *featureKey in featureDict) {
+            NSLog(@"feature: %ld key: %@ count: %ld", number, featureKey, [(NSNumber *)featureDict[featureKey] integerValue]);
+          }
+        } else {
+          NSLog(@"feature: %ld is empty", number);
+        }
+        number++;
+      }
+    } else {
+      NSLog(@"key: %@ count: %ld", key, [(NSNumber *)self.markers[key] integerValue]);
+    }
+  }
+}
+
+#pragma mark - Selector Methods
+- (void)selectImageButtonUp:(UIButton *)sender {
+  
+  switch (sender.tag) {
+    case HtmlMarkerImageSrc:
+      NSLog(@"image src button pressed");
+      break;
+      
+    default:
+      break;
+  }
+}
+
+#pragma mark - UITextFieldDelegate
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+  
+  switch (textField.tag) {
+    case HtmlMarkerTitle:
+      NSLog(@"title %@", textField.text);
+      break;
+    case HtmlMarkerSubtitle:
+      NSLog(@"subtitle %@", textField.text);
+      break;
+    case HtmlMarkerHeadline:
+      NSLog(@"headline %@", textField.text);
+      break;
+    case HtmlMarkerSubheadline:
+      NSLog(@"subheadline %@", textField.text);
+      break;
+    case HtmlMarkerCopyright:
+      NSLog(@"copyright %@", textField.text);
+      break;
+      
+    default:
+      break;
+  }
+}
+
+
+#pragma mark - UITextViewDelegate
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+
+  switch (textView.tag) {
+    case HtmlMarkerSummary:
+      NSLog(@"summary %@", textView.text);
+      break;
+    case HtmlMarkerBody:
+      NSLog(@"body %@", textView.text);
+      break;
+      
+    default:
+      break;
+  }
 }
 
 @end

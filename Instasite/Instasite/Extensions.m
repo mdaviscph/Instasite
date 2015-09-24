@@ -17,6 +17,8 @@
     self.borderStyle = style;
     self.tag = type;
   }
+  [self setContentHuggingPriority:800 forAxis:UILayoutConstraintAxisVertical];
+  [self setContentCompressionResistancePriority:200 forAxis:UILayoutConstraintAxisVertical];
   return self;
 }
 
@@ -33,7 +35,25 @@
       self.layer.borderWidth = 0.8;
       self.layer.cornerRadius = 5.0;
     }
+    self.tag = type;
+    [self setContentHuggingPriority:200 forAxis:UILayoutConstraintAxisVertical];
+    [self setContentCompressionResistancePriority:800 forAxis:UILayoutConstraintAxisVertical];
   }
+  return self;
+}
+
+@end
+
+@implementation UIButton (Extensions)
+
+- (instancetype)initWithMarkerType:(HtmlMarkerType)type text:(NSString *)text {
+  self = [self init];
+  if (self) {
+    [self setTitle:text forState:UIControlStateNormal];
+    self.tag = type;
+  }
+  [self setContentHuggingPriority:800 forAxis:UILayoutConstraintAxisVertical];
+  [self setContentCompressionResistancePriority:200 forAxis:UILayoutConstraintAxisVertical];
   return self;
 }
 

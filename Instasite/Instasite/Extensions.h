@@ -21,3 +21,9 @@
 - (instancetype)initWithMarkerType:(HtmlMarkerType)type placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style;
 
 @end
+
+@interface UIButton (Extensions)
+
+- (instancetype)initWithMarkerType:(HtmlMarkerType)type text:(NSString *)text;
+
+@end
