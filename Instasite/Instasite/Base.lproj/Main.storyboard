@@ -20,7 +20,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="hYf-0A-MRs"/>
                     <connections>
-                        <segue destination="FUf-xc-Akf" kind="show" identifier="SegueToTabBarController" id="pW1-bu-0dn"/>
+                        <segue destination="FUf-xc-Akf" kind="show" identifier="" id="pW1-bu-0dn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IY0-hY-sgF" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -96,6 +96,20 @@
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="9Ph-QS-vcz" firstAttribute="leading" secondItem="dvh-4H-e6R" secondAttribute="leadingMargin" id="0Fs-5G-Seq"/>
+                            <constraint firstItem="ZX7-jr-msJ" firstAttribute="top" secondItem="spi-2d-LZz" secondAttribute="bottom" constant="8" symbolic="YES" id="20v-ZG-aZt"/>
+                            <constraint firstItem="ZX7-jr-msJ" firstAttribute="leading" secondItem="dvh-4H-e6R" secondAttribute="leadingMargin" id="2t6-l6-eMh"/>
+                            <constraint firstItem="VdD-MM-ukZ" firstAttribute="leading" secondItem="dvh-4H-e6R" secondAttribute="leadingMargin" id="3iq-rQ-3sl"/>
+                            <constraint firstItem="TeO-1Q-5dA" firstAttribute="top" secondItem="ZX7-jr-msJ" secondAttribute="bottom" constant="8" symbolic="YES" id="4Vs-hG-ub8"/>
+                            <constraint firstItem="spi-2d-LZz" firstAttribute="leading" secondItem="VdD-MM-ukZ" secondAttribute="trailing" constant="8" symbolic="YES" id="NuI-mQ-1ec"/>
+                            <constraint firstItem="spi-2d-LZz" firstAttribute="top" secondItem="9Ph-QS-vcz" secondAttribute="bottom" constant="8" symbolic="YES" id="VP1-nr-yqA"/>
+                            <constraint firstItem="9Ph-QS-vcz" firstAttribute="top" secondItem="r25-dU-c9y" secondAttribute="bottom" constant="8" symbolic="YES" id="Ybr-yk-Beg"/>
+                            <constraint firstItem="spi-2d-LZz" firstAttribute="trailing" secondItem="dvh-4H-e6R" secondAttribute="trailingMargin" id="aXL-O2-Z8h"/>
+                            <constraint firstItem="9Ph-QS-vcz" firstAttribute="trailing" secondItem="dvh-4H-e6R" secondAttribute="trailingMargin" id="cgd-V4-MZJ"/>
+                            <constraint firstItem="VdD-MM-ukZ" firstAttribute="top" secondItem="9Ph-QS-vcz" secondAttribute="bottom" constant="8" symbolic="YES" id="ilS-W3-fgp"/>
+                            <constraint firstItem="ZX7-jr-msJ" firstAttribute="trailing" secondItem="dvh-4H-e6R" secondAttribute="trailingMargin" id="o7N-x1-Lld"/>
+                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Edit" id="5ib-I1-X8t"/>
                     <connections>
