@@ -65,7 +65,7 @@
   
 }
 
-+ (void)pushFilesToGithub:(NSString *)repoName templateName:(NSString *)templateName email:(NSString *)userEmail completionHandler:(void(^) (NSError *))completionHandler {
++ (void)pushFilesToGithub:(NSString *)repoName indexHtmlFile:(NSString *)indexHtmlFile email:(NSString *)userEmail completionHandler:(void(^) (NSError *))completionHandler {
   
   [self getUsernameFromGithub:^(NSError *error, NSString *username) {
     
@@ -74,7 +74,7 @@
     
     AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
     
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:templateName ofType:@"html"];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:indexHtmlFile ofType:@"html"];
     
     NSString *encodedFile = [FileEncodingService encodeHTML:filePath];
     
@@ -114,9 +114,29 @@
 
 + (void)pushCSSToGithub:(NSString *)fileName cssPath:(NSString *)cssPath email:(NSString *)userEmail forRepo:(NSString *)repoName {
   
+  [self getUsernameFromGithub:^(NSError *error, NSString *username) {
+    NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/css/",username,repoName];
+    NSString *encodedCSSFile = [FileEncodingService encodeCSS:cssPath];
+    
+    NSDictionary *committer = @{@"name": username, @"email": userEmail};
+    NSDictionary *json = @{@"branch": @"gh-pages", @"message": @"my commit", @"committer": committer, @"content": encodedCSSFile};
+    
+    AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
+    
+    [manager PUT:baseURL parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+      
+    } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+      
+    }];
+    
+  }];
+  
 }
 
 + (void)pushJSONToGithub:(NSString *)jsonPath email:(NSString *)userEmail forRepo:(NSString *)repoName {
+  
+  
+  
   
 }
 

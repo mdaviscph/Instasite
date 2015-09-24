@@ -10,4 +10,10 @@
 
 @interface PublishViewController : UIViewController
 
+@property(strong, nonatomic) NSString *indexHtmlFilePath;
+@property(strong, nonatomic) NSString *JSONfilePath;
+@property(strong, nonatomic) NSArray *supportingFilePaths;
+@property(strong, nonatomic) NSArray *imageFilePaths;
+
+
 @end

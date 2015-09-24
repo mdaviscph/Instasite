@@ -28,6 +28,8 @@
     // Do any additional setup after loading the view.
   self.textFieldRepoName.delegate = self;
   self.textFieldDescription.delegate = self;
+  
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -43,6 +45,18 @@
     if (error != nil) {
       NSLog(@"Error: %@",error);
     } else {
+      
+      [GitHubService pushFilesToGithub:self.textFieldRepoName.text indexHtmlFile:self.indexHtmlFilePath email:self.textFieldEmail.text completionHandler:nil];
+      
+      [GitHubService pushJSONToGithub:self.JSONfilePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+      
+      for (NSString *cssFile in self.supportingFilePaths) {
+        [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+      }
+      
+      for (NSString *imageFile in self.imageFilePaths) {
+        [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+      }
       
     }
   }];
