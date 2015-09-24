@@ -16,3 +16,4 @@ NSString *const kTemplateWorkingFilename = @"instasite_working";
 NSString *const kTemplateWorkingFiletype = @"html";
 NSString *const kTemplateJsonFilename = @"instasite";
 NSString *const kTemplateJsonFiletype = @"json";
+NSString *const kTemplateImagesDirectory = @"img";

@@ -15,7 +15,7 @@
 #import "Constants.h"
 #import "TemplateTabBarController.h"
 
-@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate>
+@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIStackView *topStackView;
 @property (weak, nonatomic) IBOutlet UIStackView *bottomStackView;
@@ -195,6 +195,42 @@
   return NO;
 }
 
+- (void)actionSheetForImageSelection:(UIButton *)button {
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Select an Image" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+  alert.modalPresentationStyle = UIModalPresentationPopover;
+  alert.popoverPresentationController.sourceView = self.view;
+  alert.popoverPresentationController.sourceRect = button.frame;
+  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+      [self startImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+    }];
+    [alert addAction:action];
+  }
+  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+      [self startImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    }];
+    [alert addAction:action];
+  }
+  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]) {
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Saved Photos Album" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+      [self startImagePickerForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
+    }];
+    [alert addAction:action];
+  }
+  UIAlertAction *cancelAction = [UIAlertAction actionWithTitle: @"Cancel" style:UIAlertActionStyleCancel handler:nil];
+  [alert addAction:cancelAction];
+  [self presentViewController:alert animated:YES completion: nil];
+}
+
+- (void)startImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
+  UIImagePickerController *imagePC = [[UIImagePickerController alloc] init];
+  imagePC.delegate = self;
+  imagePC.allowsEditing = YES;
+  imagePC.sourceType = sourceType;
+  [self presentViewController:imagePC animated:YES completion: nil];
+}
+
 - (void)nslogMarkerDictionary {
   for (NSString *key in [self.markers allKeys]) {
     if ([key isEqualToString:kFeatureArray]) {
@@ -223,16 +259,7 @@
     case HtmlMarkerImageSrc:
     {
       NSLog(@"image src button pressed");
-      // use ImagePicker to get an image
-      // save image file to working directory
-      // insert relative path of image file into working Html template
-      // save relative path of image file to user data
-      NSString *relativeImagePath = @"unknown_path";
-      
-      NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
-      [self.tabBarVC.workingHtml insertImageReference:index imageSource:relativeImagePath];
-      Feature *feature = self.userData.features[index];
-      feature.imageSrc = relativeImagePath;
+      [self actionSheetForImageSelection:sender];
       break;
     }
   }
@@ -291,6 +318,35 @@
       break;
     }
   }
+}
+
+#pragma mark - UIImagePickerControllerDelegate, UINavigationControllerDelegate
+ 
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+  [picker dismissViewControllerAnimated:YES completion:nil];
+  UIImage *image = info[UIImagePickerControllerEditedImage];
+  NSData *data = UIImageJPEGRepresentation(image, 1.0);
+
+  NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
+
+  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+  NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImagesDirectory];
+  NSString *filepath = [imagesDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"image%ld", (long)index]];
+  NSString *pathWithType = [filepath stringByAppendingPathExtension:@"jpg"];
+  
+  NSLog(@"Write file: %@", pathWithType);
+  if (![[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil]) {
+    NSLog(@"Error! Cannot create file: %@", pathWithType);
+    return;
+  }
+  
+  [self.tabBarVC.workingHtml insertImageReference:index imageSource:pathWithType];
+  Feature *feature = self.userData.features[index];
+  feature.imageSrc = pathWithType;
+}
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+  [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

@@ -16,3 +16,4 @@ extern NSString *const kTemplateWorkingFilename;
 extern NSString *const kTemplateWorkingFiletype;
 extern NSString *const kTemplateJsonFilename;
 extern NSString *const kTemplateJsonFiletype;
+extern NSString *const kTemplateImagesDirectory;
