@@ -12,6 +12,9 @@
 
 
 @interface PublishViewController ()<UITextFieldDelegate>
+
+@property (weak, nonatomic) IBOutlet UITextField *textFieldEmail;
+
 @property (weak, nonatomic) IBOutlet UITextField *textFieldRepoName;
 @property (weak, nonatomic) IBOutlet UITextField *textFieldDescription;
 
@@ -54,7 +57,7 @@
 }
 - (IBAction)downloadJSON:(id)sender {
   
-  [GitHubPullService getJSONFromGithub:@"instasite.json" username:@"myUsername" email:@"myemail@domain.com" templateName:@"mytemplate" completionHandler:^(NSError *username) {
+  [GitHubPullService getJSONFromGithub:@"Test-1" email:@"joaopaulogalvao1@gmail.com" completionHandler:^(NSError *error) {
     
   }];
   

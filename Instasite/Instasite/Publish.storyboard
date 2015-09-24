@@ -25,7 +25,7 @@
                                     <action selector="createRepoAction:" destination="Be8-Pu-jtH" eventType="touchUpInside" id="O4a-ri-uRH"/>
                                 </connections>
                             </button>
-                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sFw-ML-8oQ">
+                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sFw-ML-8oQ">
                                 <rect key="frame" x="20" y="100" width="560" height="30"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Repo Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lNF-gT-0gG">
@@ -44,7 +44,7 @@
                                 </subviews>
                                 <animations/>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sua-lf-hQm">
+                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sua-lf-hQm">
                                 <rect key="frame" x="20" y="150" width="560" height="30"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qcb-IE-AQt">
@@ -73,27 +73,50 @@
                                     <action selector="downloadJSON:" destination="Be8-Pu-jtH" eventType="touchUpInside" id="YOp-sm-Z4T"/>
                                 </connections>
                             </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bon-Wd-54b">
+                                <rect key="frame" x="20" y="50" width="560" height="30"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rDf-TQ-yIj">
+                                        <rect key="frame" x="0.0" y="0.0" width="41" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kpz-FN-ryd">
+                                        <rect key="frame" x="41" y="0.0" width="519" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="sFw-ML-8oQ" firstAttribute="top" secondItem="vgJ-oQ-rAV" secondAttribute="bottom" constant="80" id="2R4-9a-83K"/>
+                            <constraint firstItem="sFw-ML-8oQ" firstAttribute="top" secondItem="Bon-Wd-54b" secondAttribute="bottom" constant="20" id="2mB-gj-WwZ"/>
                             <constraint firstItem="AIH-et-hnU" firstAttribute="centerX" secondItem="jNv-x7-yZj" secondAttribute="centerX" id="3Jy-gn-bNp"/>
                             <constraint firstItem="6x9-uX-DVQ" firstAttribute="centerX" secondItem="AIH-et-hnU" secondAttribute="centerX" id="7TE-6N-i26"/>
                             <constraint firstItem="6x9-uX-DVQ" firstAttribute="centerY" secondItem="jNv-x7-yZj" secondAttribute="centerY" constant="66" id="EgR-Q3-Goo"/>
                             <constraint firstAttribute="trailingMargin" secondItem="sFw-ML-8oQ" secondAttribute="trailing" id="HfS-cV-hR3"/>
+                            <constraint firstItem="Sua-lf-hQm" firstAttribute="leading" secondItem="Bon-Wd-54b" secondAttribute="leading" id="M9j-U8-Sil"/>
+                            <constraint firstItem="Sua-lf-hQm" firstAttribute="trailing" secondItem="Bon-Wd-54b" secondAttribute="trailing" id="MlA-nB-TJn"/>
                             <constraint firstItem="AIH-et-hnU" firstAttribute="centerY" secondItem="jNv-x7-yZj" secondAttribute="centerY" id="Qia-Tz-3li"/>
                             <constraint firstItem="Sua-lf-hQm" firstAttribute="top" secondItem="sFw-ML-8oQ" secondAttribute="bottom" constant="20" id="XJC-CI-5lj"/>
                             <constraint firstItem="Sua-lf-hQm" firstAttribute="leading" secondItem="sFw-ML-8oQ" secondAttribute="leading" id="Y47-m6-yhi"/>
                             <constraint firstItem="Sua-lf-hQm" firstAttribute="trailing" secondItem="sFw-ML-8oQ" secondAttribute="trailing" id="bti-pg-xXr"/>
+                            <constraint firstItem="sFw-ML-8oQ" firstAttribute="top" secondItem="Bon-Wd-54b" secondAttribute="bottom" constant="16" id="c1s-AH-dR2"/>
                             <constraint firstItem="sFw-ML-8oQ" firstAttribute="leading" secondItem="jNv-x7-yZj" secondAttribute="leadingMargin" id="csv-Tv-4MO"/>
                             <constraint firstItem="Sua-lf-hQm" firstAttribute="trailing" secondItem="sFw-ML-8oQ" secondAttribute="trailing" id="dYM-RM-izb"/>
+                            <constraint firstItem="Bon-Wd-54b" firstAttribute="top" secondItem="vgJ-oQ-rAV" secondAttribute="bottom" constant="30" id="djf-if-l7h"/>
                             <constraint firstItem="Sua-lf-hQm" firstAttribute="leading" secondItem="jNv-x7-yZj" secondAttribute="leadingMargin" id="fcZ-hF-au0"/>
                             <constraint firstItem="Sua-lf-hQm" firstAttribute="leading" secondItem="sFw-ML-8oQ" secondAttribute="leading" id="fuU-Ea-UB6"/>
+                            <constraint firstItem="sFw-ML-8oQ" firstAttribute="leading" secondItem="Bon-Wd-54b" secondAttribute="leading" id="lY0-91-aBw"/>
+                            <constraint firstItem="sFw-ML-8oQ" firstAttribute="trailing" secondItem="Bon-Wd-54b" secondAttribute="trailing" id="wmS-Qe-Ui9"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="textFieldDescription" destination="meg-zB-ngd" id="gGh-OK-huV"/>
+                        <outlet property="textFieldEmail" destination="kpz-FN-ryd" id="Kgl-FS-D0q"/>
                         <outlet property="textFieldRepoName" destination="wmA-Xn-Qy6" id="JCg-i3-XLv"/>
                     </connections>
                 </viewController>
