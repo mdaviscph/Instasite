@@ -40,15 +40,11 @@
   
   [self.safariVC dismissViewControllerAnimated:true completion:nil];
   AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-  UIStoryboard *publishStoryboard = [UIStoryboard storyboardWithName:@"Publish" bundle:[NSBundle mainBundle]];
-  UIViewController *vc = [publishStoryboard instantiateInitialViewController];
+  UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+  UIViewController *vc = [mainStoryboard instantiateInitialViewController];
   
   appDelegate.window.rootViewController = vc;
   
-}
-- (IBAction)testGetUser:(UIButton *)sender {
-  NSString *filePath = [[NSBundle mainBundle] pathForResource:@"testimage" ofType:@"jpg"];
-  //[GitHubService pushImagesToGithub:@"testimage3.jpg" imagePath:filePath forRepo:@"TestFromApi"];
 }
 
 - (IBAction)signupAction:(UIButton *)sender {
