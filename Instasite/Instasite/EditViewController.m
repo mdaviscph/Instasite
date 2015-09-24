@@ -12,14 +12,15 @@
 #import "TemplateTabBarController.h"
 
 @interface EditViewController ()
-
 @property (weak, nonatomic) IBOutlet UIStackView *topStackView;
 @property (weak, nonatomic) IBOutlet UIStackView *bottomStackView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *featureSegmentedControl;
+
 @property (nonatomic) NSUInteger topStackSpacing;
 @property (nonatomic) NSUInteger bottomStackSpacing;
 @property (nonatomic) NSUInteger topTextViewHeight;
 @property (nonatomic) NSUInteger bottomTextViewHeight;
+
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 @property (strong, nonatomic) NSDictionary *markers;
 
@@ -27,8 +28,9 @@
 
 @implementation EditViewController
 
-- (IBAction)publishButtonTapped:(id)sender {
+- (IBAction)publishButtonTapped:(UIButton *)sender {
 }
+
 - (IBAction)featureSegmentedControlTapped:(UISegmentedControl *)sender {
   for (UIView *subview in self.bottomStackView.arrangedSubviews) {
     [self.bottomStackView removeArrangedSubview:subview];
@@ -65,6 +67,13 @@
 //      NSLog(@"key: %@ count: %ld", key, [(NSNumber *)markers[key] integerValue]);
 //    }
 //  }
+  
+  // turn off the fixed height constraint
+  for (NSLayoutConstraint* constraint in self.topStackView.constraints) {
+    if (constraint.firstAttribute == NSLayoutAttributeHeight) {
+      constraint.active = NO;
+    }
+  }
   
   self.topStackSpacing = 6;
   self.topTextViewHeight = 60;

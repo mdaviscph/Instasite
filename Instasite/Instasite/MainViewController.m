@@ -96,7 +96,7 @@ static NSString *kCellId = @"cellId";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
   NSLog(@"template directory: %@", self.templateDirectories[indexPath.item]);
-  TemplateTabBarController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"TemplateTabBar"];
+  TemplateTabBarController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"TemplateTabBarController"];
   tabBarVC.templateDirectory = self.templateDirectories[indexPath.item];
   [self.navigationController pushViewController:tabBarVC animated:YES];
 }
