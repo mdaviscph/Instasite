@@ -136,16 +136,16 @@
 + (void)pushJSONToGithub:(NSString *)jsonPath email:(NSString *)userEmail forRepo:(NSString *)repoName {
   [self getUsernameFromGithub:^(NSError *error, NSString *username) {
     if (username != nil) {
-      NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/",username,repoName];
+      NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@.%@",username,repoName,kTemplateJsonFilename,kTemplateJsonFiletype];
       NSString *encodedJSON = [FileEncodingService encodeHTML:jsonPath];
-      NSString *url = [NSString stringWithFormat:@"%@%@",baseURL,fileName];
+
       
       NSDictionary *committer = @{@"name": username, @"email": userEmail};
       NSDictionary *json = @{@"branch": kBranchName, @"message":@"Push JSON", @"committer": committer, @"content": encodedJSON};
       
       AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
       
-      [manager PUT:url parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+      [manager PUT:baseURL parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         
       } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
         

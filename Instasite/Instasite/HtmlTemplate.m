@@ -93,65 +93,104 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
 }
 
 - (BOOL)writeToFile:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
+
+  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:directory];
+  NSString *filepath = [workingDirectory stringByAppendingPathComponent:path];
+  NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
+
   NSData *data = [self.modifiedHtml dataUsingEncoding:NSUTF8StringEncoding];
   if (!data) {
     return NO;
   }
-  return [[NSFileManager defaultManager] createFileAtPath:directory contents:data attributes:nil];
+  NSLog(@"Write file: %@", pathWithType);
+  return [[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil];
 }
 
 // TODO - in a future version we should build a dictionary of requested replacements so that we can be more efficient about this process by searching for instances of INSTASITE and after finding an instance we will look up the matching entry in the dictionary and perform the replacement.
 
-- (void)insertTitle:(NSString *)title withSubtitle:(NSString *)subtitle withSummary:(NSString *)summary {
+- (void)insertTitle:(NSString *)title {
   if (title) {
     self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerTitle1 withString:title];
   }
+}
+- (void)insertSubtitle:(NSString *)subtitle {
   if (subtitle) {
     self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerSubtitle1 withString:subtitle];
   }
+}
+- (void)insertSummary:(NSString *)summary {
   if (summary) {
     self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerSummary1 withString:summary];
   }
 }
-- (void)insertFeature:(HtmlTemplatePlacement)place headline:(NSString *)headline subheadline:(NSString *)subhead body:(NSString *)body {
+- (void)insertFeature:(HtmlTemplatePlacement)place headline:(NSString *)headline {
 
   NSString *headlineMarker;
-  NSString *subheadMarker;
-  NSString *bodyMarker;
-  
   switch (place) {
     case HtmlPlaceOne:
       headlineMarker = kMarkerHead1;
-      subheadMarker = kMarkerSub1;
-      bodyMarker = kMarkerBody1;
       break;
     case HtmlPlaceTwo:
       headlineMarker = kMarkerHead2;
-      subheadMarker = kMarkerSub2;
-      bodyMarker = kMarkerBody2;
       break;
     case HtmlPlaceThree:
       headlineMarker = kMarkerHead3;
-      subheadMarker = kMarkerSub3;
-      bodyMarker = kMarkerBody3;
       break;
     case HtmlPlaceFour:
       headlineMarker = kMarkerHead4;
-      subheadMarker = kMarkerSub4;
-      bodyMarker = kMarkerBody4;
       break;
     case HtmlPlaceFive:
       headlineMarker = kMarkerHead5;
-      subheadMarker = kMarkerSub5;
-      bodyMarker = kMarkerBody5;
       break;
   }
-
   if (headline) {
     self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:headlineMarker withString:headline];
   }
+}
+- (void)insertFeature:(HtmlTemplatePlacement)place subheadline:(NSString *)subhead {
+
+  NSString *subheadMarker;
+  switch (place) {
+    case HtmlPlaceOne:
+      subheadMarker = kMarkerSub1;
+      break;
+    case HtmlPlaceTwo:
+      subheadMarker = kMarkerSub2;
+      break;
+    case HtmlPlaceThree:
+      subheadMarker = kMarkerSub3;
+      break;
+    case HtmlPlaceFour:
+      subheadMarker = kMarkerSub4;
+      break;
+    case HtmlPlaceFive:
+      subheadMarker = kMarkerSub5;
+      break;
+  }
   if (subhead) {
     self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:subheadMarker withString:subhead];
+  }
+}
+- (void)insertFeature:(HtmlTemplatePlacement)place body:(NSString *)body {
+
+  NSString *bodyMarker;
+  switch (place) {
+    case HtmlPlaceOne:
+      bodyMarker = kMarkerBody1;
+      break;
+    case HtmlPlaceTwo:
+      bodyMarker = kMarkerBody2;
+      break;
+    case HtmlPlaceThree:
+      bodyMarker = kMarkerBody3;
+      break;
+    case HtmlPlaceFour:
+      bodyMarker = kMarkerBody4;
+      break;
+    case HtmlPlaceFive:
+      bodyMarker = kMarkerBody5;
+      break;
   }
   if (body) {
     self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:bodyMarker withString:body];
@@ -160,8 +199,7 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
 
 - (void)insertImageReference:(HtmlTemplatePlacement)place imageSource:(NSString *)imageSrc {
   
-  NSString *imageSrcMarker;
-  
+  NSString *imageSrcMarker;  
   switch (place) {
     case HtmlPlaceOne:
       imageSrcMarker = kMarkerImageSrc1;

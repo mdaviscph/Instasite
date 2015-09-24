@@ -13,6 +13,7 @@
 static NSString *const kJsonTemplatesKey = @"templates";
 static NSString *const kJsonTitleKey = @"title";
 static NSString *const kJsonSubtitleKey = @"subtitle";
+static NSString *const kJsonSummaryKey = @"summary";
 static NSString *const kJsonFeaturesKey = @"features";
 static NSString *const kJsonHeadlineKey = @"headline";
 static NSString *const kJsonSubheadlineKey = @"subheadline";
@@ -41,6 +42,7 @@ static NSString *const kJsonCopyrightKey = @"copyright";
   NSMutableDictionary *templateDict = [[NSMutableDictionary alloc] init];
   templateDict[kJsonTitleKey] = templateData.title;
   templateDict[kJsonSubtitleKey] = templateData.subtitle;
+  templateDict[kJsonSummaryKey] = templateData.summary;
   templateDict[kJsonCopyrightKey] = templateData.copyright;
   templateDict[kJsonFeaturesKey] = featuresArray;
   
@@ -75,6 +77,7 @@ static NSString *const kJsonCopyrightKey = @"copyright";
   NSDictionary *templateDict = templatesArray.firstObject;
   templateData.title = templateDict[kJsonTitleKey];
   templateData.subtitle = templateDict[kJsonSubtitleKey];
+  templateData.summary = templateDict[kJsonSummaryKey];
   templateData.copyright = templateDict[kJsonCopyrightKey];
   
   NSArray *featuresArray = templateDict[kJsonFeaturesKey];

@@ -12,6 +12,7 @@
 
 @property (strong, nonatomic) NSString *title;
 @property (strong, nonatomic) NSString *subtitle;
+@property (strong, nonatomic) NSString *summary;
 @property (strong, nonatomic) NSString *copyright;
 @property (strong, nonatomic) NSArray *features;
 

@@ -89,7 +89,7 @@
 		227C867A1BB077D400799CD3 /* OauthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OauthViewController.h; sourceTree = "<group>"; };
 		227C867B1BB077D400799CD3 /* OauthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OauthViewController.m; sourceTree = "<group>"; };
 		227C867E1BB07B3500799CD3 /* GitHubService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GitHubService.h; sourceTree = "<group>"; };
-		227C867F1BB07B3500799CD3 /* GitHubService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GitHubService.m; sourceTree = "<group>"; };
+		227C867F1BB07B3500799CD3 /* GitHubService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GitHubService.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		227C86811BB0876900799CD3 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		227C86821BB0876900799CD3 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		22B07C841BB45D5D00ADB5EF /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
@@ -115,7 +115,7 @@
 		6B05A0021BB3271A002627BA /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		6B05A0031BB3271A002627BA /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		6B05A0051BB32765002627BA /* DisplayTemplateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplayTemplateViewController.h; sourceTree = "<group>"; };
-		6B05A0061BB32765002627BA /* DisplayTemplateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisplayTemplateViewController.m; sourceTree = "<group>"; };
+		6B05A0061BB32765002627BA /* DisplayTemplateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DisplayTemplateViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		6B05A0091BB32AF2002627BA /* startbootstrap-agency-1.0-2.4 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-agency-1.0-2.4"; sourceTree = SOURCE_ROOT; };
 		6B05A00A1BB32AF2002627BA /* startbootstrap-clean-blog-1.0.3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-clean-blog-1.0.3"; sourceTree = SOURCE_ROOT; };
 		6B05A00B1BB32AF2002627BA /* startbootstrap-creative-1.0.1 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-creative-1.0.1"; sourceTree = SOURCE_ROOT; };
