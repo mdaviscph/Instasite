@@ -54,7 +54,9 @@
 }
 - (IBAction)downloadJSON:(id)sender {
   
-  
+  [GitHubPullService getJSONFromGithub:@"instasite.json" username:@"myUsername" email:@"myemail@domain.com" templateName:@"mytemplate" completionHandler:^(NSError *username) {
+    
+  }];
   
 }
 
