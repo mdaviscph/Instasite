@@ -17,6 +17,8 @@
 		00E928AC1BB1EC0F00383BD0 /* EditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928AB1BB1EC0F00383BD0 /* EditViewController.m */; settings = {ASSET_TAGS = (); }; };
 		221BCA1E1BB46B100057A272 /* FileEncodingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA1D1BB46B100057A272 /* FileEncodingService.m */; settings = {ASSET_TAGS = (); }; };
 		221BCA221BB472D70057A272 /* testimage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 221BCA211BB472D70057A272 /* testimage.jpg */; settings = {ASSET_TAGS = (); }; };
+		221BCA261BB4B92E0057A272 /* ImageFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA251BB4B92E0057A272 /* ImageFile.m */; settings = {ASSET_TAGS = (); }; };
+		221BCA2A1BB4B9460057A272 /* CSSFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA291BB4B9460057A272 /* CSSFile.m */; settings = {ASSET_TAGS = (); }; };
 		227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 227C86761BB0774800799CD3 /* Oauth.storyboard */; settings = {ASSET_TAGS = (); }; };
 		227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867B1BB077D400799CD3 /* OauthViewController.m */; settings = {ASSET_TAGS = (); }; };
 		227C86801BB07B3500799CD3 /* GitHubService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867F1BB07B3500799CD3 /* GitHubService.m */; settings = {ASSET_TAGS = (); }; };
@@ -86,6 +88,10 @@
 		221BCA1C1BB46B100057A272 /* FileEncodingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileEncodingService.h; sourceTree = "<group>"; };
 		221BCA1D1BB46B100057A272 /* FileEncodingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileEncodingService.m; sourceTree = "<group>"; };
 		221BCA211BB472D70057A272 /* testimage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimage.jpg; sourceTree = "<group>"; };
+		221BCA241BB4B92E0057A272 /* ImageFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFile.h; sourceTree = "<group>"; };
+		221BCA251BB4B92E0057A272 /* ImageFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFile.m; sourceTree = "<group>"; };
+		221BCA281BB4B9460057A272 /* CSSFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSFile.h; sourceTree = "<group>"; };
+		221BCA291BB4B9460057A272 /* CSSFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSFile.m; sourceTree = "<group>"; };
 		227C86761BB0774800799CD3 /* Oauth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Oauth.storyboard; sourceTree = "<group>"; };
 		227C867A1BB077D400799CD3 /* OauthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OauthViewController.h; sourceTree = "<group>"; };
 		227C867B1BB077D400799CD3 /* OauthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OauthViewController.m; sourceTree = "<group>"; };
@@ -173,6 +179,17 @@
 			name = "Test Image";
 			sourceTree = "<group>";
 		};
+		221BCA231BB4B9180057A272 /* File Classes */ = {
+			isa = PBXGroup;
+			children = (
+				221BCA241BB4B92E0057A272 /* ImageFile.h */,
+				221BCA251BB4B92E0057A272 /* ImageFile.m */,
+				221BCA281BB4B9460057A272 /* CSSFile.h */,
+				221BCA291BB4B9460057A272 /* CSSFile.m */,
+			);
+			name = "File Classes";
+			sourceTree = "<group>";
+		};
 		227C86731BB0770800799CD3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -210,6 +227,7 @@
 		227C86751BB0772E00799CD3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				221BCA231BB4B9180057A272 /* File Classes */,
 				00E928961BB1A07200383BD0 /* HtmlTemplate.h */,
 				00E928971BB1A07200383BD0 /* HtmlTemplate.m */,
 				00E9289C1BB1A9BA00383BD0 /* Feature.h */,
@@ -543,6 +561,7 @@
 				00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */,
 				00E928AC1BB1EC0F00383BD0 /* EditViewController.m in Sources */,
 				000613761BB2FCE600E818B7 /* Extensions.m in Sources */,
+				221BCA2A1BB4B9460057A272 /* CSSFile.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
 				227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */,
 				00E928A41BB1AB0100383BD0 /* TemplateData.m in Sources */,
@@ -551,6 +570,7 @@
 				6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */,
 				227C86831BB0876900799CD3 /* Constants.m in Sources */,
 				6CAE8E3A1BB4618E00691E48 /* GitHubPullService.m in Sources */,
+				221BCA261BB4B92E0057A272 /* ImageFile.m in Sources */,
 				22EFFDE01BADC11800E28ACB /* main.m in Sources */,
 				22E4F8CD1BB346EF000E40A5 /* ParseJSONService.m in Sources */,
 			);
