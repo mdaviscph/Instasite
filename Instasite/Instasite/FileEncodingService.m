@@ -23,4 +23,13 @@
   NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
   return baseString;
 }
+
++(NSString *)encodeCSS:(NSString *)cssPath{
+  NSString *cssString = [[NSString alloc] initWithContentsOfFile:cssPath encoding:0 error:nil];
+  
+  NSData *data = [cssString dataUsingEncoding:NSUTF8StringEncoding];
+  NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+  
+  return baseString;
+}
 @end

@@ -46,6 +46,10 @@
   appDelegate.window.rootViewController = vc;
   
 }
+- (IBAction)testGetUser:(UIButton *)sender {
+//  NSString *filePath = [[NSBundle mainBundle] pathForResource:@"testimage" ofType:@"jpg"];
+//  [GitHubService pushImagesToGithub:@"testimage3.jpg" imagePath:filePath forRepo:@"TestFromApi"];
+}
 
 - (IBAction)signupAction:(UIButton *)sender {
   NSURL *signupURL = [NSURL URLWithString:@"https://github.com/join"];

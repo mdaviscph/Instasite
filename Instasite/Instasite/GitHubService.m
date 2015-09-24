@@ -65,7 +65,7 @@
   
 }
 
-+ (void)pushFilesToGithub:(NSString *)repoName templateName:(NSString *)templateName email:(NSString *)userEmail completionHandler:(void(^) (NSError *))completionHandler {
++ (void)pushFilesToGithub:(NSString *)repoName indexHtmlFile:(NSString *)indexHtmlFile email:(NSString *)userEmail completionHandler:(void(^) (NSError *))completionHandler {
   
   [self getUsernameFromGithub:^(NSError *error, NSString *username) {
     
@@ -74,7 +74,7 @@
     
     AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
     
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:templateName ofType:@"html"];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:indexHtmlFile ofType:@"html"];
     
     NSString *encodedFile = [FileEncodingService encodeHTML:filePath];
     
@@ -113,6 +113,7 @@
 }
 
 + (void)pushCSSToGithub:(NSString *)fileName cssPath:(NSString *)cssPath email:(NSString *)userEmail forRepo:(NSString *)repoName {
+  
   [self getUsernameFromGithub:^(NSError *error, NSString *username) {
     if (username != nil) {
       NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/css/",username,repoName];
@@ -131,6 +132,7 @@
       }];
     }
   }];
+  
 }
 
 + (void)pushJSONToGithub:(NSString *)jsonPath email:(NSString *)userEmail forRepo:(NSString *)repoName {

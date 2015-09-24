@@ -11,5 +11,6 @@
 @interface FileEncodingService : NSObject
 + (NSString *)encodeImage:(NSString *)imagePath;
 + (NSString *)encodeHTML:(NSString *)filePath;
++ (NSString *)encodeCSS:(NSString *)cssPath;
 
 @end
