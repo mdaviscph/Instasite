@@ -13,3 +13,6 @@ extern NSString *const kSSKeychainService;
 extern NSString *const kCloseSafariViewControllerNotification;
 extern NSString *const kTemplateOriginalFilename;
 extern NSString *const kTemplateWorkingFilename;
+extern NSString *const kTemplateWorkingFiletype;
+extern NSString *const kTemplateJsonFilename;
+extern NSString *const kTemplateJsonFiletype;

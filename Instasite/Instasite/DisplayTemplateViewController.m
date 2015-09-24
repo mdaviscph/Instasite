@@ -48,24 +48,24 @@
   // to showing the working version which includes the instasite markers.
   if (!self.tabBarVC.workingFilename) {
 
-    self.tabBarVC.workingHtml = [[HtmlTemplate alloc] initWithPath:kTemplateOriginalFilename ofType:@"html" inDirectory:self.tabBarVC.templateDirectory];
+    self.tabBarVC.workingHtml = [[HtmlTemplate alloc] initWithPath:kTemplateOriginalFilename ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory];
 
     [self createWorkingFile:kTemplateWorkingFilename];
     
-    return [HtmlTemplate genURL:@"index" ofType:@"html" inDirectory:self.tabBarVC.templateDirectory];
+    return [HtmlTemplate genURL:@"index" ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory];
   }
   
-  return [HtmlTemplate genURL:self.tabBarVC.workingFilename ofType:@"html" inDirectory:self.tabBarVC.templateDirectory];
+  return [HtmlTemplate genURL:self.tabBarVC.workingFilename ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory];
 }
 
 #pragma mark - Helper Methods
 - (BOOL)createWorkingFile:(NSString *)filename {
   
   // TODO - get some identifier for the user to use as filename or part of filename
-  if ([self.tabBarVC.workingHtml writeToFile:filename ofType:@"html" inDirectory:self.tabBarVC.templateDirectory]) {
+  if ([self.tabBarVC.workingHtml writeToFile:filename ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory]) {
     return YES;
   }
-  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, @"html", self.tabBarVC.templateDirectory);
+  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, kTemplateWorkingFiletype, self.tabBarVC.templateDirectory);
   return NO;
 }
 

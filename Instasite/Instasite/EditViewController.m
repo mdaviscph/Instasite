@@ -9,6 +9,10 @@
 #import "EditViewController.h"
 #import "Extensions.h"
 #import "HtmlTemplate.h"
+#import "TemplateData.h"
+#import "Feature.h"
+#import "JsonData.h"
+#import "Constants.h"
 #import "TemplateTabBarController.h"
 
 @interface EditViewController () <UITextFieldDelegate, UITextViewDelegate>
@@ -25,11 +29,18 @@
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 @property (strong, nonatomic) NSDictionary *markers;
 
+@property (strong, nonatomic) TemplateData *userData;
+
 @end
 
 @implementation EditViewController
 
 - (IBAction)publishButtonTapped:(UIButton *)sender {
+  
+  NSData *jsonData = [JsonData fromTemplateData:self.userData];
+  [self writeJsonFile:jsonData filename:kTemplateJsonFilename ofType:kTemplateJsonFiletype];
+  
+  [self writeWorkingFile:kTemplateWorkingFilename ofType:kTemplateWorkingFiletype];
 }
 
 - (IBAction)featureSegmentedControlTapped:(UISegmentedControl *)sender {
@@ -109,6 +120,13 @@
   
   [self addFeatureControlsForFeature:0];
   self.featureSegmentedControl.selectedSegmentIndex = 0;
+  
+  self.userData = [[TemplateData alloc] init];
+  NSMutableArray *mutableFeatures = [[NSMutableArray alloc] init];
+  for (NSUInteger index = 0; index < features.count; index++) {
+    [mutableFeatures addObject:[[Feature alloc] init]];
+  }
+  self.userData.features = mutableFeatures;
 }
 
 #pragma mark - Helper Methods
@@ -151,6 +169,32 @@
   }
 }
 
+- (BOOL)writeWorkingFile:(NSString *)filename ofType:(NSString *)type {
+  
+  // TODO - get some identifier for the user to use as filename or part of filename
+  if ([self.tabBarVC.workingHtml writeToFile:filename ofType:type inDirectory:self.tabBarVC.templateDirectory]) {
+    return YES;
+  }
+  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, type, self.tabBarVC.templateDirectory);
+  return NO;
+}
+
+- (BOOL)writeJsonFile:(NSData *)data filename:(NSString *)filename ofType:(NSString *)type {
+  
+  // TODO - get some identifier for the user to use as filename or part of filename
+  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+  NSString *filepath = [workingDirectory stringByAppendingPathComponent:filename];
+  NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
+  
+  NSLog(@"Write file: %@", pathWithType);
+  if ([[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil]) {
+    return YES;
+  }
+  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, type, self.tabBarVC.templateDirectory);
+  return NO;
+}
+
 - (void)nslogMarkerDictionary {
   for (NSString *key in [self.markers allKeys]) {
     if ([key isEqualToString:kFeatureArray]) {
@@ -177,11 +221,20 @@
   
   switch (sender.tag) {
     case HtmlMarkerImageSrc:
+    {
       NSLog(@"image src button pressed");
-      break;
+      // use ImagePicker to get an image
+      // save image file to working directory
+      // insert relative path of image file into working Html template
+      // save relative path of image file to user data
+      NSString *relativeImagePath = @"unknown_path";
       
-    default:
+      NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
+      [self.tabBarVC.workingHtml insertImageReference:index imageSource:relativeImagePath];
+      Feature *feature = self.userData.features[index];
+      feature.imageSrc = relativeImagePath;
       break;
+    }
   }
 }
 
@@ -190,22 +243,32 @@
   
   switch (textField.tag) {
     case HtmlMarkerTitle:
-      NSLog(@"title %@", textField.text);
+      [self.tabBarVC.workingHtml insertTitle:textField.text];
+      self.userData.title = textField.text;
       break;
     case HtmlMarkerSubtitle:
-      NSLog(@"subtitle %@", textField.text);
+      [self.tabBarVC.workingHtml insertSubtitle:textField.text];
+      self.userData.subtitle = textField.text;
       break;
     case HtmlMarkerHeadline:
-      NSLog(@"headline %@", textField.text);
+    {
+      NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
+      [self.tabBarVC.workingHtml insertFeature: index headline:textField.text];
+      Feature *feature = self.userData.features[index];
+      feature.headline = textField.text;
       break;
+    }
     case HtmlMarkerSubheadline:
-      NSLog(@"subheadline %@", textField.text);
+    {
+      NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
+      [self.tabBarVC.workingHtml insertFeature: index subheadline:textField.text];
+      Feature *feature = self.userData.features[index];
+      feature.subheadline = textField.text;
       break;
+    }
     case HtmlMarkerCopyright:
-      NSLog(@"copyright %@", textField.text);
-      break;
-      
-    default:
+      [self.tabBarVC.workingHtml insertCopyright:textField.text];
+      self.userData.title = textField.text;
       break;
   }
 }
@@ -217,14 +280,16 @@
 
   switch (textView.tag) {
     case HtmlMarkerSummary:
-      NSLog(@"summary %@", textView.text);
+      [self.tabBarVC.workingHtml insertSummary:textView.text];
       break;
     case HtmlMarkerBody:
-      NSLog(@"body %@", textView.text);
+    {
+      NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
+      [self.tabBarVC.workingHtml insertFeature: index body:textView.text];
+      Feature *feature = self.userData.features[index];
+      feature.body = textView.text;
       break;
-      
-    default:
-      break;
+    }
   }
 }
 

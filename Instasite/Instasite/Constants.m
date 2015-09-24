@@ -13,3 +13,6 @@ NSString *const kSSKeychainAccount = @"github";
 NSString *const kSSKeychainService = @"githubToken";
 NSString *const kTemplateOriginalFilename = @"instasite";
 NSString *const kTemplateWorkingFilename = @"instasite_working";
+NSString *const kTemplateWorkingFiletype = @"html";
+NSString *const kTemplateJsonFilename = @"instasite";
+NSString *const kTemplateJsonFiletype = @"json";
