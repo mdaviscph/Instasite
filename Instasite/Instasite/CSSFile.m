@@ -9,9 +9,11 @@
 #import "CSSFile.h"
 
 @implementation CSSFile
-- (instancetype)init:(NSString *)filePath fileName:(NSString *)fileName {
-  self.fileName = fileName;
-  self.filePath = filePath;
+- (instancetype)initWithFilePath:(NSString *)filePath andFileName:(NSString *)fileName {
+  if (self = [super init]) {
+    _filePath = filePath;
+    _fileName = fileName;
+  }
   return self;
 }
 @end

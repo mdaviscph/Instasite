@@ -9,7 +9,8 @@
 #import "PublishViewController.h"
 #import "GitHubService.h"
 #import "GitHubPullService.h"
-
+#import "ImageFile.h"
+#import "CSSFile.h"
 
 @interface PublishViewController ()<UITextFieldDelegate>
 
