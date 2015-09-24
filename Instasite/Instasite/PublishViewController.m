@@ -51,11 +51,11 @@
       
       [GitHubService pushJSONToGithub:self.JSONfilePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
       
-      for (NSString *cssFile in self.supportingFilePaths) {
+      for (CSSFile *cssFile in self.supportingFilePaths) {
         [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
       }
       
-      for (NSString *imageFile in self.imageFilePaths) {
+      for (ImageFile *imageFile in self.imageFilePaths) {
         [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
       }
       
