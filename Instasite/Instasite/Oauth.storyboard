@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="O3u-K8-0TV">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A282b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="O3u-K8-0TV">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -40,12 +40,12 @@
                                             <action selector="loginAction:" destination="O3u-K8-0TV" eventType="touchUpInside" id="e9G-Xo-cQE"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X8D-BA-UKG">
-                                        <rect key="frame" x="238.5" y="136" width="83" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k45-vG-qbe">
+                                        <rect key="frame" x="26" y="253" width="46" height="30"/>
                                         <animations/>
-                                        <state key="normal" title="Test Upload"/>
+                                        <state key="normal" title="Button"/>
                                         <connections>
-                                            <action selector="testUploadAction:" destination="O3u-K8-0TV" eventType="touchUpInside" id="hDs-Oq-7QO"/>
+                                            <action selector="testGetUser:" destination="O3u-K8-0TV" eventType="touchUpInside" id="BWK-FL-iUM"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -56,10 +56,8 @@
                                     <constraint firstAttribute="trailing" secondItem="MxH-RL-GeW" secondAttribute="trailing" constant="8" id="QSH-s8-kb6"/>
                                     <constraint firstItem="hVY-sZ-0zn" firstAttribute="top" secondItem="MxH-RL-GeW" secondAttribute="bottom" constant="8" id="c29-WQ-taP"/>
                                     <constraint firstAttribute="trailing" secondItem="hVY-sZ-0zn" secondAttribute="trailing" constant="8" id="dVe-Bf-hiV"/>
-                                    <constraint firstItem="X8D-BA-UKG" firstAttribute="centerX" secondItem="VjP-qQ-x1B" secondAttribute="centerX" id="ejK-sc-0eI"/>
                                     <constraint firstItem="hVY-sZ-0zn" firstAttribute="leading" secondItem="VjP-qQ-x1B" secondAttribute="leading" constant="8" id="h1x-Bn-Gak"/>
                                     <constraint firstItem="MxH-RL-GeW" firstAttribute="leading" secondItem="VjP-qQ-x1B" secondAttribute="leading" constant="8" id="j92-oS-oQP"/>
-                                    <constraint firstItem="X8D-BA-UKG" firstAttribute="top" secondItem="hVY-sZ-0zn" secondAttribute="bottom" constant="8" id="yN3-y8-6Wx"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">

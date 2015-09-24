@@ -9,6 +9,7 @@
 #import "GitHubService.h"
 #import "Keys.h"
 #import "Constants.h"
+#import "ParseJSONService.h"
 #import <AFNetworking/AFNetworking.h>
 #import <SSKeychain/SSKeychain.h>
 
@@ -107,6 +108,26 @@
     completionHandler(error);
   }];
   
+}
+
++ (void)getUsernameFromGithub:(void (^) (NSError *error, NSString *username))completionHandler {
+  NSString *accesstoken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
+  
+  NSString *url = @"https://api.github.com/user";
+  
+  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+  AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
+  [requestSerializer setValue:accesstoken forHTTPHeaderField:@"Authorization"];
+  manager.requestSerializer = requestSerializer;
+  
+  [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    NSLog(@"Response: %@", responseObject);
+    [ParseJSONService getGithubUsernameFromJSON:responseObject completionHandler:^(NSString *username) {
+      completionHandler(nil, username);
+    }];
+  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+    NSLog(@"Error: %@", operation.responseObject);
+  }];
 }
 
 @end
