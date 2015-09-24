@@ -196,7 +196,7 @@
 }
 
 - (void)actionSheetForImageSelection:(UIButton *)button {
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Select an Image" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Select an Image" message:@"from" preferredStyle:UIAlertControllerStyleActionSheet];
   alert.modalPresentationStyle = UIModalPresentationPopover;
   alert.popoverPresentationController.sourceView = self.view;
   alert.popoverPresentationController.sourceRect = button.frame;
