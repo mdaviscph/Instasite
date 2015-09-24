@@ -96,20 +96,6 @@
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="ZX7-jr-msJ" firstAttribute="trailing" secondItem="dvh-4H-e6R" secondAttribute="trailingMargin" id="342-Hd-U50"/>
-                            <constraint firstItem="ZX7-jr-msJ" firstAttribute="leading" secondItem="dvh-4H-e6R" secondAttribute="leadingMargin" id="6Cy-Eb-QcP"/>
-                            <constraint firstItem="spi-2d-LZz" firstAttribute="leading" secondItem="VdD-MM-ukZ" secondAttribute="trailing" constant="8" symbolic="YES" id="IXM-nf-sTr"/>
-                            <constraint firstItem="9Ph-QS-vcz" firstAttribute="top" secondItem="r25-dU-c9y" secondAttribute="bottom" constant="8" symbolic="YES" id="P3i-JA-hWk"/>
-                            <constraint firstItem="VdD-MM-ukZ" firstAttribute="top" secondItem="9Ph-QS-vcz" secondAttribute="bottom" constant="8" symbolic="YES" id="PyG-rK-90n"/>
-                            <constraint firstItem="spi-2d-LZz" firstAttribute="trailing" secondItem="dvh-4H-e6R" secondAttribute="trailingMargin" id="QjF-h7-3g7"/>
-                            <constraint firstItem="9Ph-QS-vcz" firstAttribute="leading" secondItem="dvh-4H-e6R" secondAttribute="leadingMargin" id="U9h-xx-mkd"/>
-                            <constraint firstItem="9Ph-QS-vcz" firstAttribute="trailing" secondItem="dvh-4H-e6R" secondAttribute="trailingMargin" id="Wh4-cf-RgL"/>
-                            <constraint firstItem="ZX7-jr-msJ" firstAttribute="top" secondItem="spi-2d-LZz" secondAttribute="bottom" constant="8" symbolic="YES" id="Ymt-bg-sCf"/>
-                            <constraint firstItem="VdD-MM-ukZ" firstAttribute="leading" secondItem="dvh-4H-e6R" secondAttribute="leadingMargin" id="dKG-xf-oCr"/>
-                            <constraint firstItem="TeO-1Q-5dA" firstAttribute="top" secondItem="ZX7-jr-msJ" secondAttribute="bottom" constant="8" symbolic="YES" id="pU3-cb-g6n"/>
-                            <constraint firstItem="spi-2d-LZz" firstAttribute="top" secondItem="9Ph-QS-vcz" secondAttribute="bottom" constant="8" symbolic="YES" id="sVT-ME-Y2H"/>
-                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Edit" id="5ib-I1-X8t"/>
                     <connections>

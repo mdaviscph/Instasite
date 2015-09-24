@@ -15,10 +15,13 @@
 		00E928A41BB1AB0100383BD0 /* TemplateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928A31BB1AB0100383BD0 /* TemplateData.m */; settings = {ASSET_TAGS = (); }; };
 		00E928A71BB1AEA200383BD0 /* Sample.json in Resources */ = {isa = PBXBuildFile; fileRef = 00E928A61BB1AEA200383BD0 /* Sample.json */; settings = {ASSET_TAGS = (); }; };
 		00E928AC1BB1EC0F00383BD0 /* EditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928AB1BB1EC0F00383BD0 /* EditViewController.m */; settings = {ASSET_TAGS = (); }; };
+		221BCA1E1BB46B100057A272 /* FileEncodingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA1D1BB46B100057A272 /* FileEncodingService.m */; settings = {ASSET_TAGS = (); }; };
+		221BCA221BB472D70057A272 /* testimage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 221BCA211BB472D70057A272 /* testimage.jpg */; settings = {ASSET_TAGS = (); }; };
 		227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 227C86761BB0774800799CD3 /* Oauth.storyboard */; settings = {ASSET_TAGS = (); }; };
 		227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867B1BB077D400799CD3 /* OauthViewController.m */; settings = {ASSET_TAGS = (); }; };
 		227C86801BB07B3500799CD3 /* GitHubService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867F1BB07B3500799CD3 /* GitHubService.m */; settings = {ASSET_TAGS = (); }; };
 		227C86831BB0876900799CD3 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C86821BB0876900799CD3 /* Constants.m */; settings = {ASSET_TAGS = (); }; };
+		22B07C861BB45D5D00ADB5EF /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B07C851BB45D5D00ADB5EF /* Keys.m */; settings = {ASSET_TAGS = (); }; };
 		22E4F8CD1BB346EF000E40A5 /* ParseJSONService.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4F8CC1BB346EF000E40A5 /* ParseJSONService.m */; settings = {ASSET_TAGS = (); }; };
 		22EFFDE01BADC11800E28ACB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDDF1BADC11800E28ACB /* main.m */; };
 		22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDE21BADC11800E28ACB /* AppDelegate.m */; };
@@ -28,7 +31,6 @@
 		22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22EFFDEC1BADC11800E28ACB /* LaunchScreen.storyboard */; };
 		22EFFDF91BADC11800E28ACB /* InstasiteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDF81BADC11800E28ACB /* InstasiteTests.m */; };
 		22EFFE041BADC11800E28ACB /* InstasiteUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFE031BADC11800E28ACB /* InstasiteUITests.m */; };
-		6B05A0011BB3233D002627BA /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A0001BB3233D002627BA /* Keys.m */; settings = {ASSET_TAGS = (); }; };
 		6B05A0041BB3271A002627BA /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A0031BB3271A002627BA /* MainViewController.m */; settings = {ASSET_TAGS = (); }; };
 		6B05A0071BB32765002627BA /* DisplayTemplateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A0061BB32765002627BA /* DisplayTemplateViewController.m */; settings = {ASSET_TAGS = (); }; };
 		6B05A00E1BB32AF2002627BA /* startbootstrap-agency-1.0-2.4 in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0091BB32AF2002627BA /* startbootstrap-agency-1.0-2.4 */; settings = {ASSET_TAGS = (); }; };
@@ -43,6 +45,7 @@
 		6B05A01C1BB32C70002627BA /* one-page-wonder.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0171BB32C70002627BA /* one-page-wonder.png */; settings = {ASSET_TAGS = (); }; };
 		6C0E6E2D1BB1C18B000C7971 /* Publish.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */; settings = {ASSET_TAGS = (); }; };
 		6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C0E6E321BB1F16F000C7971 /* PublishViewController.m */; settings = {ASSET_TAGS = (); }; };
+		6CAE8E3A1BB4618E00691E48 /* GitHubPullService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CAE8E391BB4618E00691E48 /* GitHubPullService.m */; settings = {ASSET_TAGS = (); }; };
 		A3B14F545D372A79A9897B4B /* libPods-Instasite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C094285F042763CE3DF8F210 /* libPods-Instasite.a */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +82,9 @@
 		00E928A61BB1AEA200383BD0 /* Sample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Sample.json; sourceTree = "<group>"; };
 		00E928AA1BB1EC0F00383BD0 /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditViewController.h; sourceTree = "<group>"; };
 		00E928AB1BB1EC0F00383BD0 /* EditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditViewController.m; sourceTree = "<group>"; };
+		221BCA1C1BB46B100057A272 /* FileEncodingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileEncodingService.h; sourceTree = "<group>"; };
+		221BCA1D1BB46B100057A272 /* FileEncodingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileEncodingService.m; sourceTree = "<group>"; };
+		221BCA211BB472D70057A272 /* testimage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimage.jpg; sourceTree = "<group>"; };
 		227C86761BB0774800799CD3 /* Oauth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Oauth.storyboard; sourceTree = "<group>"; };
 		227C867A1BB077D400799CD3 /* OauthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OauthViewController.h; sourceTree = "<group>"; };
 		227C867B1BB077D400799CD3 /* OauthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OauthViewController.m; sourceTree = "<group>"; };
@@ -104,8 +110,6 @@
 		22EFFDFF1BADC11800E28ACB /* InstasiteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InstasiteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		22EFFE031BADC11800E28ACB /* InstasiteUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InstasiteUITests.m; sourceTree = "<group>"; };
 		22EFFE051BADC11800E28ACB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6B059FFF1BB3233D002627BA /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
-		6B05A0001BB3233D002627BA /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
 		6B05A0021BB3271A002627BA /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		6B05A0031BB3271A002627BA /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		6B05A0051BB32765002627BA /* DisplayTemplateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplayTemplateViewController.h; sourceTree = "<group>"; };
@@ -123,6 +127,8 @@
 		6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Publish.storyboard; sourceTree = "<group>"; };
 		6C0E6E311BB1F16F000C7971 /* PublishViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishViewController.h; sourceTree = "<group>"; };
 		6C0E6E321BB1F16F000C7971 /* PublishViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishViewController.m; sourceTree = "<group>"; };
+		6CAE8E381BB4618E00691E48 /* GitHubPullService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GitHubPullService.h; sourceTree = "<group>"; };
+		6CAE8E391BB4618E00691E48 /* GitHubPullService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GitHubPullService.m; sourceTree = "<group>"; };
 		6EE31DEC5172B73AABFD04F9 /* Pods-Instasite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instasite.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Instasite/Pods-Instasite.debug.xcconfig"; sourceTree = "<group>"; };
 		A42CA43213D7E88DB56F5FD1 /* Pods-Instasite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instasite.release.xcconfig"; path = "Pods/Target Support Files/Pods-Instasite/Pods-Instasite.release.xcconfig"; sourceTree = "<group>"; };
 		C094285F042763CE3DF8F210 /* libPods-Instasite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Instasite.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -154,6 +160,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		221BCA201BB472C50057A272 /* Test Image */ = {
+			isa = PBXGroup;
+			children = (
+				221BCA211BB472D70057A272 /* testimage.jpg */,
+			);
+			name = "Test Image";
+			sourceTree = "<group>";
+		};
 		227C86731BB0770800799CD3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -210,6 +224,10 @@
 				227C867F1BB07B3500799CD3 /* GitHubService.m */,
 				22E4F8CB1BB346EF000E40A5 /* ParseJSONService.h */,
 				22E4F8CC1BB346EF000E40A5 /* ParseJSONService.m */,
+				6CAE8E381BB4618E00691E48 /* GitHubPullService.h */,
+				6CAE8E391BB4618E00691E48 /* GitHubPullService.m */,
+				221BCA1C1BB46B100057A272 /* FileEncodingService.h */,
+				221BCA1D1BB46B100057A272 /* FileEncodingService.m */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -247,6 +265,7 @@
 				227C867D1BB07B1500799CD3 /* Services */,
 				22EFFE111BADC15900E28ACB /* Secrets */,
 				22EFFDDE1BADC11800E28ACB /* Supporting Files */,
+				221BCA201BB472C50057A272 /* Test Image */,
 				6B05A0081BB32A92002627BA /* Templates */,
 			);
 			path = Instasite;
@@ -286,8 +305,8 @@
 		22EFFE111BADC15900E28ACB /* Secrets */ = {
 			isa = PBXGroup;
 			children = (
-				6B059FFF1BB3233D002627BA /* Keys.h */,
-				6B05A0001BB3233D002627BA /* Keys.m */,
+				22B07C841BB45D5D00ADB5EF /* Keys.h */,
+				22B07C851BB45D5D00ADB5EF /* Keys.m */,
 			);
 			name = Secrets;
 			sourceTree = "<group>";
@@ -433,6 +452,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */,
+				221BCA221BB472D70057A272 /* testimage.jpg in Resources */,
 				6B05A0191BB32C70002627BA /* clean-blog.png in Resources */,
 				6B05A00F1BB32AF2002627BA /* startbootstrap-clean-blog-1.0.3 in Resources */,
 				6B05A0181BB32C70002627BA /* agency.png in Resources */,
@@ -508,10 +528,10 @@
 				22EFFDE61BADC11800E28ACB /* ViewController.m in Sources */,
 				000B02751BB36A2D00737578 /* TemplateTabBarController.m in Sources */,
 				6B05A0071BB32765002627BA /* DisplayTemplateViewController.m in Sources */,
-				6B05A0011BB3233D002627BA /* Keys.m in Sources */,
 				00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */,
 				00E9289B1BB1A8BE00383BD0 /* JsonData.m in Sources */,
 				6B05A0041BB3271A002627BA /* MainViewController.m in Sources */,
+				221BCA1E1BB46B100057A272 /* FileEncodingService.m in Sources */,
 				00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */,
 				00E928AC1BB1EC0F00383BD0 /* EditViewController.m in Sources */,
 				000613761BB2FCE600E818B7 /* Extensions.m in Sources */,
@@ -519,8 +539,10 @@
 				227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */,
 				00E928A41BB1AB0100383BD0 /* TemplateData.m in Sources */,
 				227C86801BB07B3500799CD3 /* GitHubService.m in Sources */,
+				22B07C861BB45D5D00ADB5EF /* Keys.m in Sources */,
 				6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */,
 				227C86831BB0876900799CD3 /* Constants.m in Sources */,
+				6CAE8E3A1BB4618E00691E48 /* GitHubPullService.m in Sources */,
 				22EFFDE01BADC11800E28ACB /* main.m in Sources */,
 				22E4F8CD1BB346EF000E40A5 /* ParseJSONService.m in Sources */,
 			);

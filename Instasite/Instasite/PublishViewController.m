@@ -8,6 +8,8 @@
 
 #import "PublishViewController.h"
 #import "GitHubService.h"
+#import "GitHubPullService.h"
+
 
 @interface PublishViewController ()<UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *textFieldRepoName;
@@ -49,6 +51,13 @@
   [textField resignFirstResponder];
   
   return true;
+}
+- (IBAction)downloadJSON:(id)sender {
+  
+  [GitHubPullService getJSONFromGithub:@"instasite.json" username:@"myUsername" email:@"myemail@domain.com" templateName:@"mytemplate" completionHandler:^(NSError *username) {
+    
+  }];
+  
 }
 
 /*

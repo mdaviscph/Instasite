@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A282b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Be8-Pu-jtH">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Be8-Pu-jtH">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -18,9 +18,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AIH-et-hnU">
-                                <rect key="frame" x="277" y="285" width="46" height="30"/>
+                                <rect key="frame" x="275" y="285" width="51" height="30"/>
                                 <animations/>
-                                <state key="normal" title="Button"/>
+                                <state key="normal" title="Publish"/>
                                 <connections>
                                     <action selector="createRepoAction:" destination="Be8-Pu-jtH" eventType="touchUpInside" id="O4a-ri-uRH"/>
                                 </connections>
@@ -63,12 +63,24 @@
                                 </subviews>
                                 <animations/>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6x9-uX-DVQ">
+                                <rect key="frame" x="263" y="351" width="75" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="75" id="VLg-nc-QQC"/>
+                                </constraints>
+                                <state key="normal" title="Download"/>
+                                <connections>
+                                    <action selector="downloadJSON:" destination="Be8-Pu-jtH" eventType="touchUpInside" id="YOp-sm-Z4T"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="sFw-ML-8oQ" firstAttribute="top" secondItem="vgJ-oQ-rAV" secondAttribute="bottom" constant="80" id="2R4-9a-83K"/>
                             <constraint firstItem="AIH-et-hnU" firstAttribute="centerX" secondItem="jNv-x7-yZj" secondAttribute="centerX" id="3Jy-gn-bNp"/>
+                            <constraint firstItem="6x9-uX-DVQ" firstAttribute="centerX" secondItem="AIH-et-hnU" secondAttribute="centerX" id="7TE-6N-i26"/>
+                            <constraint firstItem="6x9-uX-DVQ" firstAttribute="centerY" secondItem="jNv-x7-yZj" secondAttribute="centerY" constant="66" id="EgR-Q3-Goo"/>
                             <constraint firstAttribute="trailingMargin" secondItem="sFw-ML-8oQ" secondAttribute="trailing" id="HfS-cV-hR3"/>
                             <constraint firstItem="AIH-et-hnU" firstAttribute="centerY" secondItem="jNv-x7-yZj" secondAttribute="centerY" id="Qia-Tz-3li"/>
                             <constraint firstItem="Sua-lf-hQm" firstAttribute="top" secondItem="sFw-ML-8oQ" secondAttribute="bottom" constant="20" id="XJC-CI-5lj"/>

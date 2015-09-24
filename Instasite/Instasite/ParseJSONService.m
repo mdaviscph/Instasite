@@ -12,6 +12,6 @@
 
 + (void)getGithubUsernameFromJSON:(NSDictionary *)jsonData completionHandler:(void(^)(NSString *username))completionHandler {
   NSString *username = jsonData[@"login"];
-  completionHandler(username);
+  completionHandler(username,email);
 }
 @end
