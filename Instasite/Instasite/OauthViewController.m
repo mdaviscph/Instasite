@@ -40,8 +40,8 @@
   
   [self.safariVC dismissViewControllerAnimated:true completion:nil];
   AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-  UIStoryboard *publishStoryboard = [UIStoryboard storyboardWithName:@"Publish" bundle:[NSBundle mainBundle]];
-  UIViewController *vc = [publishStoryboard instantiateInitialViewController];
+  UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+  UIViewController *vc = [mainStoryboard instantiateInitialViewController];
   
   appDelegate.window.rootViewController = vc;
   

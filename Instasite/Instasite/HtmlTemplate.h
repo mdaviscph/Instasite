@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-enum HtmlTemplatePlacement {
-  HtmlPlaceOne,
+enum HtmlTemplatePlacement: NSInteger {
+  HtmlPlaceOne = 0,
   HtmlPlaceTwo,
   HtmlPlaceThree,
   HtmlPlaceFour,
@@ -50,8 +50,12 @@ extern NSString *const kFeatureArray;
 + (NSURL *)genURL: (NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory;
 - (BOOL)writeToFile:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory;
 
-- (void)insertTitle:(NSString *)title withSubtitle:(NSString *)subtitle withSummary:(NSString *)summary;
-- (void)insertFeature:(HtmlTemplatePlacement)place headline:(NSString *)headline subheadline:(NSString *)subhead body:(NSString *)body;
+- (void)insertTitle:(NSString *)title;
+- (void)insertSubtitle:(NSString *)subtitle;
+- (void)insertSummary:(NSString *)summary;
+- (void)insertFeature:(HtmlTemplatePlacement)place headline:(NSString *)headline;
+- (void)insertFeature:(HtmlTemplatePlacement)place subheadline:(NSString *)subhead;
+- (void)insertFeature:(HtmlTemplatePlacement)place body:(NSString *)body;
 - (void)insertImageReference:(HtmlTemplatePlacement)place imageSource:(NSString *)imageSrc;
 - (void)insertCopyright:(NSString *)copyright;
 

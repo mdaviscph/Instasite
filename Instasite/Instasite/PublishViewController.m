@@ -73,7 +73,7 @@
   
   [GitHubPullService getJSONFromGithub:@"Test-1" email:@"joaopaulogalvao1@gmail.com" completionHandler:^(NSError *error) {
     
-  }];
+  //}];
   
 }
 

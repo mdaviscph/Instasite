@@ -11,6 +11,7 @@
 #import <WebKit/WebKit.h>
 #import "HtmlTemplate.h"
 #import "Constants.h"
+#import "FileManager.h"
 
 @interface DisplayTemplateViewController () <WKNavigationDelegate>
 
@@ -47,25 +48,32 @@
   // version so it shows placeholder like text. once they start editing we will switch
   // to showing the working version which includes the instasite markers.
   if (!self.tabBarVC.workingFilename) {
-
-    self.tabBarVC.workingHtml = [[HtmlTemplate alloc] initWithPath:kTemplateOriginalFilename ofType:@"html" inDirectory:self.tabBarVC.templateDirectory];
+    [self copyDirectoryToDocumentsDir];
+    self.tabBarVC.workingHtml = [[HtmlTemplate alloc] initWithPath:kTemplateOriginalFilename ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory];
 
     [self createWorkingFile:kTemplateWorkingFilename];
     
-    return [HtmlTemplate genURL:@"index" ofType:@"html" inDirectory:self.tabBarVC.templateDirectory];
+    return [HtmlTemplate genURL:@"index" ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory];
   }
   
-  return [HtmlTemplate genURL:self.tabBarVC.workingFilename ofType:@"html" inDirectory:self.tabBarVC.templateDirectory];
+  return [HtmlTemplate genURL:self.tabBarVC.workingFilename ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory];
+}
+
+// Copy the entire template folder from main bundle to the documents directory
+-(void)copyDirectoryToDocumentsDir {
+  FileManager *fm = [[FileManager alloc]init];
+  [fm copyDirectory: self.tabBarVC.templateDirectory];
+  
 }
 
 #pragma mark - Helper Methods
 - (BOOL)createWorkingFile:(NSString *)filename {
   
   // TODO - get some identifier for the user to use as filename or part of filename
-  if ([self.tabBarVC.workingHtml writeToFile:filename ofType:@"html" inDirectory:self.tabBarVC.templateDirectory]) {
+  if ([self.tabBarVC.workingHtml writeToFile:filename ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory]) {
     return YES;
   }
-  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, @"html", self.tabBarVC.templateDirectory);
+  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, kTemplateWorkingFiletype, self.tabBarVC.templateDirectory);
   return NO;
 }
 

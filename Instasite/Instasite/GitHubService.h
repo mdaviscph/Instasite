@@ -18,4 +18,6 @@
 //+ (void)pushJSONToGithub:(NSString *)jsonPath forRepo:(NSString *)repoName;
 + (void)pushCSSToGithub:(NSString *)fileName cssPath:(NSString *)cssPath email:(NSString *)userEmail forRepo:(NSString *)repoName;
 + (void)pushJSONToGithub:(NSString *)jsonPath email:(NSString *)userEmail forRepo:(NSString *)repoName;
++ (void)getUsernameFromGithub:(void (^) (NSError *error, NSString *username))completionHandler;
+
 @end

@@ -17,6 +17,8 @@
 		00E928AC1BB1EC0F00383BD0 /* EditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928AB1BB1EC0F00383BD0 /* EditViewController.m */; settings = {ASSET_TAGS = (); }; };
 		221BCA1E1BB46B100057A272 /* FileEncodingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA1D1BB46B100057A272 /* FileEncodingService.m */; settings = {ASSET_TAGS = (); }; };
 		221BCA221BB472D70057A272 /* testimage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 221BCA211BB472D70057A272 /* testimage.jpg */; settings = {ASSET_TAGS = (); }; };
+		221BCA261BB4B92E0057A272 /* ImageFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA251BB4B92E0057A272 /* ImageFile.m */; settings = {ASSET_TAGS = (); }; };
+		221BCA2A1BB4B9460057A272 /* CSSFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA291BB4B9460057A272 /* CSSFile.m */; settings = {ASSET_TAGS = (); }; };
 		227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 227C86761BB0774800799CD3 /* Oauth.storyboard */; settings = {ASSET_TAGS = (); }; };
 		227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867B1BB077D400799CD3 /* OauthViewController.m */; settings = {ASSET_TAGS = (); }; };
 		227C86801BB07B3500799CD3 /* GitHubService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867F1BB07B3500799CD3 /* GitHubService.m */; settings = {ASSET_TAGS = (); }; };
@@ -43,6 +45,7 @@
 		6B05A01A1BB32C70002627BA /* creative.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0151BB32C70002627BA /* creative.png */; settings = {ASSET_TAGS = (); }; };
 		6B05A01B1BB32C70002627BA /* freelancer.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0161BB32C70002627BA /* freelancer.png */; settings = {ASSET_TAGS = (); }; };
 		6B05A01C1BB32C70002627BA /* one-page-wonder.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0171BB32C70002627BA /* one-page-wonder.png */; settings = {ASSET_TAGS = (); }; };
+		6B05A02E1BB4A0B5002627BA /* FileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A02D1BB4A0B5002627BA /* FileManager.m */; settings = {ASSET_TAGS = (); }; };
 		6C0E6E2D1BB1C18B000C7971 /* Publish.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */; settings = {ASSET_TAGS = (); }; };
 		6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C0E6E321BB1F16F000C7971 /* PublishViewController.m */; settings = {ASSET_TAGS = (); }; };
 		6CAE8E3A1BB4618E00691E48 /* GitHubPullService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CAE8E391BB4618E00691E48 /* GitHubPullService.m */; settings = {ASSET_TAGS = (); }; };
@@ -85,11 +88,15 @@
 		221BCA1C1BB46B100057A272 /* FileEncodingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileEncodingService.h; sourceTree = "<group>"; };
 		221BCA1D1BB46B100057A272 /* FileEncodingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileEncodingService.m; sourceTree = "<group>"; };
 		221BCA211BB472D70057A272 /* testimage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimage.jpg; sourceTree = "<group>"; };
+		221BCA241BB4B92E0057A272 /* ImageFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFile.h; sourceTree = "<group>"; };
+		221BCA251BB4B92E0057A272 /* ImageFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFile.m; sourceTree = "<group>"; };
+		221BCA281BB4B9460057A272 /* CSSFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSFile.h; sourceTree = "<group>"; };
+		221BCA291BB4B9460057A272 /* CSSFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSFile.m; sourceTree = "<group>"; };
 		227C86761BB0774800799CD3 /* Oauth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Oauth.storyboard; sourceTree = "<group>"; };
 		227C867A1BB077D400799CD3 /* OauthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OauthViewController.h; sourceTree = "<group>"; };
 		227C867B1BB077D400799CD3 /* OauthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OauthViewController.m; sourceTree = "<group>"; };
 		227C867E1BB07B3500799CD3 /* GitHubService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GitHubService.h; sourceTree = "<group>"; };
-		227C867F1BB07B3500799CD3 /* GitHubService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GitHubService.m; sourceTree = "<group>"; };
+		227C867F1BB07B3500799CD3 /* GitHubService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GitHubService.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		227C86811BB0876900799CD3 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		227C86821BB0876900799CD3 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		22B07C841BB45D5D00ADB5EF /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
@@ -115,7 +122,7 @@
 		6B05A0021BB3271A002627BA /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		6B05A0031BB3271A002627BA /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		6B05A0051BB32765002627BA /* DisplayTemplateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplayTemplateViewController.h; sourceTree = "<group>"; };
-		6B05A0061BB32765002627BA /* DisplayTemplateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisplayTemplateViewController.m; sourceTree = "<group>"; };
+		6B05A0061BB32765002627BA /* DisplayTemplateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DisplayTemplateViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		6B05A0091BB32AF2002627BA /* startbootstrap-agency-1.0-2.4 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-agency-1.0-2.4"; sourceTree = SOURCE_ROOT; };
 		6B05A00A1BB32AF2002627BA /* startbootstrap-clean-blog-1.0.3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-clean-blog-1.0.3"; sourceTree = SOURCE_ROOT; };
 		6B05A00B1BB32AF2002627BA /* startbootstrap-creative-1.0.1 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-creative-1.0.1"; sourceTree = SOURCE_ROOT; };
@@ -126,6 +133,8 @@
 		6B05A0151BB32C70002627BA /* creative.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = creative.png; path = templateImg/creative.png; sourceTree = SOURCE_ROOT; };
 		6B05A0161BB32C70002627BA /* freelancer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = freelancer.png; path = templateImg/freelancer.png; sourceTree = SOURCE_ROOT; };
 		6B05A0171BB32C70002627BA /* one-page-wonder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "one-page-wonder.png"; path = "templateImg/one-page-wonder.png"; sourceTree = SOURCE_ROOT; };
+		6B05A02C1BB4A0B5002627BA /* FileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileManager.h; sourceTree = "<group>"; };
+		6B05A02D1BB4A0B5002627BA /* FileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileManager.m; sourceTree = "<group>"; };
 		6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Publish.storyboard; sourceTree = "<group>"; };
 		6C0E6E311BB1F16F000C7971 /* PublishViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishViewController.h; sourceTree = "<group>"; };
 		6C0E6E321BB1F16F000C7971 /* PublishViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishViewController.m; sourceTree = "<group>"; };
@@ -170,6 +179,17 @@
 			name = "Test Image";
 			sourceTree = "<group>";
 		};
+		221BCA231BB4B9180057A272 /* File Classes */ = {
+			isa = PBXGroup;
+			children = (
+				221BCA241BB4B92E0057A272 /* ImageFile.h */,
+				221BCA251BB4B92E0057A272 /* ImageFile.m */,
+				221BCA281BB4B9460057A272 /* CSSFile.h */,
+				221BCA291BB4B9460057A272 /* CSSFile.m */,
+			);
+			name = "File Classes";
+			sourceTree = "<group>";
+		};
 		227C86731BB0770800799CD3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -207,6 +227,7 @@
 		227C86751BB0772E00799CD3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				221BCA231BB4B9180057A272 /* File Classes */,
 				00E928961BB1A07200383BD0 /* HtmlTemplate.h */,
 				00E928971BB1A07200383BD0 /* HtmlTemplate.m */,
 				00E9289C1BB1A9BA00383BD0 /* Feature.h */,
@@ -215,6 +236,8 @@
 				00E928A31BB1AB0100383BD0 /* TemplateData.m */,
 				00E928991BB1A8BE00383BD0 /* JsonData.h */,
 				00E9289A1BB1A8BE00383BD0 /* JsonData.m */,
+				6B05A02C1BB4A0B5002627BA /* FileManager.h */,
+				6B05A02D1BB4A0B5002627BA /* FileManager.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -532,11 +555,13 @@
 				6B05A0071BB32765002627BA /* DisplayTemplateViewController.m in Sources */,
 				00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */,
 				00E9289B1BB1A8BE00383BD0 /* JsonData.m in Sources */,
+				6B05A02E1BB4A0B5002627BA /* FileManager.m in Sources */,
 				6B05A0041BB3271A002627BA /* MainViewController.m in Sources */,
 				221BCA1E1BB46B100057A272 /* FileEncodingService.m in Sources */,
 				00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */,
 				00E928AC1BB1EC0F00383BD0 /* EditViewController.m in Sources */,
 				000613761BB2FCE600E818B7 /* Extensions.m in Sources */,
+				221BCA2A1BB4B9460057A272 /* CSSFile.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
 				227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */,
 				00E928A41BB1AB0100383BD0 /* TemplateData.m in Sources */,
@@ -545,6 +570,7 @@
 				6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */,
 				227C86831BB0876900799CD3 /* Constants.m in Sources */,
 				6CAE8E3A1BB4618E00691E48 /* GitHubPullService.m in Sources */,
+				221BCA261BB4B92E0057A272 /* ImageFile.m in Sources */,
 				22EFFDE01BADC11800E28ACB /* main.m in Sources */,
 				22E4F8CD1BB346EF000E40A5 /* ParseJSONService.m in Sources */,
 			);

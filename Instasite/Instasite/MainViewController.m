@@ -16,6 +16,7 @@ static NSString *kCellId = @"cellId";
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSArray *templateDirectories;
+@property (nonatomic, strong) NSArray *imageNames;
 
 @end
 
@@ -32,7 +33,8 @@ static NSString *kCellId = @"cellId";
                                @"startbootstrap-freelancer-1.0.3",
                                @"startbootstrap-creative-1.0.1",
                                @"startbootstrap-clean-blog-1.0.3"];
-  
+  self.imageNames = @[@"one-page-wonder",@"agency",@"freelancer",@"creative",@"clean-blog"];
+
   MPSkewedParallaxLayout *layout = [[MPSkewedParallaxLayout alloc] init];
   layout.lineSpacing = 10;
   layout.itemSize = CGSizeMake(CGRectGetWidth(self.view.bounds), 250);
@@ -86,7 +88,7 @@ static NSString *kCellId = @"cellId";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
   NSInteger index = indexPath.item % 5 + 1;
   MPSkewedCell* cell = (MPSkewedCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
-  cell.image = [UIImage imageNamed: self.templateDirectories[indexPath.row]];
+  cell.image = [UIImage imageNamed: self.imageNames[indexPath.row]];
   cell.text = [self titleForIndex:index];
   
   return cell;
