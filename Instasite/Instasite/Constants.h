@@ -14,3 +14,4 @@ extern NSString *const kCloseSafariViewControllerNotification;
 extern NSString *const kTemplateOriginalFilename;
 extern NSString *const kTemplateWorkingFilename;
 extern NSString *const kUploadIndexFileName;
+extern NSString *const kBranchName;
