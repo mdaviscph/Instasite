@@ -71,7 +71,7 @@
 }
 - (IBAction)downloadJSON:(id)sender {
   
-  [GitHubPullService getJSONFromGithub:@"Test-1" email:@"joaopaulogalvao1@gmail.com" completionHandler:^(NSError *error) {
+  //[GitHubPullService getJSONFromGithub:@"instasite.json" username:@"myUsername" email:@"myemail@domain.com" templateName:@"mytemplate" completionHandler:^(NSError *username) {
     
   //}];
   
