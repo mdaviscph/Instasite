@@ -11,6 +11,7 @@
 #import <WebKit/WebKit.h>
 #import "HtmlTemplate.h"
 #import "Constants.h"
+#import "FileManager.h"
 
 @interface DisplayTemplateViewController () <WKNavigationDelegate>
 
@@ -47,7 +48,7 @@
   // version so it shows placeholder like text. once they start editing we will switch
   // to showing the working version which includes the instasite markers.
   if (!self.tabBarVC.workingFilename) {
-
+    [self copyDirectoryToDocumentsDir];
     self.tabBarVC.workingHtml = [[HtmlTemplate alloc] initWithPath:kTemplateOriginalFilename ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory];
 
     [self createWorkingFile:kTemplateWorkingFilename];
@@ -56,6 +57,13 @@
   }
   
   return [HtmlTemplate genURL:self.tabBarVC.workingFilename ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory];
+}
+
+// Copy the entire template folder from main bundle to the documents directory
+-(void)copyDirectoryToDocumentsDir {
+  FileManager *fm = [[FileManager alloc]init];
+  [fm copyDirectory: self.tabBarVC.templateDirectory];
+  
 }
 
 #pragma mark - Helper Methods
