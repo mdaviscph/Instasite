@@ -9,25 +9,28 @@
 #import "EditViewController.h"
 #import "Extensions.h"
 #import "HtmlTemplate.h"
+#import "TemplateTabBarController.h"
 
 @interface EditViewController ()
-
 @property (weak, nonatomic) IBOutlet UIStackView *topStackView;
 @property (weak, nonatomic) IBOutlet UIStackView *bottomStackView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *featureSegmentedControl;
+
 @property (nonatomic) NSUInteger topStackSpacing;
 @property (nonatomic) NSUInteger bottomStackSpacing;
 @property (nonatomic) NSUInteger topTextViewHeight;
 @property (nonatomic) NSUInteger bottomTextViewHeight;
-@property (strong, nonatomic) HtmlTemplate *template;
+
+@property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 @property (strong, nonatomic) NSDictionary *markers;
 
 @end
 
 @implementation EditViewController
 
-- (IBAction)publishButtonTapped:(id)sender {
+- (IBAction)publishButtonTapped:(UIButton *)sender {
 }
+
 - (IBAction)featureSegmentedControlTapped:(UISegmentedControl *)sender {
   for (UIView *subview in self.bottomStackView.arrangedSubviews) {
     [self.bottomStackView removeArrangedSubview:subview];
@@ -40,9 +43,12 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  self.template = [[HtmlTemplate alloc] initWithPath:@"WonderTemplate" ofType:@"html"];
-  self.markers = [self.template templateMarkers];
-  
+  self.navigationController.navigationBarHidden = NO;
+
+  self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
+  self.markers = [self.tabBarVC.workingHtml templateMarkers];
+
+//  // uncomment this text to get console output of the markers dictionary
 //  for (NSString *key in [markers allKeys]) {
 //    if ([key isEqualToString:kFeatureArray]) {
 //      NSArray *features = markers[key];
@@ -61,6 +67,13 @@
 //      NSLog(@"key: %@ count: %ld", key, [(NSNumber *)markers[key] integerValue]);
 //    }
 //  }
+  
+  // turn off the fixed height constraint
+  for (NSLayoutConstraint* constraint in self.topStackView.constraints) {
+    if (constraint.firstAttribute == NSLayoutAttributeHeight) {
+      constraint.active = NO;
+    }
+  }
   
   self.topStackSpacing = 6;
   self.topTextViewHeight = 60;

@@ -9,6 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface DisplayTemplateViewController : UIViewController
-@property (nonatomic) NSInteger pathItem;
 
 @end

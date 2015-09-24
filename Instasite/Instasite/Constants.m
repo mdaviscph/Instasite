@@ -11,5 +11,5 @@
 NSString *const kCloseSafariViewControllerNotification = @"kCloseSafariViewControllerNotification";
 NSString *const kSSKeychainAccount = @"github";
 NSString *const kSSKeychainService = @"githubToken";
-
-int const kTabBarHeight = 50;
+NSString *const kTemplateOriginalFilename = @"instasite";
+NSString *const kTemplateWorkingFilename = @"instasite_working";
