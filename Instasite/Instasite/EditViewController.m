@@ -40,7 +40,7 @@
   NSData *jsonData = [JsonData fromTemplateData:self.userData];
   [self writeJsonFile:jsonData filename:kTemplateJsonFilename ofType:kTemplateJsonFiletype];
   
-  [self writeWorkingFile:kTemplateWorkingFilename ofType:kTemplateWorkingFiletype];
+  [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
 }
 
 - (IBAction)featureSegmentedControlTapped:(UISegmentedControl *)sender {
@@ -127,6 +127,10 @@
     [mutableFeatures addObject:[[Feature alloc] init]];
   }
   self.userData.features = mutableFeatures;
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+  [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
 }
 
 #pragma mark - Helper Methods
