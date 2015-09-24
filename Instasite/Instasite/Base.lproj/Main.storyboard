@@ -28,7 +28,7 @@
             </objects>
             <point key="canvasLocation" x="1194" y="357"/>
         </scene>
-        <!--Item-->
+        <!--Preview-->
         <scene sceneID="Qse-Mo-csv">
             <objects>
                 <viewController id="9WR-7u-HwN" customClass="DisplayTemplateViewController" sceneMemberID="viewController">
@@ -41,13 +41,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="m2W-d1-LV5" userLabel="Preview"/>
+                    <tabBarItem key="tabBarItem" title="Preview" id="m2W-d1-LV5" userLabel="Preview"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eGZ-mW-NXD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2644" y="353"/>
         </scene>
-        <!--Item-->
+        <!--Edit-->
         <scene sceneID="7w2-Sf-7YH">
             <objects>
                 <viewController id="kff-r0-RrE" customClass="EditViewController" sceneMemberID="viewController">
@@ -106,7 +106,7 @@
                             <constraint firstItem="39b-FM-eEU" firstAttribute="trailing" secondItem="zDT-sk-rpY" secondAttribute="trailingMargin" id="iec-eo-E1c"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="Wqi-Ak-aqz" userLabel="Edit"/>
+                    <tabBarItem key="tabBarItem" title="Edit" id="Wqi-Ak-aqz" userLabel="Edit"/>
                     <connections>
                         <outlet property="bottomStackView" destination="qpi-20-6ZN" id="npp-DT-sbx"/>
                         <outlet property="featureSegmentedControl" destination="FpM-TG-JS1" id="rJs-xm-RFB"/>
@@ -117,10 +117,10 @@
             </objects>
             <point key="canvasLocation" x="3269" y="761"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Template Tab Bar Controller-->
         <scene sceneID="xur-6s-Soh">
             <objects>
-                <tabBarController storyboardIdentifier="TemplateTabBar" automaticallyAdjustsScrollViewInsets="NO" id="uZx-bw-YRw" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TemplateTabBar" automaticallyAdjustsScrollViewInsets="NO" id="uZx-bw-YRw" customClass="TemplateTabBarController" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="Wz9-XG-cBH">
                         <autoresizingMask key="autoresizingMask"/>

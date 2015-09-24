@@ -9,6 +9,7 @@
 #import "EditViewController.h"
 #import "Extensions.h"
 #import "HtmlTemplate.h"
+#import "TemplateTabBarController.h"
 
 @interface EditViewController ()
 
@@ -19,7 +20,7 @@
 @property (nonatomic) NSUInteger bottomStackSpacing;
 @property (nonatomic) NSUInteger topTextViewHeight;
 @property (nonatomic) NSUInteger bottomTextViewHeight;
-@property (strong, nonatomic) HtmlTemplate *template;
+@property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 @property (strong, nonatomic) NSDictionary *markers;
 
 @end
@@ -40,9 +41,12 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  self.template = [[HtmlTemplate alloc] initWithPath:@"WonderTemplate" ofType:@"html"];
-  self.markers = [self.template templateMarkers];
-  
+  self.navigationController.navigationBarHidden = NO;
+
+  self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
+  self.markers = [self.tabBarVC.workingHtml templateMarkers];
+
+//  // uncomment this text to get console output of the markers dictionary
 //  for (NSString *key in [markers allKeys]) {
 //    if ([key isEqualToString:kFeatureArray]) {
 //      NSArray *features = markers[key];

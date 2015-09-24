@@ -54,42 +54,63 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
 
 @interface HtmlTemplate ()
 
-@property (strong, nonatomic) NSString *htmlSource;
+@property (strong, nonatomic) NSString *originalHtml;
+@property (strong, nonatomic) NSString *modifiedHtml;
 
 @end
 
 @implementation HtmlTemplate
 
-- (instancetype)initWithPath:(NSString *)path ofType:(NSString *)type {
+- (instancetype)initWithPath:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
     self = [super init];
     if (self) {
-      NSString *documentPath = [[NSBundle mainBundle] pathForResource:path ofType:type];
       NSError *error;
-      _htmlSource = [NSString stringWithContentsOfFile:documentPath encoding: NSASCIIStringEncoding error:&error];
+      _originalHtml = [NSString stringWithContentsOfURL:[HtmlTemplate genURL:path ofType:type inDirectory:directory] encoding:NSUTF8StringEncoding error:&error];
+      _modifiedHtml = _originalHtml;
       if (error) {
+        NSLog(@"Error! NSString:stringWithContentsOfURL: %@", error.localizedDescription);
         return nil;
       }
     }
     return self;
 }
 
-- (NSURL *)genURL: (NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
-  NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:path ofType:type inDirectory:directory]];
-  
++ (NSURL *)genURL:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
+  NSString *filePath = [[NSBundle mainBundle] pathForResource:path ofType:type inDirectory:directory];
+  if (!filePath) {
+    NSLog(@"Error! NSBundle mainBundle:pathForResource: path: %@ type: %@ directory: %@", path, type, directory);
+    return nil;
+  }
+  NSURL *url = [NSURL fileURLWithPath:filePath];
+  if (!url) {
+    NSLog(@"Error! NSURL:fileURLWithPath: %@ ", filePath);
+  }
   return url;
+}
+
+- (void)resetToOriginal {
+  self.modifiedHtml = self.originalHtml;
+}
+
+- (BOOL)writeToFile:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
+  NSData *data = [self.modifiedHtml dataUsingEncoding:NSUTF8StringEncoding];
+  if (!data) {
+    return NO;
+  }
+  return [[NSFileManager defaultManager] createFileAtPath:directory contents:data attributes:nil];
 }
 
 // TODO - in a future version we should build a dictionary of requested replacements so that we can be more efficient about this process by searching for instances of INSTASITE and after finding an instance we will look up the matching entry in the dictionary and perform the replacement.
 
 - (void)insertTitle:(NSString *)title withSubtitle:(NSString *)subtitle withSummary:(NSString *)summary {
   if (title) {
-    self.htmlSource = [self.htmlSource stringByReplacingOccurrencesOfString:kMarkerTitle1 withString:title];
+    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerTitle1 withString:title];
   }
   if (subtitle) {
-    self.htmlSource = [self.htmlSource stringByReplacingOccurrencesOfString:kMarkerSubtitle1 withString:subtitle];
+    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerSubtitle1 withString:subtitle];
   }
   if (summary) {
-    self.htmlSource = [self.htmlSource stringByReplacingOccurrencesOfString:kMarkerSummary1 withString:summary];
+    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerSummary1 withString:summary];
   }
 }
 - (void)insertFeature:(HtmlTemplatePlacement)place headline:(NSString *)headline subheadline:(NSString *)subhead body:(NSString *)body {
@@ -127,13 +148,13 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
   }
 
   if (headline) {
-    self.htmlSource = [self.htmlSource stringByReplacingOccurrencesOfString:headlineMarker withString:headline];
+    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:headlineMarker withString:headline];
   }
   if (subhead) {
-    self.htmlSource = [self.htmlSource stringByReplacingOccurrencesOfString:subheadMarker withString:subhead];
+    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:subheadMarker withString:subhead];
   }
   if (body) {
-    self.htmlSource = [self.htmlSource stringByReplacingOccurrencesOfString:bodyMarker withString:body];
+    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:bodyMarker withString:body];
   }
 }
 
@@ -159,18 +180,18 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
       break;
   }
   if (imageSrc) {
-    self.htmlSource = [self.htmlSource stringByReplacingOccurrencesOfString:imageSrcMarker withString:imageSrc];
+    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:imageSrcMarker withString:imageSrc];
   }
 }
 
 - (void)insertCopyright:(NSString *)copyright {
   if (copyright) {
-    self.htmlSource = [self.htmlSource stringByReplacingOccurrencesOfString:kMarkerCopyRight1 withString:copyright];
+    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerCopyRight1 withString:copyright];
   }
 }
 
 - (NSString *)html {
-  return self.htmlSource;
+  return self.modifiedHtml;
 }
 
 - (NSDictionary *)templateMarkers {
@@ -184,7 +205,7 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
   
   NSMutableDictionary *markerDict = [[NSMutableDictionary alloc] init];
   
-  NSArray *components = [self.htmlSource componentsSeparatedByString:kMarkerBase];
+  NSArray *components = [self.modifiedHtml componentsSeparatedByString:kMarkerBase];
   // skip the first component which is the start of the html
   for (NSInteger index = 1; index < components.count; index++) {
     NSString *component = components[index];

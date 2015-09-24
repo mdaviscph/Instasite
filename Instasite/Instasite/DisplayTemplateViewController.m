@@ -7,21 +7,29 @@
 //
 
 #import "DisplayTemplateViewController.h"
+#import "TemplateTabBarController.h"
 #import <WebKit/WebKit.h>
 #import "HtmlTemplate.h"
 #import "Constants.h"
+
 @interface DisplayTemplateViewController () <WKNavigationDelegate>
 
+@property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 
 @end
 
 @implementation DisplayTemplateViewController
 
+#pragma mark - Lifecycle Methods
+
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+  [super viewDidLoad];
   
-  WKWebView *webView = [[WKWebView alloc]initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height- kTabBarHeight)];
+  self.navigationController.navigationBarHidden = NO;
+
+  self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
+  
+  WKWebView *webView = [[WKWebView alloc]initWithFrame: self.view.frame];
   [self.view addSubview: webView];
   webView.navigationDelegate = self;
   
@@ -30,53 +38,35 @@
 }
 
 - (NSURL *)displayTemplate {
-  switch (self.pathItem) {
-    case 0: {
-      HtmlTemplate *htmlTemp = [[HtmlTemplate alloc]init];
-      NSURL *url = [htmlTemp genURL:@"index" ofType:@"html" inDirectory:@"startbootstrap-one-page-wonder-1.0.3"];
-      return url;
-    }
-    case 1: {
-      HtmlTemplate *htmlTemp = [[HtmlTemplate alloc]init];
-      NSURL *url = [htmlTemp genURL:@"index" ofType:@"html" inDirectory:@"startbootstrap-agency-1.0-2.4"];
-      return url;
-    }
-    case 2: {
-      HtmlTemplate *htmlTemp = [[HtmlTemplate alloc]init];
-      NSURL *url = [htmlTemp genURL:@"index" ofType:@"html" inDirectory:@"startbootstrap-freelancer-1.0.3"];
-      return url;
-    }
-    case 3:{
-      HtmlTemplate *htmlTemp = [[HtmlTemplate alloc]init];
-      NSURL *url = [htmlTemp genURL:@"index" ofType:@"html" inDirectory:@"startbootstrap-creative-1.0.1"];
-      return url;
-    }
-    case 4:{
-      HtmlTemplate *htmlTemp = [[HtmlTemplate alloc]init];
-      NSURL *url = [htmlTemp genURL:@"index" ofType:@"html" inDirectory:@"startbootstrap-clean-blog-1.0.3"];
-      return url;
-    }
-    default:
-      return nil;
+  
+  if (!self.tabBarVC.templateDirectory) {
+    return nil;
   }
-  return nil;
+  // no working filename means that this the first time they have chosen this template
+  // and we need to create the working file. the first time we will use the bootstrap
+  // version so it shows placeholder like text. once they start editing we will switch
+  // to showing the working version which includes the instasite markers.
+  if (!self.tabBarVC.workingFilename) {
+
+    self.tabBarVC.workingHtml = [[HtmlTemplate alloc] initWithPath:kTemplateOriginalFilename ofType:@"html" inDirectory:self.tabBarVC.templateDirectory];
+
+    [self createWorkingFile:kTemplateWorkingFilename];
+    
+    return [HtmlTemplate genURL:@"index" ofType:@"html" inDirectory:self.tabBarVC.templateDirectory];
+  }
+  
+  return [HtmlTemplate genURL:self.tabBarVC.workingFilename ofType:@"html" inDirectory:self.tabBarVC.templateDirectory];
 }
 
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma mark - Helper Methods
+- (BOOL)createWorkingFile:(NSString *)filename {
+  
+  // TODO - get some identifier for the user to use as filename or part of filename
+  if ([self.tabBarVC.workingHtml writeToFile:filename ofType:@"html" inDirectory:self.tabBarVC.templateDirectory]) {
+    return YES;
+  }
+  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, @"html", self.tabBarVC.templateDirectory);
+  return NO;
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

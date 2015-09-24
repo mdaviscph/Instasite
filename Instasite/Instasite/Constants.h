@@ -11,4 +11,5 @@
 extern NSString *const kSSKeychainAccount;
 extern NSString *const kSSKeychainService;
 extern NSString *const kCloseSafariViewControllerNotification;
-extern int const kTabBarHeight;
+extern NSString *const kTemplateOriginalFilename;
+extern NSString *const kTemplateWorkingFilename;
