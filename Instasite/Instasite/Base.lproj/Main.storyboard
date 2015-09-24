@@ -71,20 +71,6 @@
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="FpM-TG-JS1" firstAttribute="leading" secondItem="zDT-sk-rpY" secondAttribute="leadingMargin" id="21p-kB-sAj"/>
-                            <constraint firstItem="ZYj-Gu-fyP" firstAttribute="top" secondItem="qpi-20-6ZN" secondAttribute="bottom" constant="8" symbolic="YES" id="8A5-No-Opb"/>
-                            <constraint firstItem="39b-FM-eEU" firstAttribute="leading" secondItem="FpM-TG-JS1" secondAttribute="trailing" constant="8" symbolic="YES" id="Am9-EW-mwh"/>
-                            <constraint firstItem="qpi-20-6ZN" firstAttribute="trailing" secondItem="zDT-sk-rpY" secondAttribute="trailingMargin" id="PYd-Du-UTu"/>
-                            <constraint firstItem="39b-FM-eEU" firstAttribute="top" secondItem="SYn-XY-pxI" secondAttribute="bottom" constant="8" symbolic="YES" id="Rpm-V8-5T9"/>
-                            <constraint firstItem="SYn-XY-pxI" firstAttribute="trailing" secondItem="zDT-sk-rpY" secondAttribute="trailingMargin" id="X0g-qr-AAP"/>
-                            <constraint firstItem="qpi-20-6ZN" firstAttribute="top" secondItem="39b-FM-eEU" secondAttribute="bottom" constant="8" symbolic="YES" id="csn-mo-HJW"/>
-                            <constraint firstItem="SYn-XY-pxI" firstAttribute="leading" secondItem="zDT-sk-rpY" secondAttribute="leadingMargin" id="dSZ-ld-oHn"/>
-                            <constraint firstItem="SYn-XY-pxI" firstAttribute="top" secondItem="Cmh-sK-Qe8" secondAttribute="bottom" constant="8" symbolic="YES" id="eA8-ax-ypg"/>
-                            <constraint firstItem="qpi-20-6ZN" firstAttribute="leading" secondItem="zDT-sk-rpY" secondAttribute="leadingMargin" id="fcF-Uu-6vQ"/>
-                            <constraint firstItem="FpM-TG-JS1" firstAttribute="top" secondItem="SYn-XY-pxI" secondAttribute="bottom" constant="8" symbolic="YES" id="hoH-j2-Fsr"/>
-                            <constraint firstItem="39b-FM-eEU" firstAttribute="trailing" secondItem="zDT-sk-rpY" secondAttribute="trailingMargin" id="iec-eo-E1c"/>
-                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="Wqi-Ak-aqz" userLabel="Edit"/>
                     <connections>
