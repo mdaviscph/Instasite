@@ -11,6 +11,7 @@
 @implementation ImageFile
 - (instancetype)init:(NSString *)filePath fileName:(NSString *)fileName {
   self.fileName = fileName;
-  self.filePath = filePath
+  self.filePath = filePath;
+  return self;
 }
 @end

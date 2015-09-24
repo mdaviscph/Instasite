@@ -9,8 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface ImageFile : NSObject
-
 @property (strong,nonatomic) NSString *fileName;
 @property (strong,nonatomic) NSString *filePath;
-
+- (instancetype)init:(NSString *)filePath fileName:(NSString *)fileName;
 @end
