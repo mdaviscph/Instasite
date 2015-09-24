@@ -14,3 +14,4 @@ NSString *const kSSKeychainService = @"githubToken";
 NSString *const kTemplateOriginalFilename = @"instasite";
 NSString *const kTemplateWorkingFilename = @"instasite_working";
 NSString *const kUploadIndexFileName = @"index.html";
+NSString *const kBranchName = @"gh-pages";
