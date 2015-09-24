@@ -10,6 +10,6 @@
 
 @interface ParseJSONService : NSObject
 
-+ (void)getGithubUsernameFromJSON:(NSDictionary *)jsonData completionHandler:(void(^)(NSString *username))completionHandler;
++ (void)getGithubUsernameFromJSON:(NSDictionary *)jsonData completionHandler:(void(^)(NSString *username, NSString *email))completionHandler;
 
 @end
