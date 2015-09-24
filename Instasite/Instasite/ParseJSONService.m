@@ -10,8 +10,9 @@
 
 @implementation ParseJSONService
 
-+ (void)getGithubUsernameFromJSON:(NSDictionary *)jsonData completionHandler:(void(^)(NSString *username))completionHandler {
++ (void)getGithubUsernameFromJSON:(NSDictionary *)jsonData completionHandler:(void(^)(NSString *username, NSString *email))completionHandler {
   NSString *username = jsonData[@"login"];
-  completionHandler(username);
+  NSString *email = jsonData[@"email"];
+  completionHandler(username,email);
 }
 @end
