@@ -20,7 +20,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="hYf-0A-MRs"/>
                     <connections>
-                        <segue destination="FUf-xc-Akf" kind="show" identifier="" id="pW1-bu-0dn"/>
+                        <segue destination="FUf-xc-Akf" kind="show" identifier="DisplayTemplate" id="pW1-bu-0dn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IY0-hY-sgF" userLabel="First Responder" sceneMemberID="firstResponder"/>

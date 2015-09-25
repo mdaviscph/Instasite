@@ -40,14 +40,6 @@
                                             <action selector="loginAction:" destination="O3u-K8-0TV" eventType="touchUpInside" id="e9G-Xo-cQE"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k45-vG-qbe">
-                                        <rect key="frame" x="26" y="253" width="46" height="30"/>
-                                        <animations/>
-                                        <state key="normal" title="Button"/>
-                                        <connections>
-                                            <action selector="testGetUser:" destination="O3u-K8-0TV" eventType="touchUpInside" id="BWK-FL-iUM"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                                 <animations/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
