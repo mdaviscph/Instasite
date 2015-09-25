@@ -59,8 +59,11 @@
     FileManager *fm = [[FileManager alloc]init];
     NSArray *files = [fm enumerateFilesInDirectory:self.tabBarVC.templateDirectory];
 
-    publishVC.indexHtmlFilePath = [self.tabBarVC.templateDirectory stringByAppendingPathComponent:kTemplateIndexFilename];
-    publishVC.JSONfilePath = [self.tabBarVC.templateDirectory stringByAppendingPathComponent:kTemplateJsonFilename];
+    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+
+    publishVC.indexHtmlFilePath = workingDirectory;
+    publishVC.JSONfilePath = workingDirectory;
     for (CSSFile *file in files[0]) {
       NSLog(@"CSS: [%@] {%@}", file.filePath, file.fileName);
     }
