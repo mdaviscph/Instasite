@@ -20,3 +20,5 @@ NSString *const kTemplateImagesDirectory = @"img";
 NSString *const kTemplateImagePrefix = @"image";
 NSString *const kUploadIndexFileName = @"index.html";
 NSString *const kBranchName = @"gh-pages";
+int kSpaceBetweenCells = 10;
+int kCellHeight = 250;

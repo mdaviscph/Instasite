@@ -10,6 +10,7 @@
 #import <MPSkewed/MPSkewedParallaxLayout.h>
 #import <MPSkewed/MPSkewedCell.h>
 #import "TemplateTabBarController.h"
+#import "Constants.h"
 
 static NSString *kCellId = @"cellId";
 @interface MainViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource>
@@ -36,8 +37,7 @@ static NSString *kCellId = @"cellId";
   self.imageNames = @[@"one-page-wonder",@"agency",@"freelancer",@"creative",@"clean-blog"];
 
   MPSkewedParallaxLayout *layout = [[MPSkewedParallaxLayout alloc] init];
-  layout.lineSpacing = 10;
-  layout.itemSize = CGSizeMake(CGRectGetWidth(self.view.bounds), 250);
+  layout.lineSpacing = kSpaceBetweenCells;
   
   self.collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
   self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -48,9 +48,15 @@ static NSString *kCellId = @"cellId";
   [self.view addSubview:self.collectionView];
 }
 
+-(void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:true];
+  self.navigationController.navigationBarHidden = true;
+}
+
+
 -(void)viewDidLayoutSubviews {
   [super viewDidLayoutSubviews];
-  [(MPSkewedParallaxLayout *)self.collectionView.collectionViewLayout setItemSize:CGSizeMake(CGRectGetWidth(self.view.bounds), 300)];
+  [(MPSkewedParallaxLayout *)self.collectionView.collectionViewLayout setItemSize:CGSizeMake(CGRectGetWidth(self.view.bounds), kCellHeight)];
 }
 
 // TODO - determine this list from the bundle directory somehow
@@ -86,7 +92,7 @@ static NSString *kCellId = @"cellId";
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-  NSInteger index = indexPath.item % 5 + 1;
+  NSInteger index = indexPath.item % self.templateDirectories.count + 1;
   MPSkewedCell* cell = (MPSkewedCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
   cell.image = [UIImage imageNamed: self.imageNames[indexPath.row]];
   cell.text = [self titleForIndex:index];

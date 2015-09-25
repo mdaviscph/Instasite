@@ -20,3 +20,5 @@ extern NSString *const kTemplateImagesDirectory;
 extern NSString *const kTemplateImagePrefix;
 extern NSString *const kUploadIndexFileName;
 extern NSString *const kBranchName;
+extern int kSpaceBetweenCells;
+extern int kCellHeight;
