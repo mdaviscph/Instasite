@@ -66,9 +66,9 @@
     NSLog(@"JSON file not uploaded!");
   }
   
-  for (ImageFile *imageFile in self.imageFilePaths) {
-    [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-  }
+//  for (ImageFile *imageFile in self.imageFilePaths) {
+//    [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+//  }
   
   for (CSSFile *cssFile in self.supportingFilePaths) {
     NSString *finalPath = [NSString stringWithFormat:@"%@/%@/%@",cssFile.documentsDirectory, cssFile.filePath, cssFile.fileName];

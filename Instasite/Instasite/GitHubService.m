@@ -10,6 +10,7 @@
 #import "FileEncodingService.h"
 #import "Keys.h"
 #import "Constants.h"
+#import "CSSFile.h"
 #import "ParseJSONService.h"
 #import <AFNetworking/AFNetworking.h>
 #import <SSKeychain/SSKeychain.h>
@@ -108,11 +109,11 @@
     
     AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
     
-//    [manager PUT:url parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-//      NSLog(@"Success: %@", responseObject);
-//    } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
-//      NSLog(@"Failure: %@", operation.responseObject);
-//    }];
+    [manager PUT:url parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+      NSLog(@"Success: %@", responseObject);
+    } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+      NSLog(@"Failure: %@", operation.responseObject);
+    }];
   }];
   
 }
@@ -143,7 +144,9 @@
   
 }
 
+
 + (void)pushJSONToGithub:(NSString *)jsonPath email:(NSString *)userEmail forRepo:(NSString *)repoName {
+  
   [self getUsernameFromGithub:^(NSError *error, NSString *username) {
     if (username != nil) {
       NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@.%@",username,repoName,kTemplateJsonFilename,kTemplateJsonFiletype];
