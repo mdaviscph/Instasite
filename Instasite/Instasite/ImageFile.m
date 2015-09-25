@@ -10,10 +10,11 @@
 
 @implementation ImageFile
 
-- (instancetype)initWithFilePath:(NSString *)filePath andFileName:(NSString *)fileName {
+- (instancetype)initWithFilePath:(NSString *)filePath andFileName:(NSString *)fileName andDocumentsDirectory:(NSString *)directory {
   if (self = [super init]) {
-    _fileName = fileName;
     _filePath = filePath;
+    _fileName = fileName;
+    _documentsDirectory = directory;
   }
   return self;
 }
