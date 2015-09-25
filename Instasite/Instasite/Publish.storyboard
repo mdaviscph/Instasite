@@ -25,8 +25,8 @@
                                     <action selector="createRepoAction:" destination="Be8-Pu-jtH" eventType="touchUpInside" id="O4a-ri-uRH"/>
                                 </connections>
                             </button>
-                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sFw-ML-8oQ">
-                                <rect key="frame" x="20" y="100" width="560" height="30"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sFw-ML-8oQ">
+                                <rect key="frame" x="20" y="96" width="560" height="30"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Repo Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lNF-gT-0gG">
                                         <rect key="frame" x="0.0" y="0.0" width="89" height="30"/>
@@ -44,8 +44,8 @@
                                 </subviews>
                                 <animations/>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sua-lf-hQm">
-                                <rect key="frame" x="20" y="150" width="560" height="30"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sua-lf-hQm">
+                                <rect key="frame" x="20" y="146" width="560" height="30"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qcb-IE-AQt">
                                         <rect key="frame" x="0.0" y="0.0" width="88" height="30"/>
@@ -113,6 +113,11 @@
                             <constraint firstItem="sFw-ML-8oQ" firstAttribute="leading" secondItem="Bon-Wd-54b" secondAttribute="leading" id="lY0-91-aBw"/>
                             <constraint firstItem="sFw-ML-8oQ" firstAttribute="trailing" secondItem="Bon-Wd-54b" secondAttribute="trailing" id="wmS-Qe-Ui9"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="2mB-gj-WwZ"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="textFieldDescription" destination="meg-zB-ngd" id="gGh-OK-huV"/>

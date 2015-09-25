@@ -47,6 +47,10 @@
       NSLog(@"Error: %@",error);
     } else {
       
+//      if (self.supportingFilePaths != nil && self.imageFilePaths != nil && self.indexHtmlFilePath != nil) {
+//        
+//      }
+      
       [GitHubService pushFilesToGithub:self.textFieldRepoName.text indexHtmlFile:self.indexHtmlFilePath email:self.textFieldEmail.text completionHandler:nil];
       
       [GitHubService pushJSONToGithub:self.JSONfilePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
@@ -58,6 +62,8 @@
       for (ImageFile *imageFile in self.imageFilePaths) {
         [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
       }
+      
+      [self.navigationController popViewControllerAnimated:true];
       
     }
   }];
