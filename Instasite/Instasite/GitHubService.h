@@ -16,8 +16,7 @@
 
 + (void)getUsernameFromGithub:(void (^) (NSError *error, NSString *username))completionHandler;
 + (void)pushImagesToGithub:(NSString *)imageName imagePath:(NSString *)imagePath email:(NSString *)userEmail forRepo:(NSString *)repoName;
-//+ (void)pushJSONToGithub:(NSString *)jsonPath forRepo:(NSString *)repoName;
-+ (void)pushCSSToGithub:(NSString *)fileName cssPath:(NSString *)cssPath email:(NSString *)userEmail forRepo:(NSString *)repoName;
++ (void)pushCSSToGithub:(NSString *)fileName cssPath:(NSString *)cssPath finalPath:(NSString *)localPath email:(NSString *)userEmail forRepo:(NSString *)repoName;
 + (void)pushJSONToGithub:(NSString *)jsonPath email:(NSString *)userEmail forRepo:(NSString *)repoName;
 
 
