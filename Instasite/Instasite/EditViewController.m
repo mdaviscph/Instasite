@@ -316,6 +316,12 @@
 }
 
 #pragma mark - UITextFieldDelegate
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField {
+  [textField resignFirstResponder];
+  return true;
+}
+
 - (void)textFieldDidEndEditing:(UITextField *)textField {
   
   switch (textField.tag) {
@@ -352,6 +358,16 @@
 
 
 #pragma mark - UITextViewDelegate
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+  
+  if([text isEqualToString:@"\n"]) {
+    [textView resignFirstResponder];
+    return NO;
+  }
+  
+  return YES;
+}
+
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
 
