@@ -14,5 +14,7 @@
 - (void)deleteFileWithName:(NSString *)fileName;
 - (void)readFileWithName:(NSString *)fileName;
 - (void)writeString:(NSString *)content toFile:(NSString *)fileName;
-- (void) copyDirectory:(NSString *)directory;
+- (void)copyDirectory:(NSString *)directory;
+- (NSArray *)enumerateFilesInDirectory:(NSString *)directory;
+
 @end

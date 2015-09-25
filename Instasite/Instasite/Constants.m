@@ -17,5 +17,6 @@ NSString *const kTemplateIndexFiletype = @"html";
 NSString *const kTemplateJsonFilename = @"instasite";
 NSString *const kTemplateJsonFiletype = @"json";
 NSString *const kTemplateImagesDirectory = @"img";
+NSString *const kTemplateImagePrefix = @"image";
 NSString *const kUploadIndexFileName = @"index.html";
 NSString *const kBranchName = @"gh-pages";
