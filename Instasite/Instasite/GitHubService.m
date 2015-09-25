@@ -97,18 +97,17 @@
     
     NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/img/", username, repoName];
     
-    NSString *filePath = [imagePath stringByAppendingPathComponent:kTemplateImagesDirectory];
-    
-    //filePath = [filePath stringByAppendingPathExtension:kTemplateJsonFiletype];
+    NSString *filePath = [imagePath stringByAppendingPathComponent:imageName];
     
     NSString *encodedImage = [FileEncodingService encodeImage:filePath];
+    
+    NSString *url = [NSString stringWithFormat:@"%@%@", baseURL,imageName];
     
     NSDictionary *committer = @{@"name": username, @"email": userEmail};
     NSDictionary *json = @{@"branch": @"gh-pages", @"message": @"Files Push", @"committer": committer, @"content" : encodedImage};
     
     AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
     
-    NSString *url = [NSString stringWithFormat:@"%@%@", baseURL,imageName];
     [manager PUT:url parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
       NSLog(@"Success: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
@@ -124,12 +123,11 @@
     if (username != nil) {
       NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/css/",username,repoName];
       
-//      NSString *filePath = [cssPath stringByAppendingPathComponent:kTemplateMarkerFilename];
-//      
-//      filePath = [filePath stringByAppendingPathExtension:kTemplateJsonFiletype];
+      NSString *filePath = [cssPath stringByAppendingPathComponent:fileName];
+//
 
+      NSString *encodedCSS = [FileEncodingService encodeCSS:filePath];
       
-      NSString *encodedCSS = [FileEncodingService encodeCSS:cssPath];
       NSString *url = [NSString stringWithFormat:@"%@%@",baseURL,fileName];
       
       NSDictionary *committer = @{@"name": username, @"email": userEmail};

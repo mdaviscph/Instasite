@@ -70,9 +70,9 @@
     [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
   }
   
-//  for (CSSFile *cssFile in self.supportingFilePaths) {
-//    [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-//  }
+  for (CSSFile *cssFile in self.supportingFilePaths) {
+    [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+  }
   
 }
 
