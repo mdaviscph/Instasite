@@ -71,7 +71,8 @@
   }
   
   for (CSSFile *cssFile in self.supportingFilePaths) {
-    [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+    NSString *finalPath = [NSString stringWithFormat:@"%@/%@/%@",cssFile.documentsDirectory, cssFile.filePath, cssFile.fileName];
+    [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath finalPath:finalPath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
   }
   
 }

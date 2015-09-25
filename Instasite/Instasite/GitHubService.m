@@ -108,25 +108,23 @@
     
     AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
     
-    [manager PUT:url parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-      NSLog(@"Success: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
-      NSLog(@"Failure: %@", operation.responseObject);
-    }];
+//    [manager PUT:url parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+//      NSLog(@"Success: %@", responseObject);
+//    } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+//      NSLog(@"Failure: %@", operation.responseObject);
+//    }];
   }];
   
 }
 
-+ (void)pushCSSToGithub:(NSString *)fileName cssPath:(NSString *)cssPath email:(NSString *)userEmail forRepo:(NSString *)repoName {
++ (void)pushCSSToGithub:(NSString *)fileName cssPath:(NSString *)cssPath finalPath:(NSString *)localPath email:(NSString *)userEmail forRepo:(NSString *)repoName {
   
   [self getUsernameFromGithub:^(NSError *error, NSString *username) {
     if (username != nil) {
-      NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/css/",username,repoName];
+      NSArray *fileLocation = [cssPath componentsSeparatedByString:@"/"];
+      NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@/",username,repoName, [fileLocation lastObject]];
       
-      NSString *filePath = [cssPath stringByAppendingPathComponent:fileName];
-//
-
-      NSString *encodedCSS = [FileEncodingService encodeCSS:filePath];
+      NSString *encodedCSS = [FileEncodingService encodeCSS:localPath];
       
       NSString *url = [NSString stringWithFormat:@"%@%@",baseURL,fileName];
       
