@@ -86,7 +86,7 @@
     [manager PUT:baseURL parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
 //      completionHandler(nil);
     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
-      completionHandler(error);
+      //completionHandler(error);
     }];
   }];
   
@@ -97,7 +97,11 @@
     
     NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/img/", username, repoName];
     
-    NSString *encodedImage = [FileEncodingService encodeImage:imagePath];
+    NSString *filePath = [imagePath stringByAppendingPathComponent:kTemplateImagesDirectory];
+    
+    //filePath = [filePath stringByAppendingPathExtension:kTemplateJsonFiletype];
+    
+    NSString *encodedImage = [FileEncodingService encodeImage:filePath];
     
     NSDictionary *committer = @{@"name": username, @"email": userEmail};
     NSDictionary *json = @{@"branch": @"gh-pages", @"message": @"Files Push", @"committer": committer, @"content" : encodedImage};
@@ -119,7 +123,13 @@
   [self getUsernameFromGithub:^(NSError *error, NSString *username) {
     if (username != nil) {
       NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/css/",username,repoName];
-      NSString *encodedCSS = [FileEncodingService encodeHTML:cssPath];
+      
+//      NSString *filePath = [cssPath stringByAppendingPathComponent:kTemplateMarkerFilename];
+//      
+//      filePath = [filePath stringByAppendingPathExtension:kTemplateJsonFiletype];
+
+      
+      NSString *encodedCSS = [FileEncodingService encodeCSS:cssPath];
       NSString *url = [NSString stringWithFormat:@"%@%@",baseURL,fileName];
       
       NSDictionary *committer = @{@"name": username, @"email": userEmail};
@@ -141,7 +151,12 @@
   [self getUsernameFromGithub:^(NSError *error, NSString *username) {
     if (username != nil) {
       NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@.%@",username,repoName,kTemplateJsonFilename,kTemplateJsonFiletype];
-      NSString *encodedJSON = [FileEncodingService encodeJSON:jsonPath];
+      
+      NSString *filePath = [jsonPath stringByAppendingPathComponent:kTemplateJsonFilename];
+      
+      filePath = [filePath stringByAppendingPathExtension:kTemplateJsonFiletype];
+      
+      NSString *encodedJSON = [FileEncodingService encodeJSON:filePath];
 
       
       NSDictionary *committer = @{@"name": username, @"email": userEmail};
