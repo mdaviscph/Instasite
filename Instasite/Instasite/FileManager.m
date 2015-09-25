@@ -117,7 +117,8 @@
   return filePath;
 }
 
-- (void) copyDirectory:(NSString *)directory {
+- (void) copyDirectory:(NSString *)directory
+{
   BOOL success;
   NSFileManager *fileManager = [NSFileManager defaultManager];
   fileManager.delegate = self;

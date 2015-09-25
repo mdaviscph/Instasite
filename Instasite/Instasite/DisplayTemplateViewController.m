@@ -16,8 +16,9 @@
 @interface DisplayTemplateViewController () <WKNavigationDelegate>
 
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
+@property (strong, nonatomic) WKWebView *webView;
 
-@end
+@end;
 
 @implementation DisplayTemplateViewController
 
@@ -30,50 +31,48 @@
 
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
   
-  WKWebView *webView = [[WKWebView alloc]initWithFrame: self.view.frame];
-  [self.view addSubview: webView];
-  webView.navigationDelegate = self;
+  self.webView = [[WKWebView alloc]initWithFrame: self.view.frame];
+  [self.view addSubview: self.webView];
+  self.webView.navigationDelegate = self;
+
+  [self copyDirectoryToDocumentsDir];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
   
   NSURL *htmlUrl = [self displayTemplate];
-  [webView loadFileURL:htmlUrl allowingReadAccessToURL:htmlUrl];
+  [self.webView loadFileURL:htmlUrl allowingReadAccessToURL:htmlUrl];
 }
+
+#pragma mark - Helper Methods
 
 - (NSURL *)displayTemplate {
   
   if (!self.tabBarVC.templateDirectory) {
     return nil;
   }
-  // no working filename means that this the first time they have chosen this template
-  // and we need to create the working file. the first time we will use the bootstrap
-  // version so it shows placeholder like text. once they start editing we will switch
-  // to showing the working version which includes the instasite markers.
-  if (!self.tabBarVC.workingFilename) {
-    [self copyDirectoryToDocumentsDir];
-    self.tabBarVC.workingHtml = [[HtmlTemplate alloc] initWithPath:kTemplateOriginalFilename ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory];
-
-    [self createWorkingFile:kTemplateWorkingFilename];
-    
-    return [HtmlTemplate genURL:@"index" ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory];
-  }
   
-  return [HtmlTemplate genURL:self.tabBarVC.workingFilename ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory];
+  if (!self.tabBarVC.workingHtml) {
+    self.tabBarVC.workingHtml = [[HtmlTemplate alloc] initWithPath:kTemplateMarkerFilename ofType:kTemplateIndexFiletype inDirectory:self.tabBarVC.templateDirectory];
+  }
+
+  return [HtmlTemplate genURL:kTemplateIndexFilename ofType:kTemplateIndexFiletype inDirectory:self.tabBarVC.templateDirectory];
 }
 
 // Copy the entire template folder from main bundle to the documents directory
 -(void)copyDirectoryToDocumentsDir {
   FileManager *fm = [[FileManager alloc]init];
-  [fm copyDirectory: self.tabBarVC.templateDirectory];
-  
+  [fm copyDirectory: self.tabBarVC.templateDirectory];  
 }
 
-#pragma mark - Helper Methods
 - (BOOL)createWorkingFile:(NSString *)filename {
   
   // TODO - get some identifier for the user to use as filename or part of filename
-  if ([self.tabBarVC.workingHtml writeToFile:filename ofType:kTemplateWorkingFiletype inDirectory:self.tabBarVC.templateDirectory]) {
+  if ([self.tabBarVC.workingHtml writeToFile:filename ofType:kTemplateIndexFiletype inDirectory:self.tabBarVC.templateDirectory]) {
     return YES;
   }
-  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, kTemplateWorkingFiletype, self.tabBarVC.templateDirectory);
+  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, kTemplateIndexFiletype, self.tabBarVC.templateDirectory);
   return NO;
 }
 

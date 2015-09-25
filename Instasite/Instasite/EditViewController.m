@@ -14,6 +14,8 @@
 #import "JsonData.h"
 #import "Constants.h"
 #import "TemplateTabBarController.h"
+#import "PublishViewController.h"
+#import <SSKeychain/SSKeychain.h>
 
 @interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -40,7 +42,22 @@
   NSData *jsonData = [JsonData fromTemplateData:self.userData];
   [self writeJsonFile:jsonData filename:kTemplateJsonFilename ofType:kTemplateJsonFiletype];
   
-  [self writeWorkingFile:kTemplateWorkingFilename ofType:kTemplateWorkingFiletype];
+  [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
+  
+  if (![SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
+    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
+    UIViewController *oauthVC = [oauthStoryboard instantiateInitialViewController];
+    [self.navigationController pushViewController:oauthVC animated:YES];
+  }
+  if ([SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
+    UIStoryboard *publishStoryboard = [UIStoryboard storyboardWithName:@"Publish" bundle:[NSBundle mainBundle]];
+    PublishViewController *publishVC = [publishStoryboard instantiateInitialViewController];
+    //publishVC.indexHtmlFilepath = [self.tabBarVC.templateDirectory stringByAppendingPathComponent:kTemplateIndexFilename];
+    //publishVC.JSONfilePath = [self.tabBarVC.templateDirectory stringByAppendingPathComponent:kTemplateJsonFilename];
+    //publishVC.supportingFilePaths =
+    //publishVC.imageFilePaths =
+    [self.navigationController pushViewController:publishVC animated:YES];
+  }
 }
 
 - (IBAction)featureSegmentedControlTapped:(UISegmentedControl *)sender {
@@ -127,6 +144,10 @@
     [mutableFeatures addObject:[[Feature alloc] init]];
   }
   self.userData.features = mutableFeatures;
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+  [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
 }
 
 #pragma mark - Helper Methods
@@ -329,10 +350,11 @@
 
   NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
 
+  NSString *imageFile = [NSString stringWithFormat:@"image%ld", (long)index];
   NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
   NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
   NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImagesDirectory];
-  NSString *filepath = [imagesDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"image%ld", (long)index]];
+  NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
   NSString *pathWithType = [filepath stringByAppendingPathExtension:@"jpg"];
   
   NSLog(@"Write file: %@", pathWithType);
@@ -341,9 +363,11 @@
     return;
   }
   
-  [self.tabBarVC.workingHtml insertImageReference:index imageSource:pathWithType];
+  NSString *relativeFilepath = [kTemplateImagesDirectory stringByAppendingPathComponent:imageFile];
+  NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:@"jpg"];
+  [self.tabBarVC.workingHtml insertImageReference:index imageSource:relativePathWithType];
   Feature *feature = self.userData.features[index];
-  feature.imageSrc = pathWithType;
+  feature.imageSrc = relativePathWithType;
 }
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
   [picker dismissViewControllerAnimated:YES completion:nil];

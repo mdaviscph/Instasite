@@ -20,7 +20,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="hYf-0A-MRs"/>
                     <connections>
-                        <segue destination="FUf-xc-Akf" kind="show" identifier="" id="pW1-bu-0dn"/>
+                        <segue destination="FUf-xc-Akf" kind="show" identifier="DisplayTemplate" id="pW1-bu-0dn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IY0-hY-sgF" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -86,7 +86,7 @@
                                     <constraint firstAttribute="width" constant="120" id="igq-kW-Dmk"/>
                                     <constraint firstAttribute="height" constant="30" id="pxR-9e-rtx"/>
                                 </constraints>
-                                <state key="normal" title="Publish"/>
+                                <state key="normal" title="Save"/>
                                 <connections>
                                     <action selector="publishButtonTapped:" destination="zLy-21-xUB" eventType="touchUpInside" id="F7N-fC-wpL"/>
                                 </connections>

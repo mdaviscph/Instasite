@@ -11,9 +11,9 @@
 NSString *const kCloseSafariViewControllerNotification = @"kCloseSafariViewControllerNotification";
 NSString *const kSSKeychainAccount = @"github";
 NSString *const kSSKeychainService = @"githubToken";
-NSString *const kTemplateOriginalFilename = @"instasite";
-NSString *const kTemplateWorkingFilename = @"instasite_working";
-NSString *const kTemplateWorkingFiletype = @"html";
+NSString *const kTemplateIndexFilename = @"index";
+NSString *const kTemplateMarkerFilename = @"instasite";
+NSString *const kTemplateIndexFiletype = @"html";
 NSString *const kTemplateJsonFilename = @"instasite";
 NSString *const kTemplateJsonFiletype = @"json";
 NSString *const kTemplateImagesDirectory = @"img";
