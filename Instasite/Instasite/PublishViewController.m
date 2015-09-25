@@ -39,34 +39,42 @@
 }
 - (IBAction)createRepoAction:(UIButton *)sender {
 
-//  [GitHubService repoForSearch];
-
-
   [GitHubService serviceForRepoNameInput:self.textFieldRepoName.text descriptionInput:self.textFieldDescription.text  completionHandler:^(NSError *error) {
     if (error != nil) {
       NSLog(@"Error: %@",error);
     } else {
       
-//      if (self.supportingFilePaths != nil && self.imageFilePaths != nil && self.indexHtmlFilePath != nil) {
-//        
-//      }
-      
-      [GitHubService pushFilesToGithub:self.textFieldRepoName.text indexHtmlFile:self.indexHtmlFilePath email:self.textFieldEmail.text completionHandler:nil];
-      
-      [GitHubService pushJSONToGithub:self.JSONfilePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-      
-      for (CSSFile *cssFile in self.supportingFilePaths) {
-        [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-      }
-      
-      for (ImageFile *imageFile in self.imageFilePaths) {
-        [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-      }
-      
-      [self.navigationController popViewControllerAnimated:true];
-      
     }
   }];
+  
+  if (self.indexHtmlFilePath != nil) {
+    [GitHubService pushFilesToGithub:self.textFieldRepoName.text indexHtmlFile:self.indexHtmlFilePath email:self.textFieldEmail.text completionHandler:nil];
+  } else {
+    NSLog(@"IndexHtml file not uploaded!");
+  }
+  
+  if (self.JSONfilePath !=nil) {
+    [GitHubService pushJSONToGithub:self.JSONfilePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+  } else {
+    NSLog(@"JSON file not uploaded!");
+  }
+  
+  for (CSSFile *cssFile in self.supportingFilePaths) {
+    [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+  }
+  
+  for (ImageFile *imageFile in self.imageFilePaths) {
+    [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+  }
+  
+  UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Success" message:@"Your website has been published!" preferredStyle:UIAlertControllerStyleAlert];
+  UIAlertAction *action = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+    [alertController dismissViewControllerAnimated:true completion:nil];
+  }];
+  [alertController addAction:action];
+  
+
+  
 }
 
 #pragma mark - UITextFieldDelegate
