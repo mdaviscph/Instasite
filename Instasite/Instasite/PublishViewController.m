@@ -44,6 +44,20 @@
       NSLog(@"Error: %@",error);
     } else {
       
+      for (CSSFile *cssFile in self.supportingFilePaths) {
+        [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+      }
+      
+      for (ImageFile *imageFile in self.imageFilePaths) {
+        [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+      }
+      
+      UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Success" message:@"Your website has been published!" preferredStyle:UIAlertControllerStyleAlert];
+      UIAlertAction *action = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [alertController dismissViewControllerAnimated:true completion:nil];
+      }];
+      [alertController addAction:action];
+ 
     }
   }];
   
@@ -59,21 +73,6 @@
     NSLog(@"JSON file not uploaded!");
   }
   
-  for (CSSFile *cssFile in self.supportingFilePaths) {
-    [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-  }
-  
-  for (ImageFile *imageFile in self.imageFilePaths) {
-    [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-  }
-  
-  UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Success" message:@"Your website has been published!" preferredStyle:UIAlertControllerStyleAlert];
-  UIAlertAction *action = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-    [alertController dismissViewControllerAnimated:true completion:nil];
-  }];
-  [alertController addAction:action];
-  
-
   
 }
 

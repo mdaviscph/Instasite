@@ -5,10 +5,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--oauthView-->
+        <!--MainView-->
         <scene sceneID="0fD-hA-bzc">
             <objects>
-                <viewControllerPlaceholder storyboardName="Oauth" referencedIdentifier="oauthView" id="Nyr-c1-WGs" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Main" referencedIdentifier="MainView" id="Nyr-c1-WGs" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YfD-ZM-me8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="886" y="80"/>

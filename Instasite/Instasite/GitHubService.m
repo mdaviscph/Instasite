@@ -74,7 +74,9 @@
     
     AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
     
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:indexHtmlFile ofType:@"html"];
+    NSString *filePath = [indexHtmlFile stringByAppendingPathComponent:kTemplateIndexFilename];
+    
+    filePath = [filePath stringByAppendingPathExtension:kTemplateIndexFiletype];
     
     NSString *encodedFile = [FileEncodingService encodeHTML:filePath];
     
@@ -82,7 +84,7 @@
     NSDictionary *json = @{@"branch": @"gh-pages", @"message": @"my commit", @"committer": committer, @"content": encodedFile};
     
     [manager PUT:baseURL parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-      completionHandler(nil);
+//      completionHandler(nil);
     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
       completionHandler(error);
     }];
@@ -139,7 +141,7 @@
   [self getUsernameFromGithub:^(NSError *error, NSString *username) {
     if (username != nil) {
       NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@.%@",username,repoName,kTemplateJsonFilename,kTemplateJsonFiletype];
-      NSString *encodedJSON = [FileEncodingService encodeHTML:jsonPath];
+      NSString *encodedJSON = [FileEncodingService encodeJSON:jsonPath];
 
       
       NSDictionary *committer = @{@"name": username, @"email": userEmail};
