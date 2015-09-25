@@ -17,19 +17,24 @@
 
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
   NSString *documentsDirectory = [paths objectAtIndex:0];
-  documentsDirectory = [documentsDirectory stringByAppendingPathComponent:directory];
   
-  NSLog(@"Directory at: %@", documentsDirectory);
-  return [self filesInDirectory:@"" usingPath:documentsDirectory];
+  NSLog(@"Directory at: %@/%@", documentsDirectory, directory);
+  return [self filesInDirectory:nil templatePath:directory documentsDirectory:documentsDirectory];
 }
 
-- (NSArray *)filesInDirectory:(NSString *)directory usingPath:(NSString *)path {
+- (NSArray *)filesInDirectory:(NSString *)directory templatePath:(NSString *)templatePath documentsDirectory:(NSString *)docDirectory {
 
   NSFileManager *manager = [NSFileManager defaultManager];
   NSMutableArray *cssFiles = [[NSMutableArray alloc] init];
   NSMutableArray *imageFiles = [[NSMutableArray alloc] init];
   
-  NSString *directoryPath = [path stringByAppendingPathComponent:directory];
+  NSString *directoryPath = [docDirectory stringByAppendingPathComponent:templatePath];
+  NSString *templateDirectoryPath = templatePath;
+  if (directory) {
+    directoryPath = [directoryPath stringByAppendingPathComponent:directory];
+    templateDirectoryPath = [templateDirectoryPath stringByAppendingPathComponent:directory];
+  }
+  
   NSError *error;
   NSArray *files = [manager contentsOfDirectoryAtPath:directoryPath error:&error];
   
@@ -39,14 +44,15 @@
     [manager fileExistsAtPath:filepath isDirectory:&isDirectory];
     if (isDirectory) {
       NSLog(@"Directory at: %@", file);
-      NSArray *fileObjects = [self filesInDirectory:file usingPath:directoryPath];
+      
+      NSArray *fileObjects = [self filesInDirectory:file templatePath:templateDirectoryPath documentsDirectory:docDirectory];
       [cssFiles addObjectsFromArray:fileObjects[0]];
       [imageFiles addObjectsFromArray:fileObjects[1]];
       
     } else {
       NSLog(@"File at: %@", file);
       if ([file hasPrefix:kTemplateImagePrefix]) {
-        ImageFile *imagefile = [[ImageFile alloc] initWithFilePath:directoryPath andFileName:file];
+        ImageFile *imagefile = [[ImageFile alloc] initWithFilePath:templateDirectoryPath andFileName:file];
         [imageFiles addObject:imagefile];
       } else if ([file hasPrefix:kTemplateIndexFilename]) {
         // ignore index.html
@@ -55,7 +61,7 @@
       } else if ([file hasPrefix:kTemplateJsonFilename]) {
         // ignore json file
       } else {
-        CSSFile *cssfile = [[CSSFile alloc] initWithFilePath:directoryPath andFileName:file];
+        CSSFile *cssfile = [[CSSFile alloc] initWithFilePath:templateDirectoryPath andFileName:file];
         [cssFiles addObject:cssfile];
       }
     }
