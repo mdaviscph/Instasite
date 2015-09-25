@@ -76,14 +76,15 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
 }
 
 + (NSURL *)genURL:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
-  NSString *filePath = [[NSBundle mainBundle] pathForResource:path ofType:type inDirectory:directory];
-  if (!filePath) {
-    NSLog(@"Error! NSBundle mainBundle:pathForResource: path: %@ type: %@ directory: %@", path, type, directory);
-    return nil;
-  }
-  NSURL *url = [NSURL fileURLWithPath:filePath];
+
+  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:directory];
+  NSString *filepath = [workingDirectory stringByAppendingPathComponent:path];
+  NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
+
+  NSURL *url = [NSURL fileURLWithPath:pathWithType];
   if (!url) {
-    NSLog(@"Error! NSURL:fileURLWithPath: %@ ", filePath);
+    NSLog(@"Error! NSURL:fileURLWithPath: %@ ", pathWithType);
   }
   return url;
 }

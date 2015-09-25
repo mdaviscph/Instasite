@@ -86,7 +86,7 @@
                                     <constraint firstAttribute="width" constant="120" id="igq-kW-Dmk"/>
                                     <constraint firstAttribute="height" constant="30" id="pxR-9e-rtx"/>
                                 </constraints>
-                                <state key="normal" title="Publish"/>
+                                <state key="normal" title="Save"/>
                                 <connections>
                                     <action selector="publishButtonTapped:" destination="zLy-21-xUB" eventType="touchUpInside" id="F7N-fC-wpL"/>
                                 </connections>

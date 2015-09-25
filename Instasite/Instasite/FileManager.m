@@ -117,7 +117,8 @@
   return filePath;
 }
 
-- (void) copyDirectory:(NSString *)directory {
+- (void) copyDirectory:(NSString *)directory
+{
   BOOL success;
   NSFileManager *fileManager = [NSFileManager defaultManager];
   fileManager.delegate = self;
@@ -133,7 +134,7 @@
   if (!success )
   {
     // copy the files from
-    NSString *defaultDBPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"startbootstrap-agency-1.0-2.4"];
+    NSString *defaultDBPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:directory];
     
     //    NSLog(@"default path %@",defaultDBPath);
     success = [fileManager copyItemAtPath:defaultDBPath toPath:newDirectory error:&error];
