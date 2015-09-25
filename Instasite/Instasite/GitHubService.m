@@ -178,7 +178,6 @@
   AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:false];
   
   [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-    NSLog(@"Response: %@", responseObject);
     [ParseJSONService getGithubUsernameFromJSON:responseObject completionHandler:^(NSString *username) {
       completionHandler(nil, username);
     }];

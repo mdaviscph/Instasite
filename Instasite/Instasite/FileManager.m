@@ -52,7 +52,7 @@
     } else {
       NSLog(@"File at: %@", file);
       if ([file hasPrefix:kTemplateImagePrefix]) {
-        ImageFile *imagefile = [[ImageFile alloc] initWithFilePath:templateDirectoryPath andFileName:file];
+        ImageFile *imagefile = [[ImageFile alloc] initWithFilePath:templateDirectoryPath andFileName:file andDocumentsDirectory:docDirectory];
         [imageFiles addObject:imagefile];
       } else if ([file hasPrefix:kTemplateIndexFilename]) {
         // ignore index.html
@@ -61,7 +61,7 @@
       } else if ([file hasPrefix:kTemplateJsonFilename]) {
         // ignore json file
       } else {
-        CSSFile *cssfile = [[CSSFile alloc] initWithFilePath:templateDirectoryPath andFileName:file];
+        CSSFile *cssfile = [[CSSFile alloc] initWithFilePath:templateDirectoryPath andFileName:file andDocumentsDirectory:docDirectory];
         [cssFiles addObject:cssfile];
       }
     }

@@ -11,6 +11,7 @@
 @interface ImageFile : NSObject
 @property (strong,nonatomic) NSString *fileName;
 @property (strong,nonatomic) NSString *filePath;
+@property (strong,nonatomic) NSString *documentsDirectory;
 
-- (instancetype)initWithFilePath:(NSString *)filePath andFileName:(NSString *)fileName;
+- (instancetype)initWithFilePath:(NSString *)filePath andFileName:(NSString *)fileName andDocumentsDirectory:(NSString *)directory;
 @end
