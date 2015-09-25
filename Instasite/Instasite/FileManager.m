@@ -7,23 +7,27 @@
 //
 
 #import "FileManager.h"
+#import "CSSFile.h"
+#import "ImageFile.h"
+#import "Constants.h"
 
 @implementation FileManager
 
-- (void)enumerateFilesInDirectory:(NSString *)directory {
+- (NSArray *)enumerateFilesInDirectory:(NSString *)directory {
 
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
   NSString *documentsDirectory = [paths objectAtIndex:0];
   documentsDirectory = [documentsDirectory stringByAppendingPathComponent:directory];
   
   NSLog(@"Directory at: %@", documentsDirectory);
-  [self filesInDirectory:@"" usingPath:documentsDirectory];
+  return [self filesInDirectory:@"" usingPath:documentsDirectory];
 }
 
-- (void)filesInDirectory:(NSString *)directory usingPath:(NSString *)path {
+- (NSArray *)filesInDirectory:(NSString *)directory usingPath:(NSString *)path {
 
   NSFileManager *manager = [NSFileManager defaultManager];
-//  NSMutableArray *cssFiles = [[[NSMutableArray] alloc] init];
+  NSMutableArray *cssFiles = [[NSMutableArray alloc] init];
+  NSMutableArray *imageFiles = [[NSMutableArray alloc] init];
   
   NSString *directoryPath = [path stringByAppendingPathComponent:directory];
   NSError *error;
@@ -35,12 +39,28 @@
     [manager fileExistsAtPath:filepath isDirectory:&isDirectory];
     if (isDirectory) {
       NSLog(@"Directory at: %@", file);
-      [self filesInDirectory:file usingPath:directoryPath];
+      NSArray *fileObjects = [self filesInDirectory:file usingPath:directoryPath];
+      [cssFiles addObjectsFromArray:fileObjects[0]];
+      [imageFiles addObjectsFromArray:fileObjects[1]];
+      
     } else {
       NSLog(@"File at: %@", file);
-      
+      if ([file hasPrefix:kTemplateImagePrefix]) {
+        ImageFile *imagefile = [[ImageFile alloc] initWithFilePath:directoryPath andFileName:file];
+        [imageFiles addObject:imagefile];
+      } else if ([file hasPrefix:kTemplateIndexFilename]) {
+        // ignore index.html
+      } else if ([file hasPrefix:kTemplateMarkerFilename]) {
+        // ignore marker file
+      } else if ([file hasPrefix:kTemplateJsonFilename]) {
+        // ignore json file
+      } else {
+        CSSFile *cssfile = [[CSSFile alloc] initWithFilePath:directoryPath andFileName:file];
+        [cssFiles addObject:cssfile];
+      }
     }
   }
+  return @[cssFiles, imageFiles];
 }
 
 - (void)listAllLocalFiles

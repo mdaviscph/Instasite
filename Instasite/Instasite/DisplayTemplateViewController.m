@@ -64,7 +64,6 @@
 -(void)copyDirectoryToDocumentsDir {
   FileManager *fm = [[FileManager alloc]init];
   [fm copyDirectory:self.tabBarVC.templateDirectory];
-  [fm enumerateFilesInDirectory:self.tabBarVC.templateDirectory];
 }
 
 - (BOOL)createWorkingFile:(NSString *)filename {
