@@ -41,7 +41,7 @@
 @implementation EditViewController
 
 - (IBAction)publishButtonTapped:(UIButton *)sender {
-  
+
   NSData *jsonData = [JsonData fromTemplateData:self.userData];
   [self writeJsonFile:jsonData filename:kTemplateJsonFilename ofType:kTemplateJsonFiletype];
   
@@ -175,17 +175,26 @@
   if (index < 0 || index >= features.count) {
     return;
   }
+  Feature *feature = self.userData.features[index];
   
   NSDictionary *featureDict = features[index];
   if (featureDict[kMarkerHead]) {
     UITextField *headlineField = [[UITextField alloc] initWithMarkerType:HtmlMarkerHeadline placeholder:@"Headline text..." borderStyle:UITextBorderStyleRoundedRect];
     headlineField.delegate = self;
+    if (feature.headline) {
+      headlineField.text = feature.headline;
+    }
+
     [self.bottomStackView addArrangedSubview:headlineField];
     bottomStackHeight += headlineField.intrinsicContentSize.height + self.bottomStackSpacing;
   }
   if (featureDict[kMarkerSub]) {
     UITextField *subheadlineField = [[UITextField alloc] initWithMarkerType:HtmlMarkerSubheadline placeholder:@"Subheadline text..." borderStyle:UITextBorderStyleRoundedRect];
     subheadlineField.delegate = self;
+    if (feature.subheadline) {
+      subheadlineField.text = feature.subheadline;
+    }
+    
     [self.bottomStackView addArrangedSubview:subheadlineField];
     bottomStackHeight += subheadlineField.intrinsicContentSize.height + self.bottomStackSpacing;
   }
@@ -194,6 +203,10 @@
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:bodyTextView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.bottomTextViewHeight];
     constraint.active = YES;
     bodyTextView.delegate = self;
+    if (feature.body) {
+      bodyTextView.text = feature.body;
+    }
+    
     [self.bottomStackView addArrangedSubview:bodyTextView];
     bottomStackHeight += self.bottomTextViewHeight + self.bottomStackSpacing;
   }
