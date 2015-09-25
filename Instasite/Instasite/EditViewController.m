@@ -16,6 +16,9 @@
 #import "TemplateTabBarController.h"
 #import "PublishViewController.h"
 #import <SSKeychain/SSKeychain.h>
+#import "FileManager.h"
+#import "CSSFile.h"
+#import "ImageFile.h"
 
 @interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -52,10 +55,20 @@
   if ([SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
     UIStoryboard *publishStoryboard = [UIStoryboard storyboardWithName:@"Publish" bundle:[NSBundle mainBundle]];
     PublishViewController *publishVC = [publishStoryboard instantiateInitialViewController];
-    //publishVC.indexHtmlFilepath = [self.tabBarVC.templateDirectory stringByAppendingPathComponent:kTemplateIndexFilename];
-    //publishVC.JSONfilePath = [self.tabBarVC.templateDirectory stringByAppendingPathComponent:kTemplateJsonFilename];
-    //publishVC.supportingFilePaths =
-    //publishVC.imageFilePaths =
+    
+    FileManager *fm = [[FileManager alloc]init];
+    NSArray *files = [fm enumerateFilesInDirectory:self.tabBarVC.templateDirectory];
+
+    publishVC.indexHtmlFilePath = [self.tabBarVC.templateDirectory stringByAppendingPathComponent:kTemplateIndexFilename];
+    publishVC.JSONfilePath = [self.tabBarVC.templateDirectory stringByAppendingPathComponent:kTemplateJsonFilename];
+    for (CSSFile *file in files[0]) {
+      NSLog(@"CSS: [%@] {%@}", file.filePath, file.fileName);
+    }
+    for (ImageFile *file in files[1]) {
+      NSLog(@"IMAGE: [%@] {%@}", file.filePath, file.fileName);
+    }
+    publishVC.supportingFilePaths = files[0];
+    publishVC.imageFilePaths = files[1];
     [self.navigationController pushViewController:publishVC animated:YES];
   }
 }
@@ -350,7 +363,7 @@
 
   NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
 
-  NSString *imageFile = [NSString stringWithFormat:@"image%ld", (long)index];
+  NSString *imageFile = [NSString stringWithFormat:@"%@%ld", kTemplateImagePrefix, (long)index];
   NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
   NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
   NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImagesDirectory];

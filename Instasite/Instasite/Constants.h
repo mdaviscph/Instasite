@@ -17,5 +17,6 @@ extern NSString *const kTemplateIndexFiletype;
 extern NSString *const kTemplateJsonFilename;
 extern NSString *const kTemplateJsonFiletype;
 extern NSString *const kTemplateImagesDirectory;
+extern NSString *const kTemplateImagePrefix;
 extern NSString *const kUploadIndexFileName;
 extern NSString *const kBranchName;
