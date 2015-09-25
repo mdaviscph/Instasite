@@ -31,5 +31,17 @@
   NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
   
   return baseString;
+  
+}
+
++(NSString *)encodeJSON:(NSString *)JSONPath{
+  
+  NSString *JSONString = [[NSString alloc] initWithContentsOfFile:JSONPath encoding:0 error:nil];
+  
+  NSData *data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
+  
+  NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+  
+  return baseString;
 }
 @end

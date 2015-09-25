@@ -5,6 +5,14 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
+        <!--MainView-->
+        <scene sceneID="0fD-hA-bzc">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Main" referencedIdentifier="MainView" id="Nyr-c1-WGs" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YfD-ZM-me8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="886" y="80"/>
+        </scene>
         <!--Publish View Controller-->
         <scene sceneID="RiV-CY-znR">
             <objects>
@@ -23,6 +31,7 @@
                                 <state key="normal" title="Publish"/>
                                 <connections>
                                     <action selector="createRepoAction:" destination="Be8-Pu-jtH" eventType="touchUpInside" id="O4a-ri-uRH"/>
+                                    <segue destination="Nyr-c1-WGs" kind="show" id="k3R-mu-N1H"/>
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sFw-ML-8oQ">
