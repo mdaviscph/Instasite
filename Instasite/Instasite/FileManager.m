@@ -10,6 +10,39 @@
 
 @implementation FileManager
 
+- (void)enumerateFilesInDirectory:(NSString *)directory {
+
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString *documentsDirectory = [paths objectAtIndex:0];
+  documentsDirectory = [documentsDirectory stringByAppendingPathComponent:directory];
+  
+  NSLog(@"Directory at: %@", documentsDirectory);
+  [self filesInDirectory:@"" usingPath:documentsDirectory];
+}
+
+- (void)filesInDirectory:(NSString *)directory usingPath:(NSString *)path {
+
+  NSFileManager *manager = [NSFileManager defaultManager];
+//  NSMutableArray *cssFiles = [[[NSMutableArray] alloc] init];
+  
+  NSString *directoryPath = [path stringByAppendingPathComponent:directory];
+  NSError *error;
+  NSArray *files = [manager contentsOfDirectoryAtPath:directoryPath error:&error];
+  
+  for (NSString *file in files) {
+    BOOL isDirectory;
+    NSString *filepath = [directoryPath stringByAppendingPathComponent:file];
+    [manager fileExistsAtPath:filepath isDirectory:&isDirectory];
+    if (isDirectory) {
+      NSLog(@"Directory at: %@", file);
+      [self filesInDirectory:file usingPath:directoryPath];
+    } else {
+      NSLog(@"File at: %@", file);
+      
+    }
+  }
+}
+
 - (void)listAllLocalFiles
 {
   // Fetch directory path of document for local application.
@@ -117,7 +150,7 @@
   return filePath;
 }
 
-- (void) copyDirectory:(NSString *)directory
+- (void)copyDirectory:(NSString *)directory
 {
   BOOL success;
   NSFileManager *fileManager = [NSFileManager defaultManager];
