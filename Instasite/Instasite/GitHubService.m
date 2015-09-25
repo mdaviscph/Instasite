@@ -101,12 +101,12 @@
     
     NSString *encodedImage = [FileEncodingService encodeImage:filePath];
     
+    NSString *url = [NSString stringWithFormat:@"%@%@", baseURL,imageName];
+    
     NSDictionary *committer = @{@"name": username, @"email": userEmail};
     NSDictionary *json = @{@"branch": @"gh-pages", @"message": @"Files Push", @"committer": committer, @"content" : encodedImage};
     
     AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
-    
-    NSString *url = [NSString stringWithFormat:@"%@%@", baseURL,filePath];
     
     [manager PUT:url parameters:json success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
       NSLog(@"Success: %@", responseObject);
@@ -128,7 +128,7 @@
 
       NSString *encodedCSS = [FileEncodingService encodeCSS:filePath];
       
-      NSString *url = [NSString stringWithFormat:@"%@%@",baseURL,filePath];
+      NSString *url = [NSString stringWithFormat:@"%@%@",baseURL,fileName];
       
       NSDictionary *committer = @{@"name": username, @"email": userEmail};
       NSDictionary *json = @{@"branch": kBranchName, @"message":@"Push CSS", @"committer": committer, @"content": encodedCSS};
