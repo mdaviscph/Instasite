@@ -15,6 +15,7 @@
   if (self) {
     self.placeholder = placeholder;
     self.borderStyle = style;
+    self.returnKeyType = UIReturnKeyDone;
     self.tag = type;
   }
   [self setContentHuggingPriority:800 forAxis:UILayoutConstraintAxisVertical];
@@ -35,6 +36,7 @@
       self.layer.borderWidth = 0.8;
       self.layer.cornerRadius = 5.0;
     }
+    self.returnKeyType = UIReturnKeyDefault;
     self.tag = type;
     [self setContentHuggingPriority:200 forAxis:UILayoutConstraintAxisVertical];
     [self setContentCompressionResistancePriority:800 forAxis:UILayoutConstraintAxisVertical];

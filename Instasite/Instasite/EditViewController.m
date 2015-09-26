@@ -7,6 +7,7 @@
 //
 
 #import "EditViewController.h"
+#import "EditViewControllerImagePickerExtension.h"
 #import "Extensions.h"
 #import "HtmlTemplate.h"
 #import "TemplateData.h"
@@ -19,26 +20,27 @@
 #import "FileManager.h"
 #import "CSSFile.h"
 #import "ImageFile.h"
+#import "SegmentedControl.h"
 
-@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, SegmentedControlDelegate>
 
 @property (weak, nonatomic) IBOutlet UIStackView *topStackView;
 @property (weak, nonatomic) IBOutlet UIStackView *bottomStackView;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *featureSegmentedControl;
+@property (weak, nonatomic) IBOutlet SegmentedControl *featureSegmentedControl;
 
 @property (nonatomic) NSUInteger topStackSpacing;
 @property (nonatomic) NSUInteger bottomStackSpacing;
 @property (nonatomic) NSUInteger topTextViewHeight;
 @property (nonatomic) NSUInteger bottomTextViewHeight;
+@property (nonatomic) UIView *lastTextEditingView;
 
-@property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 @property (strong, nonatomic) NSDictionary *markers;
-
-@property (strong, nonatomic) TemplateData *userData;
 
 @end
 
 @implementation EditViewController
+
+#pragma mark - IBActions
 
 - (IBAction)publishButtonTapped:(UIButton *)sender {
 
@@ -77,6 +79,8 @@
 }
 
 - (IBAction)featureSegmentedControlTapped:(UISegmentedControl *)sender {
+
+  self.selectedFeature = sender.selectedSegmentIndex;
   for (UIView *subview in self.bottomStackView.arrangedSubviews) {
     [self.bottomStackView removeArrangedSubview:subview];
     [subview removeFromSuperview];
@@ -85,11 +89,10 @@
 }
 
 #pragma mark - Lifecycle Methods
+
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  self.navigationController.navigationBarHidden = NO;
-
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
   self.markers = [self.tabBarVC.workingHtml templateMarkers];
   
@@ -147,12 +150,14 @@
   for (NSUInteger index = 0; index < features.count; index++) {
     NSDictionary *featureDict = features[index];
     if (featureDict.count > 0) {
-      [self.featureSegmentedControl insertSegmentWithTitle:[NSString stringWithFormat:@"%lu", index] atIndex:index animated:YES];
+      [self.featureSegmentedControl insertSegmentWithTitle:[NSString stringWithFormat:@"%lu", index+1] atIndex:index animated:YES];
     }
   }
-  
-  [self addFeatureControlsForFeature:0];
-  self.featureSegmentedControl.selectedSegmentIndex = 0;
+
+  self.featureSegmentedControl.delegate = self;
+  self.selectedFeature = 0;
+  self.featureSegmentedControl.selectedSegmentIndex = self.selectedFeature;
+  [self addFeatureControlsForFeature:self.selectedFeature];
   
   self.userData = [[TemplateData alloc] init];
   NSMutableArray *mutableFeatures = [[NSMutableArray alloc] init];
@@ -162,8 +167,14 @@
   self.userData.features = mutableFeatures;
 }
 
+-(void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  self.navigationController.navigationBarHidden = NO;
+}
+
 -(void)viewWillDisappear:(BOOL)animated {
   [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
+  [super viewWillDisappear:animated];
 }
 
 #pragma mark - Helper Methods
@@ -245,42 +256,6 @@
   return NO;
 }
 
-- (void)actionSheetForImageSelection:(UIButton *)button {
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Select an Image" message:@"from" preferredStyle:UIAlertControllerStyleActionSheet];
-  alert.modalPresentationStyle = UIModalPresentationPopover;
-  alert.popoverPresentationController.sourceView = self.view;
-  alert.popoverPresentationController.sourceRect = button.frame;
-  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-      [self startImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
-    }];
-    [alert addAction:action];
-  }
-  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-      [self startImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-    }];
-    [alert addAction:action];
-  }
-  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Saved Photos Album" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-      [self startImagePickerForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
-    }];
-    [alert addAction:action];
-  }
-  UIAlertAction *cancelAction = [UIAlertAction actionWithTitle: @"Cancel" style:UIAlertActionStyleCancel handler:nil];
-  [alert addAction:cancelAction];
-  [self presentViewController:alert animated:YES completion: nil];
-}
-
-- (void)startImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
-  UIImagePickerController *imagePC = [[UIImagePickerController alloc] init];
-  imagePC.delegate = self;
-  imagePC.allowsEditing = YES;
-  imagePC.sourceType = sourceType;
-  [self presentViewController:imagePC animated:YES completion: nil];
-}
-
 - (void)nslogMarkerDictionary {
   for (NSString *key in [self.markers allKeys]) {
     if ([key isEqualToString:kFeatureArray]) {
@@ -314,8 +289,15 @@
     }
   }
 }
+- (void)doneButtonTapped {
+  [self.lastTextEditingView endEditing:YES];
+}
 
 #pragma mark - UITextFieldDelegate
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
+  self.lastTextEditingView = textField;
+}
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
   [textField resignFirstResponder];
@@ -335,17 +317,15 @@
       break;
     case HtmlMarkerHeadline:
     {
-      NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
-      [self.tabBarVC.workingHtml insertFeature: index headline:textField.text];
-      Feature *feature = self.userData.features[index];
+      [self.tabBarVC.workingHtml insertFeature: self.selectedFeature headline:textField.text];
+      Feature *feature = self.userData.features[self.selectedFeature];
       feature.headline = textField.text;
       break;
     }
     case HtmlMarkerSubheadline:
     {
-      NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
-      [self.tabBarVC.workingHtml insertFeature: index subheadline:textField.text];
-      Feature *feature = self.userData.features[index];
+      [self.tabBarVC.workingHtml insertFeature: self.selectedFeature subheadline:textField.text];
+      Feature *feature = self.userData.features[self.selectedFeature];
       feature.subheadline = textField.text;
       break;
     }
@@ -358,18 +338,16 @@
 
 
 #pragma mark - UITextViewDelegate
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+
+-(void)textViewDidBeginEditing:(UITextView *)textView {
   
-  if([text isEqualToString:@"\n"]) {
-    [textView resignFirstResponder];
-    return NO;
-  }
-  
-  return YES;
+  self.lastTextEditingView = textView;
+  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone target: self action: @selector(doneButtonTapped)];
 }
 
-
 - (void)textViewDidEndEditing:(UITextView *)textView {
+
+  self.tabBarVC.navigationItem.rightBarButtonItem = nil;
 
   switch (textView.tag) {
     case HtmlMarkerSummary:
@@ -377,45 +355,21 @@
       break;
     case HtmlMarkerBody:
     {
-      NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
-      [self.tabBarVC.workingHtml insertFeature: index body:textView.text];
-      Feature *feature = self.userData.features[index];
+      [self.tabBarVC.workingHtml insertFeature: self.selectedFeature body:textView.text];
+      Feature *feature = self.userData.features[self.selectedFeature];
       feature.body = textView.text;
       break;
     }
   }
 }
 
-#pragma mark - UIImagePickerControllerDelegate, UINavigationControllerDelegate
- 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-  [picker dismissViewControllerAnimated:YES completion:nil];
-  UIImage *image = info[UIImagePickerControllerEditedImage];
-  NSData *data = UIImageJPEGRepresentation(image, 1.0);
+#pragma mark - SegmentedControlDelegate
 
-  NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
-
-  NSString *imageFile = [NSString stringWithFormat:@"%@%ld", kTemplateImagePrefix, (long)index];
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-  NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImagesDirectory];
-  NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:@"jpg"];
-  
-  NSLog(@"Write file: %@", pathWithType);
-  if (![[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil]) {
-    NSLog(@"Error! Cannot create file: %@", pathWithType);
-    return;
-  }
-  
-  NSString *relativeFilepath = [kTemplateImagesDirectory stringByAppendingPathComponent:imageFile];
-  NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:@"jpg"];
-  [self.tabBarVC.workingHtml insertImageReference:index imageSource:relativePathWithType];
-  Feature *feature = self.userData.features[index];
-  feature.imageSrc = relativePathWithType;
-}
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-  [picker dismissViewControllerAnimated:YES completion:nil];
+// this protocol is defined in SegmentedControl.h and used so we can force editing to
+// end, prior to the segnmentedControl index changing, for any textViews since there is
+// no textViewShouldReturn delegate method
+- (void)segmentedControlIndexWillChange:(UISegmentedControl *)sender {
+  [self doneButtonTapped];
 }
 
 @end

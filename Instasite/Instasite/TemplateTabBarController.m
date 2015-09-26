@@ -14,8 +14,5 @@
 
 @implementation TemplateTabBarController
 
-- (void)viewDidLoad {
-  [super viewDidLoad];
-}
 
 @end

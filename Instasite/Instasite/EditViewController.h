@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+@class TemplateData;
+@class TemplateTabBarController;
 
-@interface EditViewController : UIViewController
+@interface EditViewController : UIViewController 
+
+// public properties so we can separate some of the EditViewController code into extensions
+@property (nonatomic) NSInteger selectedFeature;
+@property (strong, nonatomic) TemplateTabBarController *tabBarVC;
+@property (strong, nonatomic) TemplateData *userData;
 
 @end

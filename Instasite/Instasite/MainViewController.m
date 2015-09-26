@@ -24,10 +24,8 @@ static NSString *kCellId = @"cellId";
 @implementation MainViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-  
-  self.navigationController.navigationBarHidden = YES;
-  
+  [super viewDidLoad];
+    
   // TODO - read this list from the bundle directory
   self.templateDirectories = @[@"startbootstrap-one-page-wonder-1.0.3",
                                @"startbootstrap-agency-1.0-2.4",
@@ -50,7 +48,7 @@ static NSString *kCellId = @"cellId";
 
 -(void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:true];
-  self.navigationController.navigationBarHidden = true;
+  self.navigationController.navigationBarHidden = YES;
 }
 
 

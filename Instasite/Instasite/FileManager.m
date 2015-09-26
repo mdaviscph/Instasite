@@ -43,14 +43,14 @@
     NSString *filepath = [directoryPath stringByAppendingPathComponent:file];
     [manager fileExistsAtPath:filepath isDirectory:&isDirectory];
     if (isDirectory) {
-      NSLog(@"Directory at: %@", file);
+      //NSLog(@"Directory at: %@", file);
       
       NSArray *fileObjects = [self filesInDirectory:file templatePath:templateDirectoryPath documentsDirectory:docDirectory];
       [cssFiles addObjectsFromArray:fileObjects[0]];
       [imageFiles addObjectsFromArray:fileObjects[1]];
       
     } else {
-      NSLog(@"File at: %@", file);
+      //NSLog(@"File at: %@", file);
       if ([file hasPrefix:kTemplateImagePrefix]) {
         ImageFile *imagefile = [[ImageFile alloc] initWithFilePath:templateDirectoryPath andFileName:file andDocumentsDirectory:docDirectory];
         [imageFiles addObject:imagefile];
@@ -168,7 +168,7 @@
   }
 }
 
-- (NSString *) getFilePath:(NSString *)fileName {
+- (NSString *)getFilePath:(NSString *)fileName {
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
   NSString *documentsDirectory = [paths objectAtIndex:0];
   // Have the absolute path of file named fileName by joining the document path with fileName, separated by path separator.

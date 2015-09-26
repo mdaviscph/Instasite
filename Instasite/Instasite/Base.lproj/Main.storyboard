@@ -67,7 +67,7 @@
                                     <constraint firstAttribute="height" constant="200" id="dtO-Q7-1Fg"/>
                                 </constraints>
                             </stackView>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="VdD-MM-ukZ">
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="VdD-MM-ukZ" customClass="SegmentedControl">
                                 <rect key="frame" x="20" y="280" width="432" height="31"/>
                                 <animations/>
                                 <constraints>
