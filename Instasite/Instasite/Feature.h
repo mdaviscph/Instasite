@@ -15,4 +15,6 @@
 @property (strong, nonatomic) NSString *body;
 @property (strong, nonatomic) NSString *imageSrc;
 
+- (NSString *)description;
+
 @end

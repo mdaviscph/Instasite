@@ -9,12 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface FileManager : NSObject <NSFileManagerDelegate>
-- (void)listAllLocalFiles;
-- (void)createFileWithName:(NSString *)fileName;
-- (void)deleteFileWithName:(NSString *)fileName;
-- (void)readFileWithName:(NSString *)fileName;
-- (void)writeString:(NSString *)content toFile:(NSString *)fileName;
-- (void)copyDirectory:(NSString *)directory;
+
 - (NSArray *)enumerateFilesInDirectory:(NSString *)directory;
+- (BOOL)copyDirectory:(NSString *)directory overwrite:(BOOL)overwrite;
 
 @end

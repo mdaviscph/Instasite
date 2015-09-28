@@ -14,4 +14,5 @@
 @property (strong,nonatomic) NSString *documentsDirectory;
 
 - (instancetype)initWithFilePath:(NSString *)filePath andFileName:(NSString *)fileName andDocumentsDirectory:(NSString *)directory;
+- (NSString *)description;
 @end

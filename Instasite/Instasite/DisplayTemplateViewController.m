@@ -34,46 +34,35 @@
   self.webView.navigationDelegate = self;
 
   [self copyDirectoryToDocumentsDir];
+
+  [self readHtmlTemplate];
+  
+  NSURL *htmlURL = [self indexHtmlURL];
+  [self.webView loadFileURL:htmlURL allowingReadAccessToURL:htmlURL];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
   
-  self.navigationController.navigationBarHidden = NO;
-  
-  NSURL *htmlUrl = [self displayTemplate];
-  [self.webView loadFileURL:htmlUrl allowingReadAccessToURL:htmlUrl];
+  self.navigationController.navigationBarHidden = YES;
+  [self.webView reload];
+//  [self.webView reloadFromOrigin];
 }
 
 #pragma mark - Helper Methods
 
-- (NSURL *)displayTemplate {
-  
-  if (!self.tabBarVC.templateDirectory) {
-    return nil;
-  }
-  
-  if (!self.tabBarVC.workingHtml) {
-    self.tabBarVC.workingHtml = [[HtmlTemplate alloc] initWithPath:kTemplateMarkerFilename ofType:kTemplateIndexFiletype inDirectory:self.tabBarVC.templateDirectory];
-  }
-
+- (NSURL *)indexHtmlURL {
   return [HtmlTemplate genURL:kTemplateIndexFilename ofType:kTemplateIndexFiletype inDirectory:self.tabBarVC.templateDirectory];
 }
 
-// Copy the entire template folder from main bundle to the documents directory
--(void)copyDirectoryToDocumentsDir {
-  FileManager *fm = [[FileManager alloc]init];
-  [fm copyDirectory:self.tabBarVC.templateDirectory];
+- (void)readHtmlTemplate {
+  self.tabBarVC.templateCopy = [[HtmlTemplate alloc] initWithPath:kTemplateMarkerFilename ofType:kTemplateIndexFiletype inDirectory:self.tabBarVC.templateDirectory];
 }
 
-- (BOOL)createWorkingFile:(NSString *)filename {
-  
-  // TODO - get some identifier for the user to use as filename or part of filename
-  if ([self.tabBarVC.workingHtml writeToFile:filename ofType:kTemplateIndexFiletype inDirectory:self.tabBarVC.templateDirectory]) {
-    return YES;
-  }
-  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, kTemplateIndexFiletype, self.tabBarVC.templateDirectory);
-  return NO;
+// Copy the entire template folder from main bundle to the documents directory one time
+-(void)copyDirectoryToDocumentsDir {
+  FileManager *fm = [[FileManager alloc] init];
+  [fm copyDirectory:self.tabBarVC.templateDirectory overwrite:NO];
 }
 
 @end

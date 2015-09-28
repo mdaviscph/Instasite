@@ -17,5 +17,6 @@
 @property (strong, nonatomic) NSArray *features;
 
 - (instancetype)initWithFeatures:(NSUInteger)count;
+- (NSString *)description;
 
 @end

@@ -55,29 +55,42 @@
 #pragma mark - UIImagePickerControllerDelegate, UINavigationControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+  
   [picker dismissViewControllerAnimated:YES completion:nil];
+  
   UIImage *image = info[UIImagePickerControllerEditedImage];
   NSData *data = UIImageJPEGRepresentation(image, 1.0);
   
-  NSString *imageFile = [NSString stringWithFormat:@"%@%ld", kTemplateImagePrefix, (long)self.selectedFeature];
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  NSString *imageFile = [NSString stringWithFormat:@"%@%ld", kTemplateImagePrefix, self.selectedFeature + 1];
   NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
   NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
   NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImagesDirectory];
   NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
   NSString *pathWithType = [filepath stringByAppendingPathExtension:@"jpg"];
-  
+
+  if (![fileManager fileExistsAtPath:imagesDirectory isDirectory:nil]) {
+    NSError *error;
+    [fileManager createDirectoryAtPath:imagesDirectory withIntermediateDirectories:NO attributes:nil error:&error];
+    if (error) {
+      NSLog(@"Error! Attempt to create directory at path: [%@] error: %@", imagesDirectory, error.localizedDescription);
+      return;
+    }
+  }
+
   NSLog(@"Write file: %@", pathWithType);
-  if (![[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil]) {
+  if (![fileManager createFileAtPath:pathWithType contents:data attributes:nil]) {
     NSLog(@"Error! Cannot create file: %@", pathWithType);
     return;
   }
   
   NSString *relativeFilepath = [kTemplateImagesDirectory stringByAppendingPathComponent:imageFile];
   NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:@"jpg"];
-  [self.tabBarVC.workingHtml insertImageReference:self.selectedFeature imageSource:relativePathWithType];
+  [self.tabBarVC.templateCopy insertImageReference:self.selectedFeature imageSource:relativePathWithType];
   Feature *feature = self.userInput.features[self.selectedFeature];
   feature.imageSrc = relativePathWithType;
 }
+
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
   [picker dismissViewControllerAnimated:YES completion:nil];
 }

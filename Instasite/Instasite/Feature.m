@@ -7,8 +7,12 @@
 //
 
 #import "Feature.h"
+#import "Extensions.h"
 
 @implementation Feature
 
-
+- (NSString *)description {
+  return [NSString stringWithFormat:@"(%@)(%@)(%@)[%@]", self.headline, self.subheadline, [self.body abbreviate:10], self.imageSrc];
+}
+          
 @end

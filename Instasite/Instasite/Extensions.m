@@ -10,9 +10,10 @@
 
 @implementation UITextField (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
+- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type text:(NSString *)text placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
   self = [self init];
   if (self) {
+    self.text = text;
     self.placeholder = placeholder;
     self.borderStyle = style;
     self.returnKeyType = UIReturnKeyDone;
@@ -27,13 +28,11 @@
 
 @implementation UITextView (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
+- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type text:(NSString *)text placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
   self = [self init];
   if (self) {
-    UIColor *placeholderColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
+    [self setText:text orPlaceholder:placeholder];
     UIColor *borderColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:0.7];
-    self.textColor = placeholderColor;
-    self.text = placeholder;
     if (style == UITextBorderStyleRoundedRect) {
       self.layer.borderColor = borderColor.CGColor;
       self.layer.borderWidth = 0.8;
@@ -47,6 +46,11 @@
   return self;
 }
 
+- (void)setText:(NSString *)text orPlaceholder:(NSString *)placeholder {
+  UIColor *placeholderColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
+  self.textColor = text ? [UIColor blackColor] : placeholderColor;
+  self.text = text ? text : placeholder;
+}
 - (void)clearPlaceholder {
   if (![self.textColor isEqual:[UIColor blackColor]]) {
     self.text = nil;
@@ -66,6 +70,14 @@
   [self setContentHuggingPriority:800 forAxis:UILayoutConstraintAxisVertical];
   [self setContentCompressionResistancePriority:200 forAxis:UILayoutConstraintAxisVertical];
   return self;
+}
+
+@end
+
+@implementation NSString (Extensions)
+
+- (NSString *)abbreviate:(NSUInteger)anIndex {
+  return self.length > anIndex ? [[self substringToIndex:anIndex] stringByAppendingString:@"..."] : self;
 }
 
 @end
