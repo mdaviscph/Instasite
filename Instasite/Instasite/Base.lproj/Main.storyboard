@@ -52,7 +52,7 @@
                                                     <constraint firstAttribute="height" constant="200" id="tWb-o5-Ngf"/>
                                                 </constraints>
                                             </stackView>
-                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Vei-hf-UBf">
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Vei-hf-UBf" customClass="SegmentedControl">
                                                 <rect key="frame" x="0.0" y="208" width="580" height="31"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="E5G-jd-JBp"/>

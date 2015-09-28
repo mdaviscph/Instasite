@@ -174,6 +174,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		009403F91BB999FB005E547C /* User Input */ = {
+			isa = PBXGroup;
+			children = (
+				00E9289C1BB1A9BA00383BD0 /* Feature.h */,
+				00E9289D1BB1A9BA00383BD0 /* Feature.m */,
+				00E928A21BB1AB0100383BD0 /* TemplateInput.h */,
+				00E928A31BB1AB0100383BD0 /* TemplateInput.m */,
+			);
+			name = "User Input";
+			sourceTree = "<group>";
+		};
 		221BCA201BB472C50057A272 /* Test Image */ = {
 			isa = PBXGroup;
 			children = (
@@ -182,7 +193,7 @@
 			name = "Test Image";
 			sourceTree = "<group>";
 		};
-		221BCA231BB4B9180057A272 /* File Classes */ = {
+		221BCA231BB4B9180057A272 /* Files */ = {
 			isa = PBXGroup;
 			children = (
 				221BCA241BB4B92E0057A272 /* ImageFile.h */,
@@ -190,7 +201,7 @@
 				221BCA281BB4B9460057A272 /* CSSFile.h */,
 				221BCA291BB4B9460057A272 /* CSSFile.m */,
 			);
-			name = "File Classes";
+			name = Files;
 			sourceTree = "<group>";
 		};
 		227C86731BB0770800799CD3 /* Controllers */ = {
@@ -232,13 +243,10 @@
 		227C86751BB0772E00799CD3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				221BCA231BB4B9180057A272 /* File Classes */,
 				00E928961BB1A07200383BD0 /* HtmlTemplate.h */,
 				00E928971BB1A07200383BD0 /* HtmlTemplate.m */,
-				00E9289C1BB1A9BA00383BD0 /* Feature.h */,
-				00E9289D1BB1A9BA00383BD0 /* Feature.m */,
-				00E928A21BB1AB0100383BD0 /* TemplateInput.h */,
-				00E928A31BB1AB0100383BD0 /* TemplateInput.m */,
+				009403F91BB999FB005E547C /* User Input */,
+				221BCA231BB4B9180057A272 /* Files */,
 			);
 			name = Models;
 			sourceTree = "<group>";

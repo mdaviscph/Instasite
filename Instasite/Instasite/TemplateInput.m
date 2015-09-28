@@ -8,6 +8,7 @@
 
 #import "TemplateInput.h"
 #import "Feature.h"
+#import "Extensions.h"
 
 @implementation TemplateInput
 
@@ -23,4 +24,7 @@
   return self;
 }
 
+- (NSString *)description {
+  return [NSString stringWithFormat:@"(%@)(%@)(%@)(%@)(%lu features)", self.title, self.subtitle, [self.summary abbreviate:10], self.copyright, self.features.count];
+}
 @end
