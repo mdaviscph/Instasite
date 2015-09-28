@@ -10,9 +10,9 @@
 #import "EditViewControllerImagePickerExtension.h"
 #import "Extensions.h"
 #import "HtmlTemplate.h"
-#import "TemplateData.h"
+#import "TemplateInput.h"
 #import "Feature.h"
-#import "JsonData.h"
+#import "JsonService.h"
 #import "Constants.h"
 #import "TemplateTabBarController.h"
 #import "PublishViewController.h"
@@ -48,8 +48,26 @@
   [super viewDidLoad];
   
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
+  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonTapped)];
+
   self.markers = [self.tabBarVC.workingHtml templateMarkers];
-  
+  NSArray *features = self.markers[kFeatureArray];
+
+  [self.featureSegmentedControl removeAllSegments];
+  for (NSUInteger index = 0; index < features.count; index++) {
+    NSDictionary *featureDict = features[index];
+    if (featureDict.count > 0) {
+      [self.featureSegmentedControl insertSegmentWithTitle:[NSString stringWithFormat:@"Feature %lu", index+1] atIndex:index animated:YES];
+    }
+  }
+
+  NSData *jsonData = [JsonService readJsonFile:kTemplateJsonFilename type:kTemplateJsonFiletype directory:self.tabBarVC.templateDirectory];
+  if (jsonData) {
+    self.userInput = [JsonService templateInputFrom:jsonData];
+  } else {
+    self.userInput = [[TemplateInput alloc] initWithFeatures:features.count];
+  }
+
   self.topStackSpacing = 6;
   self.topTextViewHeight = 60;
   self.bottomStackSpacing = 6;
@@ -66,12 +84,20 @@
   if (self.markers[kMarkerTitle]) {
     UITextField *titleField = [[UITextField alloc] initWithMarkerType:HtmlMarkerTitle placeholder:@"Title text..." borderStyle:UITextBorderStyleRoundedRect];
     titleField.delegate = self;
+    if (self.userInput.title) {
+      titleField.text = self.userInput.title;
+    }
+    
     [self.topStackView addArrangedSubview:titleField];
     topStackHeight += titleField.intrinsicContentSize.height + self.topStackSpacing;
   }
   if (self.markers[kMarkerSubtitle]) {
     UITextField *subtitleField = [[UITextField alloc] initWithMarkerType:HtmlMarkerSubtitle placeholder:@"Subtitle text..." borderStyle:UITextBorderStyleRoundedRect];
     subtitleField.delegate = self;
+    if (self.userInput.subtitle) {
+      subtitleField.text = self.userInput.subtitle;
+    }
+    
     [self.topStackView addArrangedSubview:subtitleField];
     topStackHeight += subtitleField.intrinsicContentSize.height + self.topStackSpacing;
   }
@@ -80,38 +106,30 @@
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:summaryTextView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.topTextViewHeight];
     constraint.active = YES;
     summaryTextView.delegate = self;
+    if (self.userInput.summary) {
+      summaryTextView.text = self.userInput.summary;
+    }
+    
     [self.topStackView addArrangedSubview:summaryTextView];
     topStackHeight += self.topTextViewHeight + self.topStackSpacing;
   }
   if (self.markers[kMarkerCopyright]) {
     UITextField *copyrightField = [[UITextField alloc] initWithMarkerType:HtmlMarkerCopyright placeholder:@"Copyright text..." borderStyle:UITextBorderStyleRoundedRect];
     copyrightField.delegate = self;
+    if (self.userInput.copyright) {
+      copyrightField.text = self.userInput.copyright;
+    }
+    
     [self.topStackView addArrangedSubview:copyrightField];
     topStackHeight += copyrightField.intrinsicContentSize.height + self.topStackSpacing;
   }
   NSLayoutConstraint *topStackHeightConstraint = [NSLayoutConstraint constraintWithItem:self.topStackView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:topStackHeight];
   topStackHeightConstraint.active = YES;
-  
-  NSArray *features = self.markers[kFeatureArray];
-  [self.featureSegmentedControl removeAllSegments];
-  for (NSUInteger index = 0; index < features.count; index++) {
-    NSDictionary *featureDict = features[index];
-    if (featureDict.count > 0) {
-      [self.featureSegmentedControl insertSegmentWithTitle:[NSString stringWithFormat:@"%lu", index+1] atIndex:index animated:YES];
-    }
-  }
 
   self.featureSegmentedControl.delegate = self;
   self.selectedFeature = 0;
   self.featureSegmentedControl.selectedSegmentIndex = self.selectedFeature;
   [self addFeatureControlsForFeature:self.selectedFeature];
-  
-  self.userData = [[TemplateData alloc] init];
-  NSMutableArray *mutableFeatures = [[NSMutableArray alloc] init];
-  for (NSUInteger index = 0; index < features.count; index++) {
-    [mutableFeatures addObject:[[Feature alloc] init]];
-  }
-  self.userData.features = mutableFeatures;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -127,6 +145,7 @@
 }
 
 #pragma mark - Helper Methods
+
 - (void)addFeatureControlsForFeature:(NSInteger)index {
 
   NSUInteger bottomStackHeight = 0;
@@ -135,7 +154,7 @@
   if (index < 0 || index >= features.count) {
     return;
   }
-  Feature *feature = self.userData.features[index];
+  Feature *feature = self.userInput.features[index];
   
   NSDictionary *featureDict = features[index];
   if (featureDict[kMarkerHead]) {
@@ -184,22 +203,6 @@
   
   // TODO - get some identifier for the user to use as filename or part of filename
   if ([self.tabBarVC.workingHtml writeToFile:filename ofType:type inDirectory:self.tabBarVC.templateDirectory]) {
-    return YES;
-  }
-  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, type, self.tabBarVC.templateDirectory);
-  return NO;
-}
-
-- (BOOL)writeJsonFile:(NSData *)data filename:(NSString *)filename ofType:(NSString *)type {
-  
-  // TODO - get some identifier for the user to use as filename or part of filename
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:filename];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
-  
-  NSLog(@"Write file: %@", pathWithType);
-  if ([[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil]) {
     return YES;
   }
   NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, type, self.tabBarVC.templateDirectory);
@@ -268,8 +271,8 @@
 
 - (void)saveButtonTapped {
   
-  NSData *jsonData = [JsonData fromTemplateData:self.userData];
-  [self writeJsonFile:jsonData filename:kTemplateJsonFilename ofType:kTemplateJsonFiletype];
+  NSData *jsonData = [JsonService fromTemplateInput:self.userInput];
+  [JsonService writeJsonFile:jsonData filename:kTemplateJsonFilename type:kTemplateJsonFiletype directory:self.tabBarVC.templateDirectory];
   
   [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
   
@@ -338,29 +341,29 @@
   switch (textField.tag) {
     case HtmlMarkerTitle:
       [self.tabBarVC.workingHtml insertTitle:textField.text];
-      self.userData.title = textField.text;
+      self.userInput.title = textField.text;
       break;
     case HtmlMarkerSubtitle:
       [self.tabBarVC.workingHtml insertSubtitle:textField.text];
-      self.userData.subtitle = textField.text;
+      self.userInput.subtitle = textField.text;
       break;
     case HtmlMarkerHeadline:
     {
       [self.tabBarVC.workingHtml insertFeature: self.selectedFeature headline:textField.text];
-      Feature *feature = self.userData.features[self.selectedFeature];
+      Feature *feature = self.userInput.features[self.selectedFeature];
       feature.headline = textField.text;
       break;
     }
     case HtmlMarkerSubheadline:
     {
       [self.tabBarVC.workingHtml insertFeature: self.selectedFeature subheadline:textField.text];
-      Feature *feature = self.userData.features[self.selectedFeature];
+      Feature *feature = self.userInput.features[self.selectedFeature];
       feature.subheadline = textField.text;
       break;
     }
     case HtmlMarkerCopyright:
       [self.tabBarVC.workingHtml insertCopyright:textField.text];
-      self.userData.copyright = textField.text;
+      self.userInput.copyright = textField.text;
       break;
   }
 }
@@ -372,12 +375,12 @@
 
   [textView clearPlaceholder];
   self.lastTextEditingView = textView;
-  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone target: self action: @selector(doneButtonTapped)];
+  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneButtonTapped)];
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
 
-  self.tabBarVC.navigationItem.rightBarButtonItem = nil;
+  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonTapped)];
 
   switch (textView.tag) {
     case HtmlMarkerSummary:
@@ -386,7 +389,7 @@
     case HtmlMarkerBody:
     {
       [self.tabBarVC.workingHtml insertFeature: self.selectedFeature body:textView.text];
-      Feature *feature = self.userData.features[self.selectedFeature];
+      Feature *feature = self.userInput.features[self.selectedFeature];
       feature.body = textView.text;
       break;
     }

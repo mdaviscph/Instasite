@@ -8,7 +8,7 @@
 
 #import "EditViewControllerImagePickerExtension.h"
 #import "EditViewController.h"
-#import "TemplateData.h"
+#import "TemplateInput.h"
 #import "TemplateTabBarController.h"
 #import "HtmlTemplate.h"
 #import "Feature.h"
@@ -75,7 +75,7 @@
   NSString *relativeFilepath = [kTemplateImagesDirectory stringByAppendingPathComponent:imageFile];
   NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:@"jpg"];
   [self.tabBarVC.workingHtml insertImageReference:self.selectedFeature imageSource:relativePathWithType];
-  Feature *feature = self.userData.features[self.selectedFeature];
+  Feature *feature = self.userInput.features[self.selectedFeature];
   feature.imageSrc = relativePathWithType;
 }
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
