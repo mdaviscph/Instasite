@@ -27,6 +27,8 @@
 @property (weak, nonatomic) IBOutlet UIStackView *topStackView;
 @property (weak, nonatomic) IBOutlet UIStackView *bottomStackView;
 @property (weak, nonatomic) IBOutlet SegmentedControl *featureSegmentedControl;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topStackViewHeightConstraint;
 
 @property (nonatomic) NSUInteger topStackSpacing;
 @property (nonatomic) NSUInteger bottomStackSpacing;
@@ -40,54 +42,6 @@
 
 @implementation EditViewController
 
-#pragma mark - IBActions
-
-- (IBAction)publishButtonTapped:(UIButton *)sender {
-
-  NSData *jsonData = [JsonData fromTemplateData:self.userData];
-  [self writeJsonFile:jsonData filename:kTemplateJsonFilename ofType:kTemplateJsonFiletype];
-  
-  [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
-  
-  if (![SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
-    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
-    UIViewController *oauthVC = [oauthStoryboard instantiateInitialViewController];
-    [self.navigationController pushViewController:oauthVC animated:YES];
-  }
-  if ([SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
-    UIStoryboard *publishStoryboard = [UIStoryboard storyboardWithName:@"Publish" bundle:[NSBundle mainBundle]];
-    PublishViewController *publishVC = [publishStoryboard instantiateInitialViewController];
-    
-    FileManager *fm = [[FileManager alloc]init];
-    NSArray *files = [fm enumerateFilesInDirectory:self.tabBarVC.templateDirectory];
-
-    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-
-    publishVC.indexHtmlFilePath = workingDirectory;
-    publishVC.JSONfilePath = workingDirectory;
-    for (CSSFile *file in files[0]) {
-      NSLog(@"CSS: [%@] {%@}", file.filePath, file.fileName);
-    }
-    for (ImageFile *file in files[1]) {
-      NSLog(@"IMAGE: [%@] {%@}", file.filePath, file.fileName);
-    }
-    publishVC.supportingFilePaths = files[0];
-    publishVC.imageFilePaths = files[1];
-    [self.navigationController pushViewController:publishVC animated:YES];
-  }
-}
-
-- (IBAction)featureSegmentedControlTapped:(UISegmentedControl *)sender {
-
-  self.selectedFeature = sender.selectedSegmentIndex;
-  for (UIView *subview in self.bottomStackView.arrangedSubviews) {
-    [self.bottomStackView removeArrangedSubview:subview];
-    [subview removeFromSuperview];
-  }
-  [self addFeatureControlsForFeature:sender.selectedSegmentIndex];
-}
-
 #pragma mark - Lifecycle Methods
 
 - (void)viewDidLoad {
@@ -96,20 +50,13 @@
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
   self.markers = [self.tabBarVC.workingHtml templateMarkers];
   
-  // turn off the fixed height constraint
-  for (NSLayoutConstraint* constraint in self.topStackView.constraints) {
-    if (constraint.firstAttribute == NSLayoutAttributeHeight) {
-      constraint.active = NO;
-    }
-  }
-  
   self.topStackSpacing = 6;
   self.topTextViewHeight = 60;
-
   self.bottomStackSpacing = 6;
   self.bottomTextViewHeight = 60;
   
   NSUInteger topStackHeight = 0;
+  self.topStackViewHeightConstraint.active = NO;
   
   self.topStackView.axis = UILayoutConstraintAxisVertical;
   self.topStackView.spacing = self.topStackSpacing;
@@ -170,10 +117,12 @@
 -(void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
   self.navigationController.navigationBarHidden = NO;
+  [self startObservingKeyboardEvents];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
   [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
+  [self stopObservingKeyboardEvents];
   [super viewWillDisappear:animated];
 }
 
@@ -215,6 +164,7 @@
     constraint.active = YES;
     bodyTextView.delegate = self;
     if (feature.body) {
+      [bodyTextView clearPlaceholder];
       bodyTextView.text = feature.body;
     }
     
@@ -222,7 +172,7 @@
     bottomStackHeight += self.bottomTextViewHeight + self.bottomStackSpacing;
   }
   if (featureDict[kMarkerImageSrc]) {
-    UIButton *imageSrcButton = [[UIButton alloc] initWithMarkerType:HtmlMarkerImageSrc text:@"Select Image"];
+    UIButton *imageSrcButton = [[UIButton alloc] initWithTitle:@"Select Image"];
     [imageSrcButton addTarget:self action:@selector(selectImageButtonUp:) forControlEvents:UIControlEventTouchUpInside];
     [imageSrcButton setTitleColor:self.view.tintColor forState:UIControlStateNormal];
     [self.bottomStackView addArrangedSubview:imageSrcButton];
@@ -256,6 +206,33 @@
   return NO;
 }
 
+- (void)advanceNextResponder:(UIView *)textEditingView {
+
+  NSInteger tag = textEditingView.tag;
+  UIView *parentView = self.topStackView;
+  UIResponder* nextResponder;
+  do {
+    if (tag >= HtmlMarkerTextEditStartOfFeature) {
+      parentView = self.bottomStackView;
+    }
+    nextResponder = [parentView viewWithTag:++tag];
+  } while (!nextResponder && tag < HtmlMarkerTextEditEndOfFeature);
+  if (nextResponder) {
+    [nextResponder becomeFirstResponder];
+  } else {
+    [textEditingView resignFirstResponder];
+  }
+}
+
+- (void)startObservingKeyboardEvents {
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+- (void)stopObservingKeyboardEvents {
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
 - (void)nslogMarkerDictionary {
   for (NSString *key in [self.markers allKeys]) {
     if ([key isEqualToString:kFeatureArray]) {
@@ -277,20 +254,72 @@
   }
 }
 
-#pragma mark - Selector Methods
-- (void)selectImageButtonUp:(UIButton *)sender {
+#pragma mark - IBActions, Selector Methods
+
+- (IBAction)featureSegmentedControlChange:(UISegmentedControl *)sender {
   
-  switch (sender.tag) {
-    case HtmlMarkerImageSrc:
-    {
-      NSLog(@"image src button pressed");
-      [self actionSheetForImageSelection:sender];
-      break;
+  self.selectedFeature = sender.selectedSegmentIndex;
+  for (UIView *subview in self.bottomStackView.arrangedSubviews) {
+    [self.bottomStackView removeArrangedSubview:subview];
+    [subview removeFromSuperview];
+  }
+  [self addFeatureControlsForFeature:sender.selectedSegmentIndex];
+}
+
+- (void)saveButtonTapped {
+  
+  NSData *jsonData = [JsonData fromTemplateData:self.userData];
+  [self writeJsonFile:jsonData filename:kTemplateJsonFilename ofType:kTemplateJsonFiletype];
+  
+  [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
+  
+  if (![SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
+    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
+    UIViewController *oauthVC = [oauthStoryboard instantiateInitialViewController];
+    [self.navigationController pushViewController:oauthVC animated:YES];
+  }
+  if ([SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
+    UIStoryboard *publishStoryboard = [UIStoryboard storyboardWithName:@"Publish" bundle:[NSBundle mainBundle]];
+    PublishViewController *publishVC = [publishStoryboard instantiateInitialViewController];
+    
+    FileManager *fm = [[FileManager alloc]init];
+    NSArray *files = [fm enumerateFilesInDirectory:self.tabBarVC.templateDirectory];
+    
+    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+    
+    publishVC.indexHtmlFilePath = workingDirectory;
+    publishVC.JSONfilePath = workingDirectory;
+    for (CSSFile *file in files[0]) {
+      NSLog(@"CSS: [%@] {%@}", file.filePath, file.fileName);
     }
+    for (ImageFile *file in files[1]) {
+      NSLog(@"IMAGE: [%@] {%@}", file.filePath, file.fileName);
+    }
+    publishVC.supportingFilePaths = files[0];
+    publishVC.imageFilePaths = files[1];
+    [self.navigationController pushViewController:publishVC animated:YES];
   }
 }
+
+- (void)selectImageButtonUp:(UIButton *)sender {  
+  [self actionSheetForImageSelection:sender];
+}
+
 - (void)doneButtonTapped {
-  [self.lastTextEditingView endEditing:YES];
+  [self advanceNextResponder:self.lastTextEditingView];
+  //[self.lastTextEditingView endEditing:YES];
+}
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+  
+  NSDictionary *userInfo = notification.userInfo;
+  CGRect rect = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+  rect = [self.view convertRect:rect fromView:nil];
+  self.scrollView.contentInset = UIEdgeInsetsMake(0.0, 0.0, rect.size.height, 0.0);
+}
+- (void)keyboardWillHide:(NSNotification *)notification {
+  self.scrollView.contentInset = UIEdgeInsetsZero;
 }
 
 #pragma mark - UITextFieldDelegate
@@ -300,8 +329,8 @@
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
-  [textField resignFirstResponder];
-  return true;
+  [self advanceNextResponder:textField];
+  return NO;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
@@ -331,7 +360,7 @@
     }
     case HtmlMarkerCopyright:
       [self.tabBarVC.workingHtml insertCopyright:textField.text];
-      self.userData.title = textField.text;
+      self.userData.copyright = textField.text;
       break;
   }
 }
@@ -340,7 +369,8 @@
 #pragma mark - UITextViewDelegate
 
 -(void)textViewDidBeginEditing:(UITextView *)textView {
-  
+
+  [textView clearPlaceholder];
   self.lastTextEditingView = textView;
   self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone target: self action: @selector(doneButtonTapped)];
 }

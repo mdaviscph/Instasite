@@ -10,7 +10,7 @@
 
 @implementation UITextField (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerType)type placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
+- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
   self = [self init];
   if (self) {
     self.placeholder = placeholder;
@@ -27,12 +27,15 @@
 
 @implementation UITextView (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerType)type placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
+- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
   self = [self init];
   if (self) {
-    //self.attributedText = [AttributedText placeholder:placeholder];
+    UIColor *placeholderColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
+    UIColor *borderColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:0.7];
+    self.textColor = placeholderColor;
+    self.text = placeholder;
     if (style == UITextBorderStyleRoundedRect) {
-      self.layer.borderColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:0.7].CGColor;
+      self.layer.borderColor = borderColor.CGColor;
       self.layer.borderWidth = 0.8;
       self.layer.cornerRadius = 5.0;
     }
@@ -44,15 +47,21 @@
   return self;
 }
 
+- (void)clearPlaceholder {
+  if (![self.textColor isEqual:[UIColor blackColor]]) {
+    self.text = nil;
+    self.textColor = [UIColor blackColor];
+  }
+}
+
 @end
 
 @implementation UIButton (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerType)type text:(NSString *)text {
+- (instancetype)initWithTitle:(NSString *)text {
   self = [self init];
   if (self) {
     [self setTitle:text forState:UIControlStateNormal];
-    self.tag = type;
   }
   [self setContentHuggingPriority:800 forAxis:UILayoutConstraintAxisVertical];
   [self setContentCompressionResistancePriority:200 forAxis:UILayoutConstraintAxisVertical];
