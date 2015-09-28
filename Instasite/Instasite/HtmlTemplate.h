@@ -17,18 +17,18 @@ enum HtmlTemplatePlacement: NSInteger {
 };
 typedef enum HtmlTemplatePlacement HtmlTemplatePlacement;
 
-enum HtmlMarkerType {
-  HtmlMarkerTitle,
+enum HtmlMarkerTextEdit: NSInteger {
+  HtmlMarkerTitle = 1,
   HtmlMarkerSubtitle,
   HtmlMarkerSummary,
   HtmlMarkerCopyright,
-  HtmlMarkerFeature,
+  HtmlMarkerTextEditStartOfFeature, // this is not a marker type but an indicator to use when assigning next responder
   HtmlMarkerHeadline,
   HtmlMarkerSubheadline,
   HtmlMarkerBody,
-  HtmlMarkerImageSrc
+  HtmlMarkerTextEditEndOfFeature    // this is not a marker type but an indicator to use when assigning next responder
 };
-typedef enum HtmlMarkerType HtmlMarkerType;
+typedef enum HtmlMarkerTextEdit HtmlMarkerTextEdit;
 
 extern NSString *const kMarkerBase;
 extern NSString *const kMarkerTitle;

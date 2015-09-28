@@ -7,11 +7,12 @@
 //
 
 #import "EditViewController.h"
+#import "EditViewControllerImagePickerExtension.h"
 #import "Extensions.h"
 #import "HtmlTemplate.h"
-#import "TemplateData.h"
+#import "TemplateInput.h"
 #import "Feature.h"
-#import "JsonData.h"
+#import "JsonService.h"
 #import "Constants.h"
 #import "TemplateTabBarController.h"
 #import "PublishViewController.h"
@@ -19,94 +20,61 @@
 #import "FileManager.h"
 #import "CSSFile.h"
 #import "ImageFile.h"
+#import "SegmentedControl.h"
 
-@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, SegmentedControlDelegate>
 
 @property (weak, nonatomic) IBOutlet UIStackView *topStackView;
 @property (weak, nonatomic) IBOutlet UIStackView *bottomStackView;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *featureSegmentedControl;
+@property (weak, nonatomic) IBOutlet SegmentedControl *featureSegmentedControl;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topStackViewHeightConstraint;
 
 @property (nonatomic) NSUInteger topStackSpacing;
 @property (nonatomic) NSUInteger bottomStackSpacing;
 @property (nonatomic) NSUInteger topTextViewHeight;
 @property (nonatomic) NSUInteger bottomTextViewHeight;
+@property (nonatomic) UIView *lastTextEditingView;
 
-@property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 @property (strong, nonatomic) NSDictionary *markers;
-
-@property (strong, nonatomic) TemplateData *userData;
 
 @end
 
 @implementation EditViewController
 
-- (IBAction)publishButtonTapped:(UIButton *)sender {
-
-  NSData *jsonData = [JsonData fromTemplateData:self.userData];
-  [self writeJsonFile:jsonData filename:kTemplateJsonFilename ofType:kTemplateJsonFiletype];
-  
-  [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
-  
-  if (![SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
-    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
-    UIViewController *oauthVC = [oauthStoryboard instantiateInitialViewController];
-    [self.navigationController pushViewController:oauthVC animated:YES];
-  }
-  if ([SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
-    UIStoryboard *publishStoryboard = [UIStoryboard storyboardWithName:@"Publish" bundle:[NSBundle mainBundle]];
-    PublishViewController *publishVC = [publishStoryboard instantiateInitialViewController];
-    
-    FileManager *fm = [[FileManager alloc]init];
-    NSArray *files = [fm enumerateFilesInDirectory:self.tabBarVC.templateDirectory];
-
-    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-
-    publishVC.indexHtmlFilePath = workingDirectory;
-    publishVC.JSONfilePath = workingDirectory;
-    for (CSSFile *file in files[0]) {
-      NSLog(@"CSS: [%@] {%@}", file.filePath, file.fileName);
-    }
-    for (ImageFile *file in files[1]) {
-      NSLog(@"IMAGE: [%@] {%@}", file.filePath, file.fileName);
-    }
-    publishVC.supportingFilePaths = files[0];
-    publishVC.imageFilePaths = files[1];
-    [self.navigationController pushViewController:publishVC animated:YES];
-  }
-}
-
-- (IBAction)featureSegmentedControlTapped:(UISegmentedControl *)sender {
-  for (UIView *subview in self.bottomStackView.arrangedSubviews) {
-    [self.bottomStackView removeArrangedSubview:subview];
-    [subview removeFromSuperview];
-  }
-  [self addFeatureControlsForFeature:sender.selectedSegmentIndex];
-}
-
 #pragma mark - Lifecycle Methods
+
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  self.navigationController.navigationBarHidden = NO;
-
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
+  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonTapped)];
+
   self.markers = [self.tabBarVC.workingHtml templateMarkers];
-  
-  // turn off the fixed height constraint
-  for (NSLayoutConstraint* constraint in self.topStackView.constraints) {
-    if (constraint.firstAttribute == NSLayoutAttributeHeight) {
-      constraint.active = NO;
+  NSArray *features = self.markers[kFeatureArray];
+
+  [self.featureSegmentedControl removeAllSegments];
+  for (NSUInteger index = 0; index < features.count; index++) {
+    NSDictionary *featureDict = features[index];
+    if (featureDict.count > 0) {
+      [self.featureSegmentedControl insertSegmentWithTitle:[NSString stringWithFormat:@"Feature %lu", index+1] atIndex:index animated:YES];
     }
   }
-  
+
+  NSData *jsonData = [JsonService readJsonFile:kTemplateJsonFilename type:kTemplateJsonFiletype directory:self.tabBarVC.templateDirectory];
+  if (jsonData) {
+    self.userInput = [JsonService templateInputFrom:jsonData];
+  } else {
+    self.userInput = [[TemplateInput alloc] initWithFeatures:features.count];
+  }
+
   self.topStackSpacing = 6;
   self.topTextViewHeight = 60;
-
   self.bottomStackSpacing = 6;
   self.bottomTextViewHeight = 60;
   
   NSUInteger topStackHeight = 0;
+  self.topStackViewHeightConstraint.active = NO;
   
   self.topStackView.axis = UILayoutConstraintAxisVertical;
   self.topStackView.spacing = self.topStackSpacing;
@@ -116,12 +84,20 @@
   if (self.markers[kMarkerTitle]) {
     UITextField *titleField = [[UITextField alloc] initWithMarkerType:HtmlMarkerTitle placeholder:@"Title text..." borderStyle:UITextBorderStyleRoundedRect];
     titleField.delegate = self;
+    if (self.userInput.title) {
+      titleField.text = self.userInput.title;
+    }
+    
     [self.topStackView addArrangedSubview:titleField];
     topStackHeight += titleField.intrinsicContentSize.height + self.topStackSpacing;
   }
   if (self.markers[kMarkerSubtitle]) {
     UITextField *subtitleField = [[UITextField alloc] initWithMarkerType:HtmlMarkerSubtitle placeholder:@"Subtitle text..." borderStyle:UITextBorderStyleRoundedRect];
     subtitleField.delegate = self;
+    if (self.userInput.subtitle) {
+      subtitleField.text = self.userInput.subtitle;
+    }
+    
     [self.topStackView addArrangedSubview:subtitleField];
     topStackHeight += subtitleField.intrinsicContentSize.height + self.topStackSpacing;
   }
@@ -130,43 +106,46 @@
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:summaryTextView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.topTextViewHeight];
     constraint.active = YES;
     summaryTextView.delegate = self;
+    if (self.userInput.summary) {
+      summaryTextView.text = self.userInput.summary;
+    }
+    
     [self.topStackView addArrangedSubview:summaryTextView];
     topStackHeight += self.topTextViewHeight + self.topStackSpacing;
   }
   if (self.markers[kMarkerCopyright]) {
     UITextField *copyrightField = [[UITextField alloc] initWithMarkerType:HtmlMarkerCopyright placeholder:@"Copyright text..." borderStyle:UITextBorderStyleRoundedRect];
     copyrightField.delegate = self;
+    if (self.userInput.copyright) {
+      copyrightField.text = self.userInput.copyright;
+    }
+    
     [self.topStackView addArrangedSubview:copyrightField];
     topStackHeight += copyrightField.intrinsicContentSize.height + self.topStackSpacing;
   }
   NSLayoutConstraint *topStackHeightConstraint = [NSLayoutConstraint constraintWithItem:self.topStackView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:topStackHeight];
   topStackHeightConstraint.active = YES;
-  
-  NSArray *features = self.markers[kFeatureArray];
-  [self.featureSegmentedControl removeAllSegments];
-  for (NSUInteger index = 0; index < features.count; index++) {
-    NSDictionary *featureDict = features[index];
-    if (featureDict.count > 0) {
-      [self.featureSegmentedControl insertSegmentWithTitle:[NSString stringWithFormat:@"%lu", index] atIndex:index animated:YES];
-    }
-  }
-  
-  [self addFeatureControlsForFeature:0];
-  self.featureSegmentedControl.selectedSegmentIndex = 0;
-  
-  self.userData = [[TemplateData alloc] init];
-  NSMutableArray *mutableFeatures = [[NSMutableArray alloc] init];
-  for (NSUInteger index = 0; index < features.count; index++) {
-    [mutableFeatures addObject:[[Feature alloc] init]];
-  }
-  self.userData.features = mutableFeatures;
+
+  self.featureSegmentedControl.delegate = self;
+  self.selectedFeature = 0;
+  self.featureSegmentedControl.selectedSegmentIndex = self.selectedFeature;
+  [self addFeatureControlsForFeature:self.selectedFeature];
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  self.navigationController.navigationBarHidden = NO;
+  [self startObservingKeyboardEvents];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
   [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
+  [self stopObservingKeyboardEvents];
+  [super viewWillDisappear:animated];
 }
 
 #pragma mark - Helper Methods
+
 - (void)addFeatureControlsForFeature:(NSInteger)index {
 
   NSUInteger bottomStackHeight = 0;
@@ -175,7 +154,7 @@
   if (index < 0 || index >= features.count) {
     return;
   }
-  Feature *feature = self.userData.features[index];
+  Feature *feature = self.userInput.features[index];
   
   NSDictionary *featureDict = features[index];
   if (featureDict[kMarkerHead]) {
@@ -204,6 +183,7 @@
     constraint.active = YES;
     bodyTextView.delegate = self;
     if (feature.body) {
+      [bodyTextView clearPlaceholder];
       bodyTextView.text = feature.body;
     }
     
@@ -211,7 +191,7 @@
     bottomStackHeight += self.bottomTextViewHeight + self.bottomStackSpacing;
   }
   if (featureDict[kMarkerImageSrc]) {
-    UIButton *imageSrcButton = [[UIButton alloc] initWithMarkerType:HtmlMarkerImageSrc text:@"Select Image"];
+    UIButton *imageSrcButton = [[UIButton alloc] initWithTitle:@"Select Image"];
     [imageSrcButton addTarget:self action:@selector(selectImageButtonUp:) forControlEvents:UIControlEventTouchUpInside];
     [imageSrcButton setTitleColor:self.view.tintColor forState:UIControlStateNormal];
     [self.bottomStackView addArrangedSubview:imageSrcButton];
@@ -229,56 +209,31 @@
   return NO;
 }
 
-- (BOOL)writeJsonFile:(NSData *)data filename:(NSString *)filename ofType:(NSString *)type {
-  
-  // TODO - get some identifier for the user to use as filename or part of filename
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:filename];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
-  
-  NSLog(@"Write file: %@", pathWithType);
-  if ([[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil]) {
-    return YES;
+- (void)advanceNextResponder:(UIView *)textEditingView {
+
+  NSInteger tag = textEditingView.tag;
+  UIView *parentView = self.topStackView;
+  UIResponder* nextResponder;
+  do {
+    if (tag >= HtmlMarkerTextEditStartOfFeature) {
+      parentView = self.bottomStackView;
+    }
+    nextResponder = [parentView viewWithTag:++tag];
+  } while (!nextResponder && tag < HtmlMarkerTextEditEndOfFeature);
+  if (nextResponder) {
+    [nextResponder becomeFirstResponder];
+  } else {
+    [textEditingView resignFirstResponder];
   }
-  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, type, self.tabBarVC.templateDirectory);
-  return NO;
 }
 
-- (void)actionSheetForImageSelection:(UIButton *)button {
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Select an Image" message:@"from" preferredStyle:UIAlertControllerStyleActionSheet];
-  alert.modalPresentationStyle = UIModalPresentationPopover;
-  alert.popoverPresentationController.sourceView = self.view;
-  alert.popoverPresentationController.sourceRect = button.frame;
-  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-      [self startImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
-    }];
-    [alert addAction:action];
-  }
-  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-      [self startImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-    }];
-    [alert addAction:action];
-  }
-  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Saved Photos Album" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-      [self startImagePickerForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
-    }];
-    [alert addAction:action];
-  }
-  UIAlertAction *cancelAction = [UIAlertAction actionWithTitle: @"Cancel" style:UIAlertActionStyleCancel handler:nil];
-  [alert addAction:cancelAction];
-  [self presentViewController:alert animated:YES completion: nil];
+- (void)startObservingKeyboardEvents {
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
-
-- (void)startImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
-  UIImagePickerController *imagePC = [[UIImagePickerController alloc] init];
-  imagePC.delegate = self;
-  imagePC.allowsEditing = YES;
-  imagePC.sourceType = sourceType;
-  [self presentViewController:imagePC animated:YES completion: nil];
+- (void)stopObservingKeyboardEvents {
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)nslogMarkerDictionary {
@@ -302,24 +257,83 @@
   }
 }
 
-#pragma mark - Selector Methods
-- (void)selectImageButtonUp:(UIButton *)sender {
+#pragma mark - IBActions, Selector Methods
+
+- (IBAction)featureSegmentedControlChange:(UISegmentedControl *)sender {
   
-  switch (sender.tag) {
-    case HtmlMarkerImageSrc:
-    {
-      NSLog(@"image src button pressed");
-      [self actionSheetForImageSelection:sender];
-      break;
-    }
+  self.selectedFeature = sender.selectedSegmentIndex;
+  for (UIView *subview in self.bottomStackView.arrangedSubviews) {
+    [self.bottomStackView removeArrangedSubview:subview];
+    [subview removeFromSuperview];
   }
+  [self addFeatureControlsForFeature:sender.selectedSegmentIndex];
+}
+
+- (void)saveButtonTapped {
+  
+  NSData *jsonData = [JsonService fromTemplateInput:self.userInput];
+  [JsonService writeJsonFile:jsonData filename:kTemplateJsonFilename type:kTemplateJsonFiletype directory:self.tabBarVC.templateDirectory];
+  
+  [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
+  
+  if (![SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
+    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
+    UIViewController *oauthVC = [oauthStoryboard instantiateInitialViewController];
+    [self.navigationController pushViewController:oauthVC animated:YES];
+  }
+  if ([SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
+    UIStoryboard *publishStoryboard = [UIStoryboard storyboardWithName:@"Publish" bundle:[NSBundle mainBundle]];
+    PublishViewController *publishVC = [publishStoryboard instantiateInitialViewController];
+    
+    FileManager *fm = [[FileManager alloc]init];
+    NSArray *files = [fm enumerateFilesInDirectory:self.tabBarVC.templateDirectory];
+    
+    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+    
+    publishVC.indexHtmlFilePath = workingDirectory;
+    publishVC.JSONfilePath = workingDirectory;
+    for (CSSFile *file in files[0]) {
+      NSLog(@"CSS: [%@] {%@}", file.filePath, file.fileName);
+    }
+    for (ImageFile *file in files[1]) {
+      NSLog(@"IMAGE: [%@] {%@}", file.filePath, file.fileName);
+    }
+    publishVC.supportingFilePaths = files[0];
+    publishVC.imageFilePaths = files[1];
+    [self.navigationController pushViewController:publishVC animated:YES];
+  }
+}
+
+- (void)selectImageButtonUp:(UIButton *)sender {  
+  [self actionSheetForImageSelection:sender];
+}
+
+- (void)doneButtonTapped {
+  [self advanceNextResponder:self.lastTextEditingView];
+  //[self.lastTextEditingView endEditing:YES];
+}
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+  
+  NSDictionary *userInfo = notification.userInfo;
+  CGRect rect = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+  rect = [self.view convertRect:rect fromView:nil];
+  self.scrollView.contentInset = UIEdgeInsetsMake(0.0, 0.0, rect.size.height, 0.0);
+}
+- (void)keyboardWillHide:(NSNotification *)notification {
+  self.scrollView.contentInset = UIEdgeInsetsZero;
 }
 
 #pragma mark - UITextFieldDelegate
 
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
+  self.lastTextEditingView = textField;
+}
+
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
-  [textField resignFirstResponder];
-  return true;
+  [self advanceNextResponder:textField];
+  return NO;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
@@ -327,49 +341,46 @@
   switch (textField.tag) {
     case HtmlMarkerTitle:
       [self.tabBarVC.workingHtml insertTitle:textField.text];
-      self.userData.title = textField.text;
+      self.userInput.title = textField.text;
       break;
     case HtmlMarkerSubtitle:
       [self.tabBarVC.workingHtml insertSubtitle:textField.text];
-      self.userData.subtitle = textField.text;
+      self.userInput.subtitle = textField.text;
       break;
     case HtmlMarkerHeadline:
     {
-      NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
-      [self.tabBarVC.workingHtml insertFeature: index headline:textField.text];
-      Feature *feature = self.userData.features[index];
+      [self.tabBarVC.workingHtml insertFeature: self.selectedFeature headline:textField.text];
+      Feature *feature = self.userInput.features[self.selectedFeature];
       feature.headline = textField.text;
       break;
     }
     case HtmlMarkerSubheadline:
     {
-      NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
-      [self.tabBarVC.workingHtml insertFeature: index subheadline:textField.text];
-      Feature *feature = self.userData.features[index];
+      [self.tabBarVC.workingHtml insertFeature: self.selectedFeature subheadline:textField.text];
+      Feature *feature = self.userInput.features[self.selectedFeature];
       feature.subheadline = textField.text;
       break;
     }
     case HtmlMarkerCopyright:
       [self.tabBarVC.workingHtml insertCopyright:textField.text];
-      self.userData.title = textField.text;
+      self.userInput.copyright = textField.text;
       break;
   }
 }
 
 
 #pragma mark - UITextViewDelegate
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-  
-  if([text isEqualToString:@"\n"]) {
-    [textView resignFirstResponder];
-    return NO;
-  }
-  
-  return YES;
+
+-(void)textViewDidBeginEditing:(UITextView *)textView {
+
+  [textView clearPlaceholder];
+  self.lastTextEditingView = textView;
+  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneButtonTapped)];
 }
 
-
 - (void)textViewDidEndEditing:(UITextView *)textView {
+
+  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonTapped)];
 
   switch (textView.tag) {
     case HtmlMarkerSummary:
@@ -377,45 +388,21 @@
       break;
     case HtmlMarkerBody:
     {
-      NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
-      [self.tabBarVC.workingHtml insertFeature: index body:textView.text];
-      Feature *feature = self.userData.features[index];
+      [self.tabBarVC.workingHtml insertFeature: self.selectedFeature body:textView.text];
+      Feature *feature = self.userInput.features[self.selectedFeature];
       feature.body = textView.text;
       break;
     }
   }
 }
 
-#pragma mark - UIImagePickerControllerDelegate, UINavigationControllerDelegate
- 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-  [picker dismissViewControllerAnimated:YES completion:nil];
-  UIImage *image = info[UIImagePickerControllerEditedImage];
-  NSData *data = UIImageJPEGRepresentation(image, 1.0);
+#pragma mark - SegmentedControlDelegate
 
-  NSInteger index = self.featureSegmentedControl.selectedSegmentIndex;
-
-  NSString *imageFile = [NSString stringWithFormat:@"%@%ld", kTemplateImagePrefix, (long)index];
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-  NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImagesDirectory];
-  NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:@"jpg"];
-  
-  NSLog(@"Write file: %@", pathWithType);
-  if (![[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil]) {
-    NSLog(@"Error! Cannot create file: %@", pathWithType);
-    return;
-  }
-  
-  NSString *relativeFilepath = [kTemplateImagesDirectory stringByAppendingPathComponent:imageFile];
-  NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:@"jpg"];
-  [self.tabBarVC.workingHtml insertImageReference:index imageSource:relativePathWithType];
-  Feature *feature = self.userData.features[index];
-  feature.imageSrc = relativePathWithType;
-}
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-  [picker dismissViewControllerAnimated:YES completion:nil];
+// this protocol is defined in SegmentedControl.h and used so we can force editing to
+// end, prior to the segnmentedControl index changing, for any textViews since there is
+// no textViewShouldReturn delegate method
+- (void)segmentedControlIndexWillChange:(UISegmentedControl *)sender {
+  [self doneButtonTapped];
 }
 
 @end

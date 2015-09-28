@@ -27,8 +27,6 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  self.navigationController.navigationBarHidden = NO;
-
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
   
   self.webView = [[WKWebView alloc]initWithFrame: self.view.frame];
@@ -40,6 +38,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+  
+  self.navigationController.navigationBarHidden = NO;
   
   NSURL *htmlUrl = [self displayTemplate];
   [self.webView loadFileURL:htmlUrl allowingReadAccessToURL:htmlUrl];

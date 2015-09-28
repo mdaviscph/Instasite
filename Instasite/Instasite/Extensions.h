@@ -12,18 +12,19 @@
 
 @interface UITextField (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerType)type placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style;
+- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style;
 
 @end
 
 @interface UITextView (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerType)type placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style;
+- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style;
+- (void)clearPlaceholder;
 
 @end
 
 @interface UIButton (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerType)type text:(NSString *)text;
+- (instancetype)initWithTitle:(NSString *)text;
 
 @end
