@@ -94,31 +94,29 @@ static NSString *const kJsonCopyrightKey = @"copyright";
   return templateInput;
 }
 
-+ (BOOL)writeJsonFile:(NSData *)data filename:(NSString *)filename type:(NSString *)type directory:(NSString *)directory {
++ (BOOL)writeJsonFile:(NSData *)data filename:(NSString *)filename type:(NSString *)type templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory {
   
   // TODO - get some identifier for the user to use as filename or part of filename
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:directory];
+  NSString *workingDirectory = [documentsDirectory stringByAppendingPathComponent:templateDirectory];
   NSString *filepath = [workingDirectory stringByAppendingPathComponent:filename];
   NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
   
-  NSLog(@"Write file: %@", pathWithType);
+  NSLog(@"Writing file: %@", pathWithType);
   if ([[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil]) {
     return YES;
   }
-  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, type, directory);
+  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, type, templateDirectory);
   return NO;
 }
 
-+ (NSData *)readJsonFile:(NSString *)filename type:(NSString *)type directory:(NSString *)directory {
++ (NSData *)readJsonFile:(NSString *)filename type:(NSString *)type templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory {
   
   // TODO - get some identifier for the user to use as filename or part of filename
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:directory];
+  NSString *workingDirectory = [documentsDirectory stringByAppendingPathComponent:templateDirectory];
   NSString *filepath = [workingDirectory stringByAppendingPathComponent:filename];
   NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
   
-  NSLog(@"Attempt to read file: %@", pathWithType);
+  NSLog(@"Reading file: %@", pathWithType);
   return [[NSFileManager defaultManager] contentsAtPath:pathWithType];
 }
 

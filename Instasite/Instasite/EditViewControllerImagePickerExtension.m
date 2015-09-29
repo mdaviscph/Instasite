@@ -63,8 +63,7 @@
   
   NSFileManager *fileManager = [NSFileManager defaultManager];
   NSString *imageFile = [NSString stringWithFormat:@"%@%ld", kTemplateImagePrefix, self.selectedFeature + 1];
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+  NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
   NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImagesDirectory];
   NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
   NSString *pathWithType = [filepath stringByAppendingPathExtension:@"jpg"];
@@ -73,12 +72,12 @@
     NSError *error;
     [fileManager createDirectoryAtPath:imagesDirectory withIntermediateDirectories:NO attributes:nil error:&error];
     if (error) {
-      NSLog(@"Error! Attempt to create directory at path: [%@] error: %@", imagesDirectory, error.localizedDescription);
+      NSLog(@"Error! Cannot create directory: [%@] error: %@", imagesDirectory, error.localizedDescription);
       return;
     }
   }
 
-  NSLog(@"Write file: %@", pathWithType);
+  NSLog(@"Writing file: %@", pathWithType);
   if (![fileManager createFileAtPath:pathWithType contents:data attributes:nil]) {
     NSLog(@"Error! Cannot create file: %@", pathWithType);
     return;

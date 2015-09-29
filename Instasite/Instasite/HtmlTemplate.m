@@ -61,30 +61,29 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
 
 @implementation HtmlTemplate
 
-- (instancetype)initWithPath:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
+- (instancetype)initWithURL:(NSURL *)htmlURL {
     self = [super init];
     if (self) {
       NSError *error;
-      _originalHtml = [NSString stringWithContentsOfURL:[HtmlTemplate genURL:path ofType:type inDirectory:directory] encoding:NSUTF8StringEncoding error:&error];
-      _modifiedHtml = _originalHtml;
+      _originalHtml = [NSString stringWithContentsOfURL:htmlURL encoding:NSUTF8StringEncoding error:&error];
       if (error) {
         NSLog(@"Error! NSString:stringWithContentsOfURL: %@", error.localizedDescription);
         return nil;
       }
+      _modifiedHtml = _originalHtml;
     }
     return self;
 }
 
-+ (NSURL *)genURL:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
++ (NSURL *)fileURL:(NSString *)filename type:(NSString *)type templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory {
 
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:directory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:path];
+  NSString *workingDirectory = [documentsDirectory stringByAppendingPathComponent:templateDirectory];
+  NSString *filepath = [workingDirectory stringByAppendingPathComponent:filename];
   NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
 
   NSURL *url = [NSURL fileURLWithPath:pathWithType];
   if (!url) {
-    NSLog(@"Error! NSURL:fileURLWithPath: %@ ", pathWithType);
+    NSLog(@"Error! NSURL:fileURLWithPath: [%@]", pathWithType);
   }
   return url;
 }
@@ -93,19 +92,21 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
   self.modifiedHtml = self.originalHtml;
 }
 
-- (BOOL)writeToFile:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
-
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:directory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:path];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
+- (BOOL)writeToURL:(NSURL *)htmlURL {
 
   NSData *data = [self.modifiedHtml dataUsingEncoding:NSUTF8StringEncoding];
   if (!data) {
+    NSLog(@"Error! NSData:dataUsingEncoding: [%@]", htmlURL.relativeString);
     return NO;
   }
-  NSLog(@"Write file: %@", pathWithType);
-  return [[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil];
+  NSLog(@"Writing file: [%@]", htmlURL.relativeString);
+  NSError *error;
+  [data writeToURL:htmlURL options:NSDataWritingAtomic error:&error];
+  if (error) {
+    NSLog(@"Error! NSData:writeToURL: %@", error.localizedDescription);
+    return NO;
+  }
+  return YES;
 }
 
 // TODO - in a future version we should build a dictionary of requested replacements so that we can be more efficient about this process by searching for instances of INSTASITE and after finding an instance we will look up the matching entry in the dictionary and perform the replacement.

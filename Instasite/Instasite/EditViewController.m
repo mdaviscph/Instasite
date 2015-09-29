@@ -34,6 +34,7 @@
 @property (nonatomic) NSUInteger bottomStackSpacing;
 @property (nonatomic) NSUInteger topTextViewHeight;
 @property (nonatomic) NSUInteger bottomTextViewHeight;
+@property (nonatomic) NSUInteger imageButtonHeight;
 @property (nonatomic) UIView *lastTextEditingView;
 
 @property (strong, nonatomic) NSDictionary *markers;
@@ -63,7 +64,7 @@
     [self.featureSegmentedControl insertSegmentWithTitle:[NSString stringWithFormat:@"Feature %lu", index+1] atIndex:index animated:YES];
   }
 
-  NSData *jsonData = [JsonService readJsonFile:kTemplateJsonFilename type:kTemplateJsonFiletype directory:self.tabBarVC.templateDirectory];
+  NSData *jsonData = [JsonService readJsonFile:kTemplateJsonFilename type:kTemplateJsonFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
   if (jsonData) {
     self.userInput = [JsonService templateInputFrom:jsonData];
     [self insertUserInputIntoTemplateCopy];
@@ -75,6 +76,7 @@
   self.topTextViewHeight = 60;
   self.bottomStackSpacing = 6;
   self.bottomTextViewHeight = 60;
+  self.imageButtonHeight = 80;
   
   NSUInteger topStackHeight = 0;
   self.topStackViewHeightConstraint.active = NO;
@@ -165,9 +167,17 @@
     bottomStackHeight += self.bottomTextViewHeight + self.bottomStackSpacing;
   }
   if (featureDict[kMarkerImageSrc]) {
-    UIButton *imageSrcButton = [[UIButton alloc] initWithTitle:@"Select Image"];
+    UIImage *image;
+    if (feature.imageSrc) {
+      NSString *directoryPath = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+      NSString *imagePath = [directoryPath stringByAppendingPathComponent:feature.imageSrc];
+      image = [UIImage imageWithContentsOfFile:imagePath];
+    }
+      
+    UIButton *imageSrcButton = [[UIButton alloc] initWithTitle:@"Select Image" textColor:self.view.tintColor image:image];
+    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:imageSrcButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.imageButtonHeight];
+    constraint.active = YES;
     [imageSrcButton addTarget:self action:@selector(selectImageButtonUp:) forControlEvents:UIControlEventTouchUpInside];
-    [imageSrcButton setTitleColor:self.view.tintColor forState:UIControlStateNormal];
     [self.bottomStackView addArrangedSubview:imageSrcButton];
     bottomStackHeight += imageSrcButton.frame.size.height + self.bottomStackSpacing;
   }
@@ -192,18 +202,18 @@
   self.lastTextEditingView = nil;
   
   NSData *jsonData = [JsonService fromTemplateInput:self.userInput];
-  [JsonService writeJsonFile:jsonData filename:kTemplateJsonFilename type:kTemplateJsonFiletype directory:self.tabBarVC.templateDirectory];
+  [JsonService writeJsonFile:jsonData filename:kTemplateJsonFilename type:kTemplateJsonFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
   
-  [self writeWorkingFile:kTemplateIndexFilename ofType:kTemplateIndexFiletype];
+  [self writeWorkingFile];
 }
 
-- (BOOL)writeWorkingFile:(NSString *)filename ofType:(NSString *)type {
+- (BOOL)writeWorkingFile {
   
   // TODO - get some identifier for the user to use as filename or part of filename
-  if ([self.tabBarVC.templateCopy writeToFile:filename ofType:type inDirectory:self.tabBarVC.templateDirectory]) {
+  NSURL *templateURL = [HtmlTemplate fileURL:kTemplateIndexFilename type:kTemplateIndexFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
+  if ([self.tabBarVC.templateCopy writeToURL:templateURL]) {
     return YES;
   }
-  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, type, self.tabBarVC.templateDirectory);
   return NO;
 }
 
@@ -218,11 +228,10 @@
     UIStoryboard *publishStoryboard = [UIStoryboard storyboardWithName:@"Publish" bundle:[NSBundle mainBundle]];
     PublishViewController *publishVC = [publishStoryboard instantiateInitialViewController];
     
-    FileManager *fm = [[FileManager alloc] init];
-    NSArray *files = [fm enumerateFilesInDirectory:self.tabBarVC.templateDirectory];
+    FileManager *fileManager = [[FileManager alloc] init];
+    NSArray *files = [fileManager enumerateFilesInDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
     
-    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+    NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
     
     publishVC.indexHtmlFilePath = workingDirectory;
     publishVC.JSONfilePath = workingDirectory;
