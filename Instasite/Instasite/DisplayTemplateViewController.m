@@ -48,7 +48,6 @@
   
   self.navigationController.navigationBarHidden = YES;
   [self.webView reload];
-  //[self.webView loadData: MIMEType:<#(nonnull NSString *)#> characterEncodingName:<#(nonnull NSString *)#> baseURL:<#(nonnull NSURL *)#>
 }
 
 #pragma mark - Helper Methods
@@ -73,13 +72,13 @@
 
 #pragma mark - WKNavigationDelegate
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-  NSLog(@"webView:didFailNavigation: error: %@ navigation: %@", error.localizedDescription, navigation.description);
+  NSLog(@"Error! webView:didFailNavigation: error: %@", error.localizedDescription);
 }
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-  NSLog(@"webView:didFailProvisionalNavigation: error: %@ navigation: %@", error.localizedDescription, navigation.description);
+  NSLog(@"Error! webView:didFailProvisionalNavigation: error: %@", error.localizedDescription);
 }
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-  NSLog(@"webView:didFinishNavigation: navigation: %@", navigation.description);
+  NSLog(@"webView:didFinishNavigation:");
 }
 
 @end

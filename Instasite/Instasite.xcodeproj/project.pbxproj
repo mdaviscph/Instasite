@@ -11,7 +11,6 @@
 		000B02751BB36A2D00737578 /* TemplateTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 000B02741BB36A2D00737578 /* TemplateTabBarController.m */; settings = {ASSET_TAGS = (); }; };
 		008035021BB7141C00EB91C6 /* SegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 008035011BB7141C00EB91C6 /* SegmentedControl.m */; settings = {ASSET_TAGS = (); }; };
 		008035051BB733E800EB91C6 /* EditViewControllerImagePickerExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 008035041BB733E800EB91C6 /* EditViewControllerImagePickerExtension.m */; settings = {ASSET_TAGS = (); }; };
-		00B000A81BBB12640017809D /* SafariViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00B000A71BBB12640017809D /* SafariViewController.m */; settings = {ASSET_TAGS = (); }; };
 		00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928971BB1A07200383BD0 /* HtmlTemplate.m */; settings = {ASSET_TAGS = (); }; };
 		00E9289B1BB1A8BE00383BD0 /* JsonService.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E9289A1BB1A8BE00383BD0 /* JsonService.m */; settings = {ASSET_TAGS = (); }; };
 		00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E9289D1BB1A9BA00383BD0 /* Feature.m */; settings = {ASSET_TAGS = (); }; };
@@ -27,7 +26,6 @@
 		227C86801BB07B3500799CD3 /* GitHubService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867F1BB07B3500799CD3 /* GitHubService.m */; settings = {ASSET_TAGS = (); }; };
 		227C86831BB0876900799CD3 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C86821BB0876900799CD3 /* Constants.m */; settings = {ASSET_TAGS = (); }; };
 		22B07C861BB45D5D00ADB5EF /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B07C851BB45D5D00ADB5EF /* Keys.m */; settings = {ASSET_TAGS = (); }; };
-		22E4F8CD1BB346EF000E40A5 /* ParseJSONService.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4F8CC1BB346EF000E40A5 /* ParseJSONService.m */; settings = {ASSET_TAGS = (); }; };
 		22EFFDE01BADC11800E28ACB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDDF1BADC11800E28ACB /* main.m */; };
 		22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFDE21BADC11800E28ACB /* AppDelegate.m */; };
 		22EFFDE91BADC11800E28ACB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22EFFDE71BADC11800E28ACB /* Main.storyboard */; };
@@ -80,8 +78,6 @@
 		008035011BB7141C00EB91C6 /* SegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentedControl.m; sourceTree = "<group>"; };
 		008035031BB733E800EB91C6 /* EditViewControllerImagePickerExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditViewControllerImagePickerExtension.h; sourceTree = "<group>"; };
 		008035041BB733E800EB91C6 /* EditViewControllerImagePickerExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditViewControllerImagePickerExtension.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		00B000A61BBB12640017809D /* SafariViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SafariViewController.h; sourceTree = "<group>"; };
-		00B000A71BBB12640017809D /* SafariViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SafariViewController.m; sourceTree = "<group>"; };
 		00E928961BB1A07200383BD0 /* HtmlTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HtmlTemplate.h; sourceTree = "<group>"; };
 		00E928971BB1A07200383BD0 /* HtmlTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HtmlTemplate.m; sourceTree = "<group>"; };
 		00E928991BB1A8BE00383BD0 /* JsonService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = JsonService.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -109,8 +105,6 @@
 		227C86821BB0876900799CD3 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		22B07C841BB45D5D00ADB5EF /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
 		22B07C851BB45D5D00ADB5EF /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
-		22E4F8CB1BB346EF000E40A5 /* ParseJSONService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseJSONService.h; sourceTree = "<group>"; };
-		22E4F8CC1BB346EF000E40A5 /* ParseJSONService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseJSONService.m; sourceTree = "<group>"; };
 		22EFFDDB1BADC11800E28ACB /* Instasite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instasite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22EFFDDF1BADC11800E28ACB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		22EFFDE11BADC11800E28ACB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -224,8 +218,6 @@
 				000B02741BB36A2D00737578 /* TemplateTabBarController.m */,
 				008035031BB733E800EB91C6 /* EditViewControllerImagePickerExtension.h */,
 				008035041BB733E800EB91C6 /* EditViewControllerImagePickerExtension.m */,
-				00B000A61BBB12640017809D /* SafariViewController.h */,
-				00B000A71BBB12640017809D /* SafariViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -265,8 +257,6 @@
 				6B05A02D1BB4A0B5002627BA /* FileManager.m */,
 				227C867E1BB07B3500799CD3 /* GitHubService.h */,
 				227C867F1BB07B3500799CD3 /* GitHubService.m */,
-				22E4F8CB1BB346EF000E40A5 /* ParseJSONService.h */,
-				22E4F8CC1BB346EF000E40A5 /* ParseJSONService.m */,
 				6CAE8E381BB4618E00691E48 /* GitHubPullService.h */,
 				6CAE8E391BB4618E00691E48 /* GitHubPullService.m */,
 				221BCA1C1BB46B100057A272 /* FileEncodingService.h */,
@@ -578,7 +568,6 @@
 				00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */,
 				00E928AC1BB1EC0F00383BD0 /* EditViewController.m in Sources */,
 				008035021BB7141C00EB91C6 /* SegmentedControl.m in Sources */,
-				00B000A81BBB12640017809D /* SafariViewController.m in Sources */,
 				000613761BB2FCE600E818B7 /* Extensions.m in Sources */,
 				221BCA2A1BB4B9460057A272 /* CSSFile.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
@@ -592,7 +581,6 @@
 				6CAE8E3A1BB4618E00691E48 /* GitHubPullService.m in Sources */,
 				221BCA261BB4B92E0057A272 /* ImageFile.m in Sources */,
 				22EFFDE01BADC11800E28ACB /* main.m in Sources */,
-				22E4F8CD1BB346EF000E40A5 /* ParseJSONService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,36 +12,45 @@
 @implementation FileEncodingService
 
 + (NSString *)encodeImage:(NSString *)imagePath {
+
   UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
-  return [UIImagePNGRepresentation(image) base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+  if (!image) {
+    NSLog(@"Error! imageWithContentsOfFile: [%@]", imagePath);
+  }
+  return [UIImageJPEGRepresentation(image, 1.0) base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
 }
 
 + (NSString *)encodeHTML:(NSString *)filePath {
-  NSString *htmlString = [[NSString alloc] initWithContentsOfFile:filePath encoding:0 error:nil];
-  
-  NSData *data = [htmlString dataUsingEncoding:NSUTF8StringEncoding];
+
+  NSError *error;
+  NSData *data = [NSData dataWithContentsOfFile:filePath options:NSDataReadingUncached error:&error];
+  if (error) {
+    NSLog(@"Error! NSData:dataWithContentsOfFile: [%@] error: %@", filePath, error.localizedDescription);
+  }
   NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
   return baseString;
 }
 
 +(NSString *)encodeCSS:(NSString *)cssPath{
-  NSString *cssString = [[NSString alloc] initWithContentsOfFile:cssPath encoding:0 error:nil];
   
-  NSData *data = [cssString dataUsingEncoding:NSUTF8StringEncoding];
+  NSError *error;
+  NSData *data = [NSData dataWithContentsOfFile:cssPath options:NSDataReadingUncached error:&error];
+  if (error) {
+    NSLog(@"Error! NSData:dataWithContentsOfFile: [%@] error: %@", cssPath, error.localizedDescription);
+  }
   NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
-  
   return baseString;
-  
 }
 
 +(NSString *)encodeJSON:(NSString *)JSONPath{
   
-  NSString *JSONString = [[NSString alloc] initWithContentsOfFile:JSONPath encoding:0 error:nil];
-  
-  NSData *data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
-  
+  NSError *error;
+  NSData *data = [NSData dataWithContentsOfFile:JSONPath options:NSDataReadingUncached error:&error];
+  if (error) {
+    NSLog(@"Error! NSData:dataWithContentsOfFile: [%@] error: %@", JSONPath, error.localizedDescription);
+  }
   NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
-  
   return baseString;
 }
+
 @end

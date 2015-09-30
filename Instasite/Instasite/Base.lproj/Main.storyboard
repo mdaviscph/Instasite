@@ -28,25 +28,6 @@
             </objects>
             <point key="canvasLocation" x="1336" y="424"/>
         </scene>
-        <!--SafariVC-->
-        <scene sceneID="3gl-H4-zpp">
-            <objects>
-                <viewController id="FU8-dt-80U" customClass="SafariViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Bp2-pe-sKF"/>
-                        <viewControllerLayoutGuide type="bottom" id="PFt-KA-PWW"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="IVm-c2-j8m">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="SafariVC" id="5TL-rZ-VNp"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="HFJ-Zc-qEi" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2731" y="18"/>
-        </scene>
         <!--Edit-->
         <scene sceneID="9Ca-Ww-Hpo">
             <objects>
@@ -176,7 +157,6 @@
                     <connections>
                         <segue destination="Jrj-qB-hpH" kind="relationship" relationship="viewControllers" id="6Y9-rr-KQX"/>
                         <segue destination="SZ7-UW-qUr" kind="relationship" relationship="viewControllers" id="Vdc-uY-XXa"/>
-                        <segue destination="FU8-dt-80U" kind="relationship" relationship="viewControllers" id="owQ-WV-euz"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HcX-gh-4ZA" userLabel="First Responder" sceneMemberID="firstResponder"/>
