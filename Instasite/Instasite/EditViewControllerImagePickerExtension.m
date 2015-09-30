@@ -41,7 +41,7 @@
   }
   UIAlertAction *cancelAction = [UIAlertAction actionWithTitle: @"Cancel" style:UIAlertActionStyleCancel handler:nil];
   [alert addAction:cancelAction];
-  [self presentViewController:alert animated:YES completion: nil];
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)startImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
@@ -49,7 +49,7 @@
   imagePC.delegate = self;
   imagePC.allowsEditing = YES;
   imagePC.sourceType = sourceType;
-  [self presentViewController:imagePC animated:YES completion: nil];
+  [self presentViewController:imagePC animated:YES completion:nil];
 }
 
 #pragma mark - UIImagePickerControllerDelegate, UINavigationControllerDelegate
@@ -88,6 +88,7 @@
   [self.tabBarVC.templateCopy insertImageReference:self.selectedFeature imageSource:relativePathWithType];
   Feature *feature = self.userInput.features[self.selectedFeature];
   feature.imageSrc = relativePathWithType;
+  [self reloadFeature];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {

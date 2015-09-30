@@ -135,6 +135,19 @@
 
 #pragma mark - Helper Methods
 
+- (void)reloadFeature {
+  [self updateFeature:-1];
+}
+
+- (void)updateFeature:(NSInteger)index {
+  for (UIView *subview in self.bottomStackView.arrangedSubviews) {
+    [self.bottomStackView removeArrangedSubview:subview];
+    [subview removeFromSuperview];
+  }
+  self.selectedFeature = index >= 0 ? index : self.selectedFeature;
+  [self addFeatureControlsForFeature:self.selectedFeature];
+}
+
 - (void)addFeatureControlsForFeature:(NSInteger)index {
 
   NSUInteger bottomStackHeight = 0;
@@ -275,13 +288,7 @@
 #pragma mark - IBActions, Selector Methods
 
 - (IBAction)featureSegmentedControlChange:(UISegmentedControl *)sender {
-  
-  self.selectedFeature = sender.selectedSegmentIndex;
-  for (UIView *subview in self.bottomStackView.arrangedSubviews) {
-    [self.bottomStackView removeArrangedSubview:subview];
-    [subview removeFromSuperview];
-  }
-  [self addFeatureControlsForFeature:sender.selectedSegmentIndex];
+  [self updateFeature:sender.selectedSegmentIndex];
 }
 
 - (void)saveButtonTapped {

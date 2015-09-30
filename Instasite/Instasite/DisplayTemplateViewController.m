@@ -39,7 +39,8 @@
   self.tabBarVC.templateCopy = [[HtmlTemplate alloc] initWithURL:templateURL];
   
   NSURL *indexHtmlURL = [self indexHtmlURL];
-  [self.webView loadFileURL:indexHtmlURL allowingReadAccessToURL:indexHtmlURL];
+  NSURL *indexHtmlDirectoryURL = [self indexHtmlDirectoryURL];
+  [self.webView loadFileURL:indexHtmlURL allowingReadAccessToURL:indexHtmlDirectoryURL];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -47,12 +48,18 @@
   
   self.navigationController.navigationBarHidden = YES;
   [self.webView reload];
+  //[self.webView loadData: MIMEType:<#(nonnull NSString *)#> characterEncodingName:<#(nonnull NSString *)#> baseURL:<#(nonnull NSURL *)#>
 }
 
 #pragma mark - Helper Methods
 
 - (NSURL *)indexHtmlURL {
   return [HtmlTemplate fileURL:kTemplateIndexFilename type:kTemplateIndexFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
+}
+- (NSURL *)indexHtmlDirectoryURL {
+  NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+  
+  return [NSURL fileURLWithPath:workingDirectory isDirectory:YES];
 }
 - (NSURL *)templateHtmlURL {
   return [HtmlTemplate fileURL:kTemplateMarkerFilename type:kTemplateMarkerFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
@@ -62,6 +69,17 @@
 -(void)copyBundleTemplateDirectory {
   FileManager *fileManager = [[FileManager alloc] init];
   [fileManager copyDirectory:self.tabBarVC.templateDirectory overwrite:NO documentsDirectory:self.tabBarVC.documentsDirectory];
+}
+
+#pragma mark - WKNavigationDelegate
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+  NSLog(@"webView:didFailNavigation: error: %@ navigation: %@", error.localizedDescription, navigation.description);
+}
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+  NSLog(@"webView:didFailProvisionalNavigation: error: %@ navigation: %@", error.localizedDescription, navigation.description);
+}
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+  NSLog(@"webView:didFinishNavigation: navigation: %@", navigation.description);
 }
 
 @end

@@ -241,7 +241,7 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
   NSUInteger summaryCount = 0;
   NSUInteger copyrightCount = 0;
   
-  NSArray *features = @[[[NSMutableDictionary alloc] init], [[NSMutableDictionary alloc] init], [[NSMutableDictionary alloc] init], [[NSMutableDictionary alloc] init], [[NSMutableDictionary alloc] init]];
+  NSArray *features;
   
   NSMutableDictionary *markerDict = [[NSMutableDictionary alloc] init];
   
@@ -261,32 +261,51 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
       
     } else if ([component hasPrefix:kMarkerHead]) {
       NSRange range = NSMakeRange(kMarkerHead.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger count = [component substringWithRange:range].integerValue - 1;
-      if (count >= 0 && count < 5) {
-        features[count][kMarkerHead] = @(1);
+      NSInteger number = [component substringWithRange:range].integerValue - 1;
+      if (number >= 0) {
+        features = [self appendFeatureDictionary:features toIndex:number];
+        features[number][kMarkerHead] = @(1);
       }
     } else if ([component hasPrefix:kMarkerSub]) {
       NSRange range = NSMakeRange(kMarkerSub.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger count = [component substringWithRange:range].integerValue - 1;
-      if (count >= 0 && count < 5) {
-        features[count][kMarkerSub] = @(1);
+      NSInteger number = [component substringWithRange:range].integerValue - 1;
+      if (number >= 0) {
+        features = [self appendFeatureDictionary:features toIndex:number];
+        features[number][kMarkerSub] = @(1);
       }
     } else if ([component hasPrefix:kMarkerBody]) {
       NSRange range = NSMakeRange(kMarkerBody.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger count = [component substringWithRange:range].integerValue - 1;
-      if (count >= 0 && count < 5) {
-        features[count][kMarkerBody] = @(1);
+      NSInteger number = [component substringWithRange:range].integerValue - 1;
+      if (number >= 0) {
+        features = [self appendFeatureDictionary:features toIndex:number];
+        features[number][kMarkerBody] = @(1);
       }
     } else if ([component hasPrefix:kMarkerImageSrc]) {
       NSRange range = NSMakeRange(kMarkerImageSrc.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger count = [component substringWithRange:range].integerValue - 1;
-      if (count >= 0 && count < 5) {
-        features[count][kMarkerImageSrc] = @(1);
+      NSInteger number = [component substringWithRange:range].integerValue - 1;
+      if (number >= 0) {
+        features = [self appendFeatureDictionary:features toIndex:number];
+        features[number][kMarkerImageSrc] = @(1);
       }
     }
   }
   
   markerDict[kFeatureArray] = features;
   return markerDict;
+}
+
+- (NSArray *)appendFeatureDictionary:(NSArray *)features toIndex:(NSUInteger)index {
+  if (!features) {
+    return @[[[NSMutableDictionary alloc] init]];
+  }
+  if (features.count > index) {
+    return features;
+  }
+  NSMutableArray *copyWithAdditions = [[NSMutableArray alloc] initWithArray:features];
+  for (NSUInteger another = features.count; another <= index; another++) {
+    NSMutableDictionary *feature = [[NSMutableDictionary alloc] init];
+    [copyWithAdditions addObject:feature];
+  }
+  return copyWithAdditions;
 }
 @end
