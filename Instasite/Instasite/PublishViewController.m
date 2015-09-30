@@ -54,27 +54,33 @@
     }
   }];
   
-  if (self.indexHtmlFilePath != nil) {
-    [GitHubService pushFilesToGithub:self.textFieldRepoName.text indexHtmlFile:self.indexHtmlFilePath email:self.textFieldEmail.text completionHandler:nil];
-  } else {
-    NSLog(@"IndexHtml file not uploaded!");
-  }
-  
-  if (self.JSONfilePath !=nil) {
-    [GitHubService pushJSONToGithub:self.JSONfilePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-  } else {
-    NSLog(@"JSON file not uploaded!");
-  }
-  
-//  for (ImageFile *imageFile in self.imageFilePaths) {
-//    [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-//  }
-  
-  for (CSSFile *cssFile in self.supportingFilePaths) {
-    NSString *finalPath = [NSString stringWithFormat:@"%@/%@/%@",cssFile.documentsDirectory, cssFile.filePath, cssFile.fileName];
-    [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath finalPath:finalPath email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-  }
-  
+  [GitHubService getUsernameFromGithub:^(NSError *error, NSString *username) {
+    
+    if (error) {
+      NSLog(@"Cannot publish due to missing user name.");
+    } else {
+      if (self.indexHtmlFilePath) {
+        [GitHubService pushFilesToGithub:self.textFieldRepoName.text indexHtmlFile:self.indexHtmlFilePath user:username email:self.textFieldEmail.text completionHandler:nil];
+      } else {
+        NSLog(@"IndexHtml file not uploaded!");
+      }
+      
+      if (self.JSONfilePath) {
+        [GitHubService pushJSONToGithub:self.JSONfilePath user:username email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+      } else {
+        NSLog(@"JSON file not uploaded!");
+      }
+      
+      //  for (ImageFile *imageFile in self.imageFilePaths) {
+      //    [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath user:username email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+      //  }
+      
+      for (CSSFile *cssFile in self.supportingFilePaths) {
+        NSString *finalPath = [NSString stringWithFormat:@"%@/%@/%@",cssFile.documentsDirectory, cssFile.filePath, cssFile.fileName];
+        [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath finalPath:finalPath user:username email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
+      }
+    }
+  }];
 }
 
 #pragma mark - UITextFieldDelegate

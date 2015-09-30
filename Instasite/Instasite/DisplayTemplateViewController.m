@@ -33,12 +33,14 @@
   [self.view addSubview: self.webView];
   self.webView.navigationDelegate = self;
 
-  [self copyDirectoryToDocumentsDir];
+  [self copyBundleTemplateDirectory];
 
-  [self readHtmlTemplate];
+  NSURL *templateURL = [self templateHtmlURL];
+  self.tabBarVC.templateCopy = [[HtmlTemplate alloc] initWithURL:templateURL];
   
-  NSURL *htmlURL = [self indexHtmlURL];
-  [self.webView loadFileURL:htmlURL allowingReadAccessToURL:htmlURL];
+  NSURL *indexHtmlURL = [self indexHtmlURL];
+  NSURL *indexHtmlDirectoryURL = [self indexHtmlDirectoryURL];
+  [self.webView loadFileURL:indexHtmlURL allowingReadAccessToURL:indexHtmlDirectoryURL];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -46,23 +48,37 @@
   
   self.navigationController.navigationBarHidden = YES;
   [self.webView reload];
-//  [self.webView reloadFromOrigin];
 }
 
 #pragma mark - Helper Methods
 
 - (NSURL *)indexHtmlURL {
-  return [HtmlTemplate genURL:kTemplateIndexFilename ofType:kTemplateIndexFiletype inDirectory:self.tabBarVC.templateDirectory];
+  return [HtmlTemplate fileURL:kTemplateIndexFilename type:kTemplateIndexFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
 }
-
-- (void)readHtmlTemplate {
-  self.tabBarVC.templateCopy = [[HtmlTemplate alloc] initWithPath:kTemplateMarkerFilename ofType:kTemplateIndexFiletype inDirectory:self.tabBarVC.templateDirectory];
+- (NSURL *)indexHtmlDirectoryURL {
+  NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+  
+  return [NSURL fileURLWithPath:workingDirectory isDirectory:YES];
+}
+- (NSURL *)templateHtmlURL {
+  return [HtmlTemplate fileURL:kTemplateMarkerFilename type:kTemplateMarkerFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
 }
 
 // Copy the entire template folder from main bundle to the documents directory one time
--(void)copyDirectoryToDocumentsDir {
-  FileManager *fm = [[FileManager alloc] init];
-  [fm copyDirectory:self.tabBarVC.templateDirectory overwrite:NO];
+-(void)copyBundleTemplateDirectory {
+  FileManager *fileManager = [[FileManager alloc] init];
+  [fileManager copyDirectory:self.tabBarVC.templateDirectory overwrite:NO documentsDirectory:self.tabBarVC.documentsDirectory];
+}
+
+#pragma mark - WKNavigationDelegate
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+  NSLog(@"Error! webView:didFailNavigation: error: %@", error.localizedDescription);
+}
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+  NSLog(@"Error! webView:didFailProvisionalNavigation: error: %@", error.localizedDescription);
+}
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+  NSLog(@"webView:didFinishNavigation:");
 }
 
 @end

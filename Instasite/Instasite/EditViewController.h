@@ -17,4 +17,6 @@
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 @property (strong, nonatomic) TemplateInput *userInput;
 
+- (void)reloadFeature;
+
 @end

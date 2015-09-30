@@ -46,9 +46,9 @@ extern NSString *const kFeatureArray;
 
 @interface HtmlTemplate : NSObject
 
-- (instancetype)initWithPath:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory;
-+ (NSURL *)genURL: (NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory;
-- (BOOL)writeToFile:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory;
+- (instancetype)initWithURL:(NSURL *)htmlURL;
++ (NSURL *)fileURL: (NSString *)path type:(NSString *)type templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory;
+- (BOOL)writeToURL:(NSURL *)htmlURL;
 
 - (void)insertTitle:(NSString *)title;
 - (void)insertSubtitle:(NSString *)subtitle;

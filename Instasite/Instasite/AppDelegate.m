@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "Constants.h"
+#import <AFNetworking/AFNetworking.h>
 
 @interface AppDelegate ()
 
@@ -17,15 +18,18 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  // Override point for customization after application launch.
+  
+  [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+  
   return YES;
 }
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
   
-  NSLog(@"In Open URL");
+  //NSLog(@"AppDelegate application:openURL: [%@]", url.absoluteString);
   [[NSNotificationCenter defaultCenter] postNotificationName:kCloseSafariViewControllerNotification object:url];
-  return true;
+  
+  return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

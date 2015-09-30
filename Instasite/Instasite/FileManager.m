@@ -13,22 +13,19 @@
 
 @implementation FileManager
 
-- (NSArray *)enumerateFilesInDirectory:(NSString *)directory {
-
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-  NSString *documentsDirectory = [paths objectAtIndex:0];
+- (NSArray *)enumerateFilesInDirectory:(NSString *)directory documentsDirectory:(NSString *)documentsDirectory{
   
-  NSLog(@"Directory at: %@/%@", documentsDirectory, directory);
+  NSLog(@"Enumerate directory at: %@/%@", documentsDirectory, directory);
   return [self filesInDirectory:nil templatePath:directory documentsDirectory:documentsDirectory];
 }
 
-- (NSArray *)filesInDirectory:(NSString *)directory templatePath:(NSString *)templatePath documentsDirectory:(NSString *)docDirectory {
+- (NSArray *)filesInDirectory:(NSString *)directory templatePath:(NSString *)templatePath documentsDirectory:(NSString *)documentsDirectory {
 
   NSFileManager *manager = [NSFileManager defaultManager];
   NSMutableArray *cssFiles = [[NSMutableArray alloc] init];
   NSMutableArray *imageFiles = [[NSMutableArray alloc] init];
   
-  NSString *directoryPath = [docDirectory stringByAppendingPathComponent:templatePath];
+  NSString *directoryPath = [documentsDirectory stringByAppendingPathComponent:templatePath];
   NSString *templateDirectoryPath = templatePath;
   if (directory) {
     directoryPath = [directoryPath stringByAppendingPathComponent:directory];
@@ -45,14 +42,14 @@
     if (isDirectory) {
       //NSLog(@"Directory at: %@", file);
       
-      NSArray *fileObjects = [self filesInDirectory:file templatePath:templateDirectoryPath documentsDirectory:docDirectory];
+      NSArray *fileObjects = [self filesInDirectory:file templatePath:templateDirectoryPath documentsDirectory:documentsDirectory];
       [cssFiles addObjectsFromArray:fileObjects[0]];
       [imageFiles addObjectsFromArray:fileObjects[1]];
       
     } else {
       //NSLog(@"File at: %@", file);
       if ([file hasPrefix:kTemplateImagePrefix]) {
-        ImageFile *imagefile = [[ImageFile alloc] initWithFilePath:templateDirectoryPath andFileName:file andDocumentsDirectory:docDirectory];
+        ImageFile *imagefile = [[ImageFile alloc] initWithPath:templateDirectoryPath andFileName:file andDocumentsDirectory:documentsDirectory];
         [imageFiles addObject:imagefile];
       } else if ([file hasPrefix:kTemplateIndexFilename]) {
         // ignore index.html
@@ -61,7 +58,7 @@
       } else if ([file hasPrefix:kTemplateJsonFilename]) {
         // ignore json file
       } else {
-        CSSFile *cssfile = [[CSSFile alloc] initWithFilePath:templateDirectoryPath andFileName:file andDocumentsDirectory:docDirectory];
+        CSSFile *cssfile = [[CSSFile alloc] initWithPath:templateDirectoryPath andFileName:file andDocumentsDirectory:documentsDirectory];
         [cssFiles addObject:cssfile];
       }
     }
@@ -69,13 +66,11 @@
   return @[cssFiles, imageFiles];
 }
 
-- (BOOL)copyDirectory:(NSString *)directory overwrite:(BOOL)overwrite {
+- (BOOL)copyDirectory:(NSString *)directory overwrite:(BOOL)overwrite documentsDirectory:(NSString *)documentsDirectory {
 
   NSFileManager *fileManager = [NSFileManager defaultManager];
   fileManager.delegate = self;
   
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-  NSString *documentsDirectory = [paths firstObject];
   NSString *newDirectory = [documentsDirectory stringByAppendingPathComponent:directory];
   NSString *bundlePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:directory];
 
@@ -85,12 +80,12 @@
     return YES;
   }
 
-  NSLog(@"copy directory from [%@] to [%@]", bundlePath, newDirectory);
+  NSLog(@"Copying directory from [%@] to [%@]", bundlePath, newDirectory);
   
   NSError *error;
   [fileManager copyItemAtPath:bundlePath toPath:newDirectory error:&error];
   if (error) {
-    NSLog(@"Error! Attempt to copy directory at path: [%@] error: %@", newDirectory, error.localizedDescription);
+    NSLog(@"Error! Cannot copy directory: [%@] error: %@", newDirectory, error.localizedDescription);
     return NO;
   }
   return YES;

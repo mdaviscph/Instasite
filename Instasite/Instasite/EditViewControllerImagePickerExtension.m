@@ -41,7 +41,7 @@
   }
   UIAlertAction *cancelAction = [UIAlertAction actionWithTitle: @"Cancel" style:UIAlertActionStyleCancel handler:nil];
   [alert addAction:cancelAction];
-  [self presentViewController:alert animated:YES completion: nil];
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)startImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
@@ -49,7 +49,7 @@
   imagePC.delegate = self;
   imagePC.allowsEditing = YES;
   imagePC.sourceType = sourceType;
-  [self presentViewController:imagePC animated:YES completion: nil];
+  [self presentViewController:imagePC animated:YES completion:nil];
 }
 
 #pragma mark - UIImagePickerControllerDelegate, UINavigationControllerDelegate
@@ -63,8 +63,7 @@
   
   NSFileManager *fileManager = [NSFileManager defaultManager];
   NSString *imageFile = [NSString stringWithFormat:@"%@%ld", kTemplateImagePrefix, self.selectedFeature + 1];
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+  NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
   NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImagesDirectory];
   NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
   NSString *pathWithType = [filepath stringByAppendingPathExtension:@"jpg"];
@@ -73,12 +72,12 @@
     NSError *error;
     [fileManager createDirectoryAtPath:imagesDirectory withIntermediateDirectories:NO attributes:nil error:&error];
     if (error) {
-      NSLog(@"Error! Attempt to create directory at path: [%@] error: %@", imagesDirectory, error.localizedDescription);
+      NSLog(@"Error! Cannot create directory: [%@] error: %@", imagesDirectory, error.localizedDescription);
       return;
     }
   }
 
-  NSLog(@"Write file: %@", pathWithType);
+  NSLog(@"Writing file: %@", pathWithType);
   if (![fileManager createFileAtPath:pathWithType contents:data attributes:nil]) {
     NSLog(@"Error! Cannot create file: %@", pathWithType);
     return;
@@ -89,6 +88,7 @@
   [self.tabBarVC.templateCopy insertImageReference:self.selectedFeature imageSource:relativePathWithType];
   Feature *feature = self.userInput.features[self.selectedFeature];
   feature.imageSrc = relativePathWithType;
+  [self reloadFeature];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {

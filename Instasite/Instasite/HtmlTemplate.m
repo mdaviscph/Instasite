@@ -61,30 +61,29 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
 
 @implementation HtmlTemplate
 
-- (instancetype)initWithPath:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
+- (instancetype)initWithURL:(NSURL *)htmlURL {
     self = [super init];
     if (self) {
       NSError *error;
-      _originalHtml = [NSString stringWithContentsOfURL:[HtmlTemplate genURL:path ofType:type inDirectory:directory] encoding:NSUTF8StringEncoding error:&error];
-      _modifiedHtml = _originalHtml;
+      _originalHtml = [NSString stringWithContentsOfURL:htmlURL encoding:NSUTF8StringEncoding error:&error];
       if (error) {
         NSLog(@"Error! NSString:stringWithContentsOfURL: %@", error.localizedDescription);
         return nil;
       }
+      _modifiedHtml = _originalHtml;
     }
     return self;
 }
 
-+ (NSURL *)genURL:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
++ (NSURL *)fileURL:(NSString *)filename type:(NSString *)type templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory {
 
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:directory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:path];
+  NSString *workingDirectory = [documentsDirectory stringByAppendingPathComponent:templateDirectory];
+  NSString *filepath = [workingDirectory stringByAppendingPathComponent:filename];
   NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
 
   NSURL *url = [NSURL fileURLWithPath:pathWithType];
   if (!url) {
-    NSLog(@"Error! NSURL:fileURLWithPath: %@ ", pathWithType);
+    NSLog(@"Error! NSURL:fileURLWithPath: [%@]", pathWithType);
   }
   return url;
 }
@@ -93,19 +92,21 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
   self.modifiedHtml = self.originalHtml;
 }
 
-- (BOOL)writeToFile:(NSString *)path ofType:(NSString *)type inDirectory:(NSString *)directory {
-
-  NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-  NSString *workingDirectory = [documentsPath stringByAppendingPathComponent:directory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:path];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
+- (BOOL)writeToURL:(NSURL *)htmlURL {
 
   NSData *data = [self.modifiedHtml dataUsingEncoding:NSUTF8StringEncoding];
   if (!data) {
+    NSLog(@"Error! NSData:dataUsingEncoding: [%@]", htmlURL.relativeString);
     return NO;
   }
-  NSLog(@"Write file: %@", pathWithType);
-  return [[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil];
+  NSLog(@"Writing file: [%@]", htmlURL.relativeString);
+  NSError *error;
+  [data writeToURL:htmlURL options:NSDataWritingAtomic error:&error];
+  if (error) {
+    NSLog(@"Error! NSData:writeToURL: %@", error.localizedDescription);
+    return NO;
+  }
+  return YES;
 }
 
 // TODO - in a future version we should build a dictionary of requested replacements so that we can be more efficient about this process by searching for instances of INSTASITE and after finding an instance we will look up the matching entry in the dictionary and perform the replacement.
@@ -240,7 +241,7 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
   NSUInteger summaryCount = 0;
   NSUInteger copyrightCount = 0;
   
-  NSArray *features = @[[[NSMutableDictionary alloc] init], [[NSMutableDictionary alloc] init], [[NSMutableDictionary alloc] init], [[NSMutableDictionary alloc] init], [[NSMutableDictionary alloc] init]];
+  NSArray *features;
   
   NSMutableDictionary *markerDict = [[NSMutableDictionary alloc] init];
   
@@ -260,32 +261,51 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
       
     } else if ([component hasPrefix:kMarkerHead]) {
       NSRange range = NSMakeRange(kMarkerHead.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger count = [component substringWithRange:range].integerValue - 1;
-      if (count >= 0 && count < 5) {
-        features[count][kMarkerHead] = @(1);
+      NSInteger number = [component substringWithRange:range].integerValue - 1;
+      if (number >= 0) {
+        features = [self appendFeatureDictionary:features toIndex:number];
+        features[number][kMarkerHead] = @(1);
       }
     } else if ([component hasPrefix:kMarkerSub]) {
       NSRange range = NSMakeRange(kMarkerSub.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger count = [component substringWithRange:range].integerValue - 1;
-      if (count >= 0 && count < 5) {
-        features[count][kMarkerSub] = @(1);
+      NSInteger number = [component substringWithRange:range].integerValue - 1;
+      if (number >= 0) {
+        features = [self appendFeatureDictionary:features toIndex:number];
+        features[number][kMarkerSub] = @(1);
       }
     } else if ([component hasPrefix:kMarkerBody]) {
       NSRange range = NSMakeRange(kMarkerBody.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger count = [component substringWithRange:range].integerValue - 1;
-      if (count >= 0 && count < 5) {
-        features[count][kMarkerBody] = @(1);
+      NSInteger number = [component substringWithRange:range].integerValue - 1;
+      if (number >= 0) {
+        features = [self appendFeatureDictionary:features toIndex:number];
+        features[number][kMarkerBody] = @(1);
       }
     } else if ([component hasPrefix:kMarkerImageSrc]) {
       NSRange range = NSMakeRange(kMarkerImageSrc.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger count = [component substringWithRange:range].integerValue - 1;
-      if (count >= 0 && count < 5) {
-        features[count][kMarkerImageSrc] = @(1);
+      NSInteger number = [component substringWithRange:range].integerValue - 1;
+      if (number >= 0) {
+        features = [self appendFeatureDictionary:features toIndex:number];
+        features[number][kMarkerImageSrc] = @(1);
       }
     }
   }
   
   markerDict[kFeatureArray] = features;
   return markerDict;
+}
+
+- (NSArray *)appendFeatureDictionary:(NSArray *)features toIndex:(NSUInteger)index {
+  if (!features) {
+    return @[[[NSMutableDictionary alloc] init]];
+  }
+  if (features.count > index) {
+    return features;
+  }
+  NSMutableArray *copyWithAdditions = [[NSMutableArray alloc] initWithArray:features];
+  for (NSUInteger another = features.count; another <= index; another++) {
+    NSMutableDictionary *feature = [[NSMutableDictionary alloc] init];
+    [copyWithAdditions addObject:feature];
+  }
+  return copyWithAdditions;
 }
 @end

@@ -60,21 +60,21 @@ static NSString *kCellId = @"cellId";
 // TODO - determine this list from the bundle directory somehow
 - (NSString *)titleForIndex:(NSInteger)index {
   NSString *text = nil;
-  switch (index - 1) {
+  switch (index) {
     case 0:
-      text = @"ONE PAGE WONDER\n startbootstrap";
+      text = @"ONE PAGE WONDER";
       break;
     case 1:
-      text = @"AGENCY\n startbootstrap";
+      text = @"AGENCY";
       break;
     case 2:
-      text = @"FREELANCER\n startbootstrap";
+      text = @"FREELANCER";
       break;
     case 3:
-      text = @"CREATIVE\n startbootstrap";
+      text = @"CREATIVE";
       break;
     case 4:
-      text = @"CLEAN BLOG\n startbootstrap";
+      text = @"CLEAN BLOG";
       break;
     default:
       break;
@@ -90,11 +90,9 @@ static NSString *kCellId = @"cellId";
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-  NSInteger index = indexPath.item % self.templateDirectories.count + 1;
   MPSkewedCell* cell = (MPSkewedCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
-  cell.image = [UIImage imageNamed: self.imageNames[indexPath.row]];
-  cell.text = [self titleForIndex:index];
-  
+  cell.image = [UIImage imageNamed: self.imageNames[indexPath.item]];
+  cell.text = [self titleForIndex:indexPath.item];
   return cell;
 }
 
@@ -103,6 +101,7 @@ static NSString *kCellId = @"cellId";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
   NSLog(@"template directory: %@", self.templateDirectories[indexPath.item]);
   TemplateTabBarController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"TemplateTabBarController"];
+  tabBarVC.documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
   tabBarVC.templateDirectory = self.templateDirectories[indexPath.item];
   [self.navigationController pushViewController:tabBarVC animated:YES];
 }

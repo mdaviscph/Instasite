@@ -11,6 +11,7 @@
 
 @interface TemplateTabBarController : UITabBarController
 
+@property (strong, nonatomic) NSString *documentsDirectory;
 @property (strong, nonatomic) NSString *templateDirectory;
 @property (strong, nonatomic) HtmlTemplate *templateCopy;
 

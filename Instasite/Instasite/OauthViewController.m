@@ -35,7 +35,7 @@
 - (void)safariLogin:(NSNotification *)notification {
   // get the url form the auth callback
   NSURL *url = notification.object;
-  NSLog(@"%@", url);
+  NSLog(@"safariLogin: %@", url);
   [GitHubService exchangeCodeInURL:url];
   
   [self.safariVC dismissViewControllerAnimated:true completion:nil];
