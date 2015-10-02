@@ -48,7 +48,7 @@
   
 }
 
-+(void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completionHandler:(void (^) (NSError *))completionHandler{
++(void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completion:(void(^)(NSError *))completion {
   
   NSString *url = [NSString stringWithFormat:@"https://api.github.com/user/repos"];
   
@@ -59,6 +59,7 @@
   [manager POST:url parameters:repo success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
     //NSLog(@"POST(repo): [%@] responseObject: %@", url, responseObject);
+    completion(nil);
     
   } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
     
@@ -66,10 +67,12 @@
     NSString *message = operation.responseObject[@"message"];
     NSString *failedUrl = error.userInfo[@"NSErrorFailingURLKey"];
     NSString *detail = error.userInfo[@"NSLocalizedDescription"];
-    NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);  }];
+    NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);
+    completion(error);
+  }];
 }
 
-+ (void)pushFilesToGithub:(NSString *)repoName indexHtmlFile:(NSString *)indexHtmlFile user:(NSString *)userName email:(NSString *)userEmail completionHandler:(void(^) (NSError *))completionHandler {
++ (void)pushFilesToGithub:(NSString *)repoName indexHtmlFile:(NSString *)indexHtmlFile user:(NSString *)userName email:(NSString *)userEmail completion:(void(^)(NSError *))completion {
   
   NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/index.html", userName, repoName];
   
@@ -86,18 +89,19 @@
   
   [manager PUT:baseURL parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     //NSLog(@"PUT(html): [%@]", baseURL);
-    completionHandler(nil);
+    completion(nil);
     
   } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
     NSLog(@"Error! PUT(html): [%@] error: %@", baseURL, error.localizedDescription);
     NSString *message = operation.responseObject[@"message"];
     NSString *failedUrl = error.userInfo[@"NSErrorFailingURLKey"];
     NSString *detail = error.userInfo[@"NSLocalizedDescription"];
-    NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);    //completionHandler(error);
+    NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);
+    completion(error);
   }];
 }
 
-+ (void)pushImagesToGithub:(NSString *)imageName imagePath:(NSString *)imagePath user:(NSString *)userName  email:(NSString *)userEmail forRepo:(NSString *)repoName {
++ (void)pushImagesToGithub:(NSString *)imageName imagePath:(NSString *)imagePath user:(NSString *)userName  email:(NSString *)userEmail forRepo:(NSString *)repoName completion:(void(^)(NSError *))completion {
 
   NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/img/", userName, repoName];
   
@@ -114,23 +118,31 @@
   
   [manager PUT:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     //NSLog(@"PUT(Images): [%@]", url);
+    completion(nil);
     
   } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
     NSLog(@"Error! PUT(Images): [%@] error: %@", url, error.localizedDescription);
     NSString *message = operation.responseObject[@"message"];
     NSString *failedUrl = error.userInfo[@"NSErrorFailingURLKey"];
     NSString *detail = error.userInfo[@"NSLocalizedDescription"];
-    NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);  }];
+    NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);
+    completion(error);
+  }];
 }
 
-+ (void)pushCSSToGithub:(NSString *)fileName cssPath:(NSString *)cssPath finalPath:(NSString *)localPath user:(NSString *)userName email:(NSString *)userEmail forRepo:(NSString *)repoName {
++ (void)pushCSSToGithub:(NSMutableArray *)cssFiles user:(NSString *)userName email:(NSString *)userEmail forRepo:(NSString *)repoName completion:(void(^)(NSError *))completion {
   
-  NSArray *fileLocation = [cssPath componentsSeparatedByString:@"/"];
-  NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@/",userName, repoName, [fileLocation lastObject]];
+  CSSFile *cssFile = cssFiles.lastObject;
+  [cssFiles removeLastObject];
+  
+  NSString *localPath = [cssFile.documentsDirectory stringByAppendingPathComponent:cssFile.templateDirectory];
+  localPath = cssFile.filePath ? [localPath stringByAppendingPathComponent:cssFile.filePath] : localPath;
+  localPath = [localPath stringByAppendingPathComponent:cssFile.fileName];
+  
+  NSString *filePath = cssFile.filePath ? [cssFile.filePath stringByAppendingPathComponent:cssFile.fileName] : cssFile.fileName;
+  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@", userName, repoName, filePath];
   
   NSString *encodedCSS = [FileEncodingService encodeCSS:localPath];
-  
-  NSString *url = [NSString stringWithFormat:@"%@%@",baseURL,fileName];
   
   NSDictionary *committer = @{@"name": userName, @"email": userEmail};
   NSDictionary *parameters = @{@"branch": kBranchName, @"message":@"new supporting file", @"committer": committer, @"content": encodedCSS};
@@ -138,7 +150,14 @@
   AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
   
   [manager PUT:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-    //NSLog(@"PUT(CSS): [%@]", url);
+    NSLog(@"PUT(CSS): local: [%@] url: [%@]", localPath, url);
+    
+    if (cssFiles.count > 0) {
+      [GitHubService pushCSSToGithub:cssFiles user:userName email:userEmail forRepo:repoName completion:^(NSError *error) {
+        completion(error);
+      }];
+    }
+    completion(nil);
     
   } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
     NSLog(@"Error! PUT(CSS): [%@] error: %@", url, error.localizedDescription);
@@ -146,11 +165,37 @@
     NSString *failedUrl = error.userInfo[@"NSErrorFailingURLKey"];
     NSString *detail = error.userInfo[@"NSLocalizedDescription"];
     NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);
+    completion(error);
   }];
 }
 
+//+ (void)pushCSSToGithub:(NSString *)fileName cssPath:(NSString *)cssPath finalPath:(NSString *)localPath user:(NSString *)userName email:(NSString *)userEmail forRepo:(NSString *)repoName completion:(void(^)(NSError *))completion {
+//
+//  NSArray *fileLocation = [cssPath componentsSeparatedByString:@"/"];
+//  NSString *baseURL = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@/",userName, repoName, [fileLocation lastObject]];
+//  
+//  NSString *encodedCSS = [FileEncodingService encodeCSS:localPath];
+//  
+//  NSString *url = [NSString stringWithFormat:@"%@%@",baseURL,fileName];
+//  
+//  NSDictionary *committer = @{@"name": userName, @"email": userEmail};
+//  NSDictionary *parameters = @{@"branch": kBranchName, @"message":@"new supporting file", @"committer": committer, @"content": encodedCSS};
+//  
+//  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
+//  
+//  [manager PUT:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+//    //NSLog(@"PUT(CSS): [%@]", url);
+//    
+//  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+//    NSLog(@"Error! PUT(CSS): [%@] error: %@", url, error.localizedDescription);
+//    NSString *message = operation.responseObject[@"message"];
+//    NSString *failedUrl = error.userInfo[@"NSErrorFailingURLKey"];
+//    NSString *detail = error.userInfo[@"NSLocalizedDescription"];
+//    NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);
+//  }];
+//}
 
-+ (void)pushJSONToGithub:(NSString *)jsonPath user:(NSString *)userName email:(NSString *)userEmail forRepo:(NSString *)repoName {
++ (void)pushJSONToGithub:(NSString *)jsonPath user:(NSString *)userName email:(NSString *)userEmail forRepo:(NSString *)repoName completion:(void(^)(NSError *))completion {
   
   [self getUsernameFromGithub:^(NSError *error, NSString *username) {
     if (username != nil) {
@@ -169,18 +214,21 @@
       
       [manager PUT:baseURL parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         //NSLog(@"PUT(json): [%@]", baseURL);
+        completion(nil);
         
       } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
         NSLog(@"Error! PUT(json): [%@] error: %@", baseURL, error.localizedDescription);
         NSString *message = operation.responseObject[@"message"];
         NSString *failedUrl = error.userInfo[@"NSErrorFailingURLKey"];
         NSString *detail = error.userInfo[@"NSLocalizedDescription"];
-        NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);      }];
+        NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);
+        completion(error);
+      }];
     }
   }];
 }
 
-+ (void)getUsernameFromGithub:(void (^) (NSError *error, NSString *username))completionHandler {
++ (void)getUsernameFromGithub:(void(^)(NSError *error, NSString *username))completion {
   
   NSString *url = @"https://api.github.com/user";
   
@@ -189,12 +237,12 @@
   [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
     NSString *username = responseObject[@"login"];
-    completionHandler(nil, username);
+    completion(nil, username);
     
   } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
     NSLog(@"Error! GET: [%@] error: %@", url, error.localizedDescription);
     NSLog(@"%@", operation.responseObject[@"message"]);
-    completionHandler(error, nil);
+    completion(error, nil);
   }];
 }
 

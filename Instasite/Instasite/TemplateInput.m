@@ -19,7 +19,7 @@
     for (NSUInteger index = 0; index < count; index++) {
       [mutableFeatures addObject:[[Feature alloc] init]];
     }
-    self.features = mutableFeatures;
+    _features = mutableFeatures;
   }
   return self;
 }

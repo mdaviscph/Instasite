@@ -11,8 +11,9 @@
 @interface CSSFile : NSObject
 @property (strong,nonatomic) NSString *fileName;
 @property (strong,nonatomic) NSString *filePath;
+@property (strong,nonatomic) NSString *templateDirectory;
 @property (strong,nonatomic) NSString *documentsDirectory;
 
-- (instancetype)initWithPath:(NSString *)path andFileName:(NSString *)fileName andDocumentsDirectory:(NSString *)directory;
+- (instancetype)initWithFileName:(NSString *)fileName filePath:(NSString *)filePath templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory;
 - (NSString *)description;
 @end

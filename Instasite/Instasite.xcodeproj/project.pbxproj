@@ -17,6 +17,10 @@
 		00E928A41BB1AB0100383BD0 /* TemplateInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928A31BB1AB0100383BD0 /* TemplateInput.m */; settings = {ASSET_TAGS = (); }; };
 		00E928A71BB1AEA200383BD0 /* Sample.json in Resources */ = {isa = PBXBuildFile; fileRef = 00E928A61BB1AEA200383BD0 /* Sample.json */; settings = {ASSET_TAGS = (); }; };
 		00E928AC1BB1EC0F00383BD0 /* EditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928AB1BB1EC0F00383BD0 /* EditViewController.m */; settings = {ASSET_TAGS = (); }; };
+		00EA772E1BBC8A3600A70B8A /* CommitJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 00EA772D1BBC8A3600A70B8A /* CommitJson.m */; settings = {ASSET_TAGS = (); }; };
+		00EA77311BBC8FFF00A70B8A /* TreeJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 00EA77301BBC8FFF00A70B8A /* TreeJson.m */; settings = {ASSET_TAGS = (); }; };
+		00EA77341BBC9FF700A70B8A /* FileJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 00EA77331BBC9FF700A70B8A /* FileJson.m */; settings = {ASSET_TAGS = (); }; };
+		00EA77371BBCA47600A70B8A /* CreateTreeJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 00EA77361BBCA47600A70B8A /* CreateTreeJson.m */; settings = {ASSET_TAGS = (); }; };
 		221BCA1E1BB46B100057A272 /* FileEncodingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA1D1BB46B100057A272 /* FileEncodingService.m */; settings = {ASSET_TAGS = (); }; };
 		221BCA221BB472D70057A272 /* testimage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 221BCA211BB472D70057A272 /* testimage.jpg */; settings = {ASSET_TAGS = (); }; };
 		221BCA261BB4B92E0057A272 /* ImageFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA251BB4B92E0057A272 /* ImageFile.m */; settings = {ASSET_TAGS = (); }; };
@@ -89,6 +93,14 @@
 		00E928A61BB1AEA200383BD0 /* Sample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Sample.json; sourceTree = "<group>"; };
 		00E928AA1BB1EC0F00383BD0 /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EditViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		00E928AB1BB1EC0F00383BD0 /* EditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		00EA772C1BBC8A3600A70B8A /* CommitJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommitJson.h; sourceTree = "<group>"; };
+		00EA772D1BBC8A3600A70B8A /* CommitJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommitJson.m; sourceTree = "<group>"; };
+		00EA772F1BBC8FFF00A70B8A /* TreeJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeJson.h; sourceTree = "<group>"; };
+		00EA77301BBC8FFF00A70B8A /* TreeJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreeJson.m; sourceTree = "<group>"; };
+		00EA77321BBC9FF700A70B8A /* FileJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileJson.h; sourceTree = "<group>"; };
+		00EA77331BBC9FF700A70B8A /* FileJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileJson.m; sourceTree = "<group>"; };
+		00EA77351BBCA47600A70B8A /* CreateTreeJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateTreeJson.h; sourceTree = "<group>"; };
+		00EA77361BBCA47600A70B8A /* CreateTreeJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateTreeJson.m; sourceTree = "<group>"; };
 		221BCA1C1BB46B100057A272 /* FileEncodingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileEncodingService.h; sourceTree = "<group>"; };
 		221BCA1D1BB46B100057A272 /* FileEncodingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileEncodingService.m; sourceTree = "<group>"; };
 		221BCA211BB472D70057A272 /* testimage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimage.jpg; sourceTree = "<group>"; };
@@ -182,6 +194,21 @@
 			name = "User Input";
 			sourceTree = "<group>";
 		};
+		00EA772B1BBC89BE00A70B8A /* GitHubJSON */ = {
+			isa = PBXGroup;
+			children = (
+				00EA772C1BBC8A3600A70B8A /* CommitJson.h */,
+				00EA772D1BBC8A3600A70B8A /* CommitJson.m */,
+				00EA772F1BBC8FFF00A70B8A /* TreeJson.h */,
+				00EA77301BBC8FFF00A70B8A /* TreeJson.m */,
+				00EA77321BBC9FF700A70B8A /* FileJson.h */,
+				00EA77331BBC9FF700A70B8A /* FileJson.m */,
+				00EA77351BBCA47600A70B8A /* CreateTreeJson.h */,
+				00EA77361BBCA47600A70B8A /* CreateTreeJson.m */,
+			);
+			name = GitHubJSON;
+			sourceTree = "<group>";
+		};
 		221BCA201BB472C50057A272 /* Test Image */ = {
 			isa = PBXGroup;
 			children = (
@@ -240,6 +267,7 @@
 		227C86751BB0772E00799CD3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				00EA772B1BBC89BE00A70B8A /* GitHubJSON */,
 				00E928961BB1A07200383BD0 /* HtmlTemplate.h */,
 				00E928971BB1A07200383BD0 /* HtmlTemplate.m */,
 				009403F91BB999FB005E547C /* User Input */,
@@ -561,7 +589,9 @@
 				000B02751BB36A2D00737578 /* TemplateTabBarController.m in Sources */,
 				6B05A0071BB32765002627BA /* DisplayTemplateViewController.m in Sources */,
 				00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */,
+				00EA772E1BBC8A3600A70B8A /* CommitJson.m in Sources */,
 				00E9289B1BB1A8BE00383BD0 /* JsonService.m in Sources */,
+				00EA77311BBC8FFF00A70B8A /* TreeJson.m in Sources */,
 				6B05A02E1BB4A0B5002627BA /* FileManager.m in Sources */,
 				6B05A0041BB3271A002627BA /* MainViewController.m in Sources */,
 				221BCA1E1BB46B100057A272 /* FileEncodingService.m in Sources */,
@@ -570,6 +600,7 @@
 				008035021BB7141C00EB91C6 /* SegmentedControl.m in Sources */,
 				000613761BB2FCE600E818B7 /* Extensions.m in Sources */,
 				221BCA2A1BB4B9460057A272 /* CSSFile.m in Sources */,
+				00EA77371BBCA47600A70B8A /* CreateTreeJson.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
 				008035051BB733E800EB91C6 /* EditViewControllerImagePickerExtension.m in Sources */,
 				227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */,
@@ -577,6 +608,7 @@
 				227C86801BB07B3500799CD3 /* GitHubService.m in Sources */,
 				22B07C861BB45D5D00ADB5EF /* Keys.m in Sources */,
 				6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */,
+				00EA77341BBC9FF700A70B8A /* FileJson.m in Sources */,
 				227C86831BB0876900799CD3 /* Constants.m in Sources */,
 				6CAE8E3A1BB4618E00691E48 /* GitHubPullService.m in Sources */,
 				221BCA261BB4B92E0057A272 /* ImageFile.m in Sources */,
