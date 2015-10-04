@@ -54,7 +54,6 @@
   [super viewDidLoad];
   
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
-  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonTapped)];
 
   self.markers = [self.tabBarVC.templateCopy templateMarkers];
   NSArray *features = self.markers[kFeatureArray];
@@ -123,7 +122,9 @@
 
 -(void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+  NSLog(@"EditVC viewWillAppear");
   self.navigationController.navigationBarHidden = NO;
+  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonTapped)];
   [self startObservingKeyboardEvents];
 }
 
@@ -218,6 +219,7 @@
   [JsonService writeJsonFile:jsonData filename:kTemplateJsonFilename type:kTemplateJsonFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
   
   [self writeWorkingFile];
+  [self saveImagesToFiles];
 }
 
 - (BOOL)writeWorkingFile {
@@ -228,6 +230,40 @@
     return YES;
   }
   return NO;
+}
+
+- (void)saveImagesToFiles {
+  
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
+  NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImagesDirectory];
+
+  if (self.tabBarVC.images.count > 0) {
+    if (![fileManager fileExistsAtPath:imagesDirectory isDirectory:nil]) {
+      NSError *error;
+      [fileManager createDirectoryAtPath:imagesDirectory withIntermediateDirectories:NO attributes:nil error:&error];
+      if (error) {
+        NSLog(@"Error! Cannot create directory: [%@] error: %@", imagesDirectory, error.localizedDescription);
+        return;
+      }
+    }
+  }
+
+  for (NSUInteger index = 0; index < self.tabBarVC.images.count; index++) {
+    
+    UIImage *image = self.tabBarVC.images[index];
+    NSData *data = UIImageJPEGRepresentation(image, 1.0);
+    
+    NSString *imageFile = [NSString stringWithFormat:@"%@%ld", kTemplateImagePrefix, index + 1];
+    NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
+    NSString *pathWithType = [filepath stringByAppendingPathExtension:@"jpg"];
+    
+    NSLog(@"Writing file: %@", pathWithType);
+    if (![fileManager createFileAtPath:pathWithType contents:data attributes:nil]) {
+      NSLog(@"Error! Cannot create file: %@", pathWithType);
+      return;
+    }
+  }
 }
 
 - (void)publishToGithub {

@@ -46,13 +46,13 @@ static NSString *kCellId = @"cellId";
   [self.view addSubview:self.collectionView];
 }
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:true];
   self.navigationController.navigationBarHidden = YES;
 }
 
 
--(void)viewDidLayoutSubviews {
+- (void)viewDidLayoutSubviews {
   [super viewDidLayoutSubviews];
   [(MPSkewedParallaxLayout *)self.collectionView.collectionViewLayout setItemSize:CGSizeMake(CGRectGetWidth(self.view.bounds), kCellHeight)];
 }

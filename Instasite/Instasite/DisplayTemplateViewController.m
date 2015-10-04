@@ -11,7 +11,6 @@
 #import <WebKit/WebKit.h>
 #import "HtmlTemplate.h"
 #import "Constants.h"
-#import "FileManager.h"
 
 @interface DisplayTemplateViewController () <WKNavigationDelegate>
 
@@ -33,11 +32,6 @@
   [self.view addSubview: self.webView];
   self.webView.navigationDelegate = self;
 
-  [self copyBundleTemplateDirectory];
-
-  NSURL *templateURL = [self templateHtmlURL];
-  self.tabBarVC.templateCopy = [[HtmlTemplate alloc] initWithURL:templateURL];
-  
   NSURL *indexHtmlURL = [self indexHtmlURL];
   NSURL *indexHtmlDirectoryURL = [self indexHtmlDirectoryURL];
   [self.webView loadFileURL:indexHtmlURL allowingReadAccessToURL:indexHtmlDirectoryURL];
@@ -59,15 +53,6 @@
   NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
   
   return [NSURL fileURLWithPath:workingDirectory isDirectory:YES];
-}
-- (NSURL *)templateHtmlURL {
-  return [HtmlTemplate fileURL:kTemplateMarkerFilename type:kTemplateMarkerFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
-}
-
-// Copy the entire template folder from main bundle to the documents directory one time
--(void)copyBundleTemplateDirectory {
-  FileManager *fileManager = [[FileManager alloc] init];
-  [fileManager copyDirectory:self.tabBarVC.templateDirectory overwrite:NO documentsDirectory:self.tabBarVC.documentsDirectory];
 }
 
 #pragma mark - WKNavigationDelegate
