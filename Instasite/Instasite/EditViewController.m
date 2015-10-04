@@ -249,8 +249,8 @@
     publishVC.indexHtmlFilePath = workingDirectory;
     publishVC.JSONfilePath = workingDirectory;
     
-    //NSLog(@"CSS: %@", [[files firstObject] description]);
-    //NSLog(@"IMAGES: %@", [[files lastObject] description]);
+    NSLog(@"CSS: %@", [[files firstObject] description]);
+    NSLog(@"IMAGES: %@", [[files lastObject] description]);
     publishVC.supportingFilePaths = [files firstObject];
     publishVC.imageFilePaths = [files lastObject];
     

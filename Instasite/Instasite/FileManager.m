@@ -16,20 +16,22 @@
 - (NSArray *)enumerateFilesInDirectory:(NSString *)directory documentsDirectory:(NSString *)documentsDirectory{
   
   NSLog(@"Enumerate directory at: %@/%@", documentsDirectory, directory);
-  return [self filesInDirectory:nil templatePath:directory documentsDirectory:documentsDirectory];
+  return [self filesInDirectory:nil relativePath:nil startingDirectory:directory documentsDirectory:documentsDirectory];
 }
 
-- (NSArray *)filesInDirectory:(NSString *)directory templatePath:(NSString *)templatePath documentsDirectory:(NSString *)documentsDirectory {
+- (NSArray *)filesInDirectory:(NSString *)directory relativePath:(NSString *)relativePath startingDirectory:(NSString *)startingDirectory documentsDirectory:(NSString *)documentsDirectory {
 
   NSFileManager *manager = [NSFileManager defaultManager];
   NSMutableArray *cssFiles = [[NSMutableArray alloc] init];
   NSMutableArray *imageFiles = [[NSMutableArray alloc] init];
   
-  NSString *directoryPath = [documentsDirectory stringByAppendingPathComponent:templatePath];
-  NSString *templateDirectoryPath = templatePath;
+  NSString *directoryPath = [documentsDirectory stringByAppendingPathComponent:startingDirectory];
+  directoryPath = relativePath ? [directoryPath stringByAppendingPathComponent:relativePath] : directoryPath;
+  directoryPath = directory ? [directoryPath stringByAppendingPathComponent:directory] : directoryPath;
+  
+  NSString *newRelativePath;
   if (directory) {
-    directoryPath = [directoryPath stringByAppendingPathComponent:directory];
-    templateDirectoryPath = [templateDirectoryPath stringByAppendingPathComponent:directory];
+    newRelativePath = relativePath ? [relativePath stringByAppendingPathComponent:directory] : directory;
   }
   
   NSError *error;
@@ -42,15 +44,16 @@
     if (isDirectory) {
       //NSLog(@"Directory at: %@", file);
       
-      NSArray *fileObjects = [self filesInDirectory:file templatePath:templateDirectoryPath documentsDirectory:documentsDirectory];
-      [cssFiles addObjectsFromArray:fileObjects[0]];
-      [imageFiles addObjectsFromArray:fileObjects[1]];
+      NSArray *fileObjects = [self filesInDirectory:file relativePath:newRelativePath startingDirectory:startingDirectory documentsDirectory:documentsDirectory];
+      [cssFiles addObjectsFromArray:fileObjects.firstObject];
+      [imageFiles addObjectsFromArray:fileObjects.lastObject];
       
     } else {
       //NSLog(@"File at: %@", file);
       if ([file hasPrefix:kTemplateImagePrefix]) {
-        ImageFile *imagefile = [[ImageFile alloc] initWithPath:templateDirectoryPath andFileName:file andDocumentsDirectory:documentsDirectory];
+        ImageFile *imagefile = [[ImageFile alloc] initWithFileName:file filePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
         [imageFiles addObject:imagefile];
+        [cssFiles addObject:imagefile];
       } else if ([file hasPrefix:kTemplateIndexFilename]) {
         // ignore index.html
       } else if ([file hasPrefix:kTemplateMarkerFilename]) {
@@ -58,7 +61,7 @@
       } else if ([file hasPrefix:kTemplateJsonFilename]) {
         // ignore json file
       } else {
-        CSSFile *cssfile = [[CSSFile alloc] initWithPath:templateDirectoryPath andFileName:file andDocumentsDirectory:documentsDirectory];
+        CSSFile *cssfile = [[CSSFile alloc] initWithFileName:file filePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
         [cssFiles addObject:cssfile];
       }
     }

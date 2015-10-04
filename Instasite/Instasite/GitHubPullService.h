@@ -10,6 +10,6 @@
 
 @interface GitHubPullService : NSObject
 
-+ (void)getJSONFromGithub:(NSString *)repoName email:(NSString *)email completionHandler:(void (^)(NSError *))completionHandler;
++ (void)getJSONFromGithub:(NSString *)repoName email:(NSString *)email completion:(void (^)(NSError *))completion;
 
 @end

@@ -19,68 +19,66 @@
 @property (weak, nonatomic) IBOutlet UITextField *textFieldRepoName;
 @property (weak, nonatomic) IBOutlet UITextField *textFieldDescription;
 
-
 @end
 
 @implementation PublishViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+  [super viewDidLoad];
+
   self.textFieldRepoName.delegate = self;
   self.textFieldDescription.delegate = self;
-  
-
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 - (IBAction)createRepoAction:(UIButton *)sender {
 
-  [GitHubService serviceForRepoNameInput:self.textFieldRepoName.text descriptionInput:self.textFieldDescription.text  completionHandler:^(NSError *error) {
-    if (error != nil) {
-      NSLog(@"Error: %@",error);
-    } else {
-      
-      
-      UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Success" message:@"Your website has been published!" preferredStyle:UIAlertControllerStyleAlert];
-      UIAlertAction *action = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-        [alertController dismissViewControllerAnimated:true completion:nil];
-      }];
-      [alertController addAction:action];
- 
-    }
-  }];
-  
-  [GitHubService getUsernameFromGithub:^(NSError *error, NSString *username) {
-    
+  [GitHubService serviceForRepoNameInput:self.textFieldRepoName.text descriptionInput:self.textFieldDescription.text completion:^(NSError *error) {
     if (error) {
-      NSLog(@"Cannot publish due to missing user name.");
-    } else {
-      if (self.indexHtmlFilePath) {
-        [GitHubService pushFilesToGithub:self.textFieldRepoName.text indexHtmlFile:self.indexHtmlFilePath user:username email:self.textFieldEmail.text completionHandler:nil];
-      } else {
-        NSLog(@"IndexHtml file not uploaded!");
+      // TODO - Alert popover
+      return;
+    }
+    
+    [GitHubService getUsernameFromGithub:^(NSError *error, NSString *username) {
+      
+      if (error) {
+        // TODO - Alert popover
+        return;
       }
       
-      if (self.JSONfilePath) {
-        [GitHubService pushJSONToGithub:self.JSONfilePath user:username email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-      } else {
-        NSLog(@"JSON file not uploaded!");
-      }
-      
+      [GitHubService pushFilesToGithub:self.textFieldRepoName.text indexHtmlFile:self.indexHtmlFilePath user:username email:self.textFieldEmail.text completion:^(NSError *error) {
+        if (error) {
+          // TODO - Alert popover
+          return;
+        }
+        [GitHubService pushJSONToGithub:self.JSONfilePath user:username email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text completion:^(NSError *error) {
+          if (error) {
+            // TODO - Alert popover
+            return;
+          }
+          
+          NSMutableArray *cssFiles = [[NSMutableArray alloc] initWithArray:self.supportingFilePaths];
+          [GitHubService pushCSSToGithub:cssFiles user:username email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text completion:^(NSError *error) {
+            if (error) {
+              // TODO - Alert popover
+              return;
+            }
+            // success
+          }];
+        }];
+      }];
       //  for (ImageFile *imageFile in self.imageFilePaths) {
       //    [GitHubService pushImagesToGithub:imageFile.fileName imagePath:imageFile.filePath user:username email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
       //  }
-      
-      for (CSSFile *cssFile in self.supportingFilePaths) {
-        NSString *finalPath = [NSString stringWithFormat:@"%@/%@/%@",cssFile.documentsDirectory, cssFile.filePath, cssFile.fileName];
-        [GitHubService pushCSSToGithub:cssFile.fileName cssPath:cssFile.filePath finalPath:finalPath user:username email:self.textFieldEmail.text forRepo:self.textFieldRepoName.text];
-      }
-    }
+    }];
   }];
+}
+
+- (IBAction)downloadJSON:(id)sender {
+  
+  //[GitHubPullService getJSONFromGithub:@"instasite.json" username:@"myUsername" email:@"myemail@domain.com" templateName:@"mytemplate" completion:^(NSError *username) {
+    
+  //}];
+  
 }
 
 #pragma mark - UITextFieldDelegate
@@ -90,22 +88,5 @@
   
   return true;
 }
-- (IBAction)downloadJSON:(id)sender {
-  
-  //[GitHubPullService getJSONFromGithub:@"instasite.json" username:@"myUsername" email:@"myemail@domain.com" templateName:@"mytemplate" completionHandler:^(NSError *username) {
-    
-  //}];
-  
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

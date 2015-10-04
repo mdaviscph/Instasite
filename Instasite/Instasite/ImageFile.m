@@ -10,11 +10,12 @@
 
 @implementation ImageFile
 
-- (instancetype)initWithPath:(NSString *)path andFileName:(NSString *)fileName andDocumentsDirectory:(NSString *)directory {
+- (instancetype)initWithFileName:(NSString *)fileName filePath:(NSString *)filePath templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory {
   if (self = [super init]) {
-    _filePath = path;
     _fileName = fileName;
-    _documentsDirectory = directory;
+    _filePath = filePath;
+    _templateDirectory = templateDirectory;
+    _documentsDirectory = documentsDirectory;
   }
   return self;
 }
@@ -22,4 +23,5 @@
 - (NSString *)description {
   return [NSString stringWithFormat:@"[%@][%@]", self.filePath, self.fileName];
 }
+
 @end
