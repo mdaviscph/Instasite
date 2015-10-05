@@ -32,10 +32,10 @@
 
 - (IBAction)createRepoAction:(UIButton *)sender {
 
-  [GitHubService serviceForRepoNameInput:self.textFieldRepoName.text descriptionInput:self.textFieldDescription.text completion:^(NSError *error) {
+  [GitHubService createRepo:self.textFieldRepoName.text description:self.textFieldDescription.text completion:^(NSError *error) {
     if (error) {
       // TODO - Alert popover
-      return;
+      //return;
     }
     
     [GitHubService getUsernameFromGithub:^(NSError *error, NSString *username) {

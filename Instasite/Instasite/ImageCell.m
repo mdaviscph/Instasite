@@ -34,7 +34,7 @@
     _placeholderLabel.backgroundColor = [UIColor darkGrayColor];
     _placeholderLabel.textAlignment = NSTextAlignmentCenter;
     _placeholderLabel.textColor = [UIColor whiteColor];
-    [self addViewWithContraints:_placeholderLabel toSuperview:self.borderView withVerticalSpacing:2.0 withHorizontalSpacing:2.0];
+    [self addViewWithConstraints:_placeholderLabel toSuperview:self.borderView withVerticalSpacing:2.0 withHorizontalSpacing:2.0];
   }
   return _placeholderLabel;
 }
@@ -54,7 +54,7 @@
   if (!_imageView) {
     _imageView = [[UIImageView alloc] init];
     _imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self addViewWithContraints:_imageView toSuperview:self.borderView withVerticalSpacing:2.0 withHorizontalSpacing:2.0];
+    [self addViewWithConstraints:_imageView toSuperview:self.borderView withVerticalSpacing:2.0 withHorizontalSpacing:2.0];
   }
   return _imageView;
 }
@@ -77,7 +77,7 @@
   [superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0  metrics:nil views:viewsInfo]];
 }
 
-- (void)addViewWithContraints:(UIView *)view toSuperview:(UIView *)superview withVerticalSpacing:(CGFloat)verticalSpacing withHorizontalSpacing:(CGFloat)horizontalSpacing {
+- (void)addViewWithConstraints:(UIView *)view toSuperview:(UIView *)superview withVerticalSpacing:(CGFloat)verticalSpacing withHorizontalSpacing:(CGFloat)horizontalSpacing {
   
   [superview addSubview:view];
   [view setTranslatesAutoresizingMaskIntoConstraints:NO];

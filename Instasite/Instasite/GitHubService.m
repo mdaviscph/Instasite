@@ -9,6 +9,7 @@
 #import "GitHubService.h"
 #import "FileEncodingService.h"
 #import "Keys.h"
+#import "RepoJson.h"
 #import "Constants.h"
 #import "CSSFile.h"
 #import <AFNetworking/AFNetworking.h>
@@ -48,13 +49,13 @@
   
 }
 
-+(void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completion:(void(^)(NSError *))completion {
++ (void)createRepo:(NSString *)repoName description:(NSString *)description completion:(void(^)(NSError *))completion {
   
   NSString *url = [NSString stringWithFormat:@"https://api.github.com/user/repos"];
   
   AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
   
-  NSDictionary *repo = @{@"name": repoNameInput, @"description": descriptionInput};
+  NSDictionary *repo = @{@"name": repoName, @"description": description};
   
   [manager POST:url parameters:repo success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
@@ -69,6 +70,49 @@
     NSString *detail = error.userInfo[@"NSLocalizedDescription"];
     NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);
     completion(error);
+  }];
+}
+
++ (void)getReposWithCompletion:(void(^)(NSError *error, NSArray *repos))completion {
+  
+  NSString *url = @"https://api.github.com/user/repos";
+  
+  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:false];
+  
+  NSDictionary *parameters = @{@"type": @"owner"};
+  
+  [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    
+    NSMutableArray *repos = [[NSMutableArray alloc] init];
+    NSArray *reposArray = responseObject;
+    for (NSDictionary *repoDict in reposArray) {
+      RepoJson *repo = [[RepoJson alloc] initFromJSON:repoDict];
+      [repos addObject:repo];
+    }
+    completion(nil, repos);
+    
+  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+    NSLog(@"Error! GET: [%@] error: %@", url, error.localizedDescription);
+    NSLog(@"%@", operation.responseObject[@"message"]);
+    completion(error, nil);
+  }];
+}
+
++ (void)getUsernameFromGithub:(void(^)(NSError *error, NSString *username))completion {
+  
+  NSString *url = @"https://api.github.com/user";
+  
+  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:false];
+  
+  [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    
+    NSString *username = responseObject[@"login"];
+    completion(nil, username);
+    
+  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+    NSLog(@"Error! GET: [%@] error: %@", url, error.localizedDescription);
+    NSLog(@"%@", operation.responseObject[@"message"]);
+    completion(error, nil);
   }];
 }
 
@@ -225,24 +269,6 @@
         completion(error);
       }];
     }
-  }];
-}
-
-+ (void)getUsernameFromGithub:(void(^)(NSError *error, NSString *username))completion {
-  
-  NSString *url = @"https://api.github.com/user";
-  
-  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:false];
-  
-  [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-    
-    NSString *username = responseObject[@"login"];
-    completion(nil, username);
-    
-  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
-    NSLog(@"Error! GET: [%@] error: %@", url, error.localizedDescription);
-    NSLog(@"%@", operation.responseObject[@"message"]);
-    completion(error, nil);
   }];
 }
 

@@ -11,8 +11,10 @@
 @interface GitHubService : NSObject
 
 + (void)exchangeCodeInURL:(NSURL *)url;
-+ (void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completion:(void(^)(NSError *))completion;
 
++ (void)createRepo:(NSString *)repoName description:(NSString *)description completion:(void(^)(NSError *))completion;
+
++ (void)getReposWithCompletion:(void(^)(NSError *error, NSArray *repos))completion;
 + (void)getUsernameFromGithub:(void(^)(NSError *error, NSString *username))completion;
 
 + (void)pushFilesToGithub:(NSString *)repoName indexHtmlFile:(NSString *)indexHtmlFile user:(NSString *)userName email:(NSString *)userEmail completion:(void(^)(NSError *))completion;

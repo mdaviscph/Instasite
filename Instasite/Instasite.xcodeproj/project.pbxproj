@@ -11,6 +11,9 @@
 		0006EC061BC0B79200B020C5 /* ImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0006EC051BC0B79200B020C5 /* ImagesViewController.m */; settings = {ASSET_TAGS = (); }; };
 		0006EC091BC0BFAF00B020C5 /* ImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0006EC081BC0BFAF00B020C5 /* ImageCell.m */; settings = {ASSET_TAGS = (); }; };
 		000B02751BB36A2D00737578 /* TemplateTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 000B02741BB36A2D00737578 /* TemplateTabBarController.m */; settings = {ASSET_TAGS = (); }; };
+		007D48001BC2F4BA0057B5D1 /* RepoJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D47FF1BC2F4BA0057B5D1 /* RepoJson.m */; settings = {ASSET_TAGS = (); }; };
+		007D48031BC2F90A0057B5D1 /* ReposViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D48021BC2F90A0057B5D1 /* ReposViewController.m */; settings = {ASSET_TAGS = (); }; };
+		007D48061BC2FAA30057B5D1 /* RepoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D48051BC2FAA30057B5D1 /* RepoCell.m */; settings = {ASSET_TAGS = (); }; };
 		008035021BB7141C00EB91C6 /* SegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 008035011BB7141C00EB91C6 /* SegmentedControl.m */; settings = {ASSET_TAGS = (); }; };
 		00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928971BB1A07200383BD0 /* HtmlTemplate.m */; settings = {ASSET_TAGS = (); }; };
 		00E9289B1BB1A8BE00383BD0 /* JsonService.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E9289A1BB1A8BE00383BD0 /* JsonService.m */; settings = {ASSET_TAGS = (); }; };
@@ -83,6 +86,12 @@
 		0006EC081BC0BFAF00B020C5 /* ImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCell.m; sourceTree = "<group>"; };
 		000B02731BB36A2D00737578 /* TemplateTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateTabBarController.h; sourceTree = "<group>"; };
 		000B02741BB36A2D00737578 /* TemplateTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateTabBarController.m; sourceTree = "<group>"; };
+		007D47FE1BC2F4BA0057B5D1 /* RepoJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RepoJson.h; sourceTree = "<group>"; };
+		007D47FF1BC2F4BA0057B5D1 /* RepoJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RepoJson.m; sourceTree = "<group>"; };
+		007D48011BC2F90A0057B5D1 /* ReposViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReposViewController.h; sourceTree = "<group>"; };
+		007D48021BC2F90A0057B5D1 /* ReposViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReposViewController.m; sourceTree = "<group>"; };
+		007D48041BC2FAA30057B5D1 /* RepoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RepoCell.h; sourceTree = "<group>"; };
+		007D48051BC2FAA30057B5D1 /* RepoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RepoCell.m; sourceTree = "<group>"; };
 		008035001BB7141C00EB91C6 /* SegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentedControl.h; sourceTree = "<group>"; };
 		008035011BB7141C00EB91C6 /* SegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentedControl.m; sourceTree = "<group>"; };
 		00E928961BB1A07200383BD0 /* HtmlTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HtmlTemplate.h; sourceTree = "<group>"; };
@@ -200,6 +209,8 @@
 		00EA772B1BBC89BE00A70B8A /* GitHubJSON */ = {
 			isa = PBXGroup;
 			children = (
+				007D47FE1BC2F4BA0057B5D1 /* RepoJson.h */,
+				007D47FF1BC2F4BA0057B5D1 /* RepoJson.m */,
 				00EA772C1BBC8A3600A70B8A /* CommitJson.h */,
 				00EA772D1BBC8A3600A70B8A /* CommitJson.m */,
 				00EA772F1BBC8FFF00A70B8A /* TreeJson.h */,
@@ -248,6 +259,8 @@
 				0006EC051BC0B79200B020C5 /* ImagesViewController.m */,
 				000B02731BB36A2D00737578 /* TemplateTabBarController.h */,
 				000B02741BB36A2D00737578 /* TemplateTabBarController.m */,
+				007D48011BC2F90A0057B5D1 /* ReposViewController.h */,
+				007D48021BC2F90A0057B5D1 /* ReposViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -263,6 +276,8 @@
 				000613751BB2FCE600E818B7 /* Extensions.m */,
 				0006EC071BC0BFAF00B020C5 /* ImageCell.h */,
 				0006EC081BC0BFAF00B020C5 /* ImageCell.m */,
+				007D48041BC2FAA30057B5D1 /* RepoCell.h */,
+				007D48051BC2FAA30057B5D1 /* RepoCell.m */,
 				008035001BB7141C00EB91C6 /* SegmentedControl.h */,
 				008035011BB7141C00EB91C6 /* SegmentedControl.m */,
 			);
@@ -607,6 +622,7 @@
 				000613761BB2FCE600E818B7 /* Extensions.m in Sources */,
 				221BCA2A1BB4B9460057A272 /* CSSFile.m in Sources */,
 				00EA77371BBCA47600A70B8A /* CreateTreeJson.m in Sources */,
+				007D48031BC2F90A0057B5D1 /* ReposViewController.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
 				227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */,
 				0006EC061BC0B79200B020C5 /* ImagesViewController.m in Sources */,
@@ -616,9 +632,11 @@
 				6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */,
 				00EA77341BBC9FF700A70B8A /* FileJson.m in Sources */,
 				227C86831BB0876900799CD3 /* Constants.m in Sources */,
+				007D48061BC2FAA30057B5D1 /* RepoCell.m in Sources */,
 				6CAE8E3A1BB4618E00691E48 /* GitHubPullService.m in Sources */,
 				221BCA261BB4B92E0057A272 /* ImageFile.m in Sources */,
 				22EFFDE01BADC11800E28ACB /* main.m in Sources */,
+				007D48001BC2F4BA0057B5D1 /* RepoJson.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

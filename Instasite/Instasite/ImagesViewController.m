@@ -14,7 +14,7 @@
 
 static NSString *kCellId = @"ImageCell";
 
-//<UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource>
+//<UICollectionViewDelegateFlowLayout>
 
 @interface ImagesViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -141,7 +141,7 @@ static NSString *kCellId = @"ImageCell";
   return cell;
 }
 
-#pragma mark <UICollectionViewDelegate>
+#pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
   
