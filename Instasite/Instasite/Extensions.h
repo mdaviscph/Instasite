@@ -24,12 +24,6 @@
 
 @end
 
-@interface UIButton (Extensions)
-
-- (instancetype)initWithTitle:(NSString *)text textColor:(UIColor *)textColor image:(UIImage *)image;
-
-@end
-
 @interface NSString (Extensions)
 
 - (NSString *)abbreviate:(NSUInteger)anIndex;

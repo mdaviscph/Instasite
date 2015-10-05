@@ -12,7 +12,7 @@
 @implementation Feature
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"(%@)(%@)(%@)[%@]", self.headline, self.subheadline, [self.body abbreviate:10], self.imageSrc];
+  return [NSString stringWithFormat:@"(%@)(%@)(%@)", self.headline, self.subheadline, [self.body abbreviate:10]];
 }
           
 @end

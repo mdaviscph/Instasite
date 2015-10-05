@@ -13,8 +13,8 @@ body {
     width: 100%;
     text-align: center;
     /* background: url('http://placehold.it/1900x500') no-repeat center center scroll; */
-    background: gray;
-    height: 500px;
+    background: LightGray;
+    height: 270px;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
@@ -22,19 +22,17 @@ body {
 }
 
 .headline {
-    padding: 120px 0;
+    padding: 15px 0;
 }
 
 .headline h1 {
-    font-size: 130px;
-    background: #fff;
-    background: rgba(255,255,255,0.9);
+    font-size: 30px;
+    background: LightGray;
 }
 
 .headline h2 {
-    font-size: 77px;
-    background: #fff;
-    background: rgba(255,255,255,0.9);
+    font-size: 20px;
+    background: LightGray;
 }
 
 .featurette-divider {
@@ -54,7 +52,7 @@ body {
 }
 
 .featurette-heading {
-    font-size: 50px;
+    font-size: 20px;
 }
 
 footer {
@@ -89,11 +87,11 @@ footer {
 
 @media(max-width:991px) {
     .headline h1 {
-        font-size: 105px;
+        font-size: 30px;
     }
 
     .headline h2 {
-        font-size: 50px;
+        font-size: 20px;
     }
 
     .featurette-divider {
@@ -113,7 +111,7 @@ footer {
     }
 
     .featurette-heading {
-        font-size: 30px;
+        font-size: 20px;
     }
 }
 
@@ -127,17 +125,17 @@ footer {
     }
 
     .featurette-heading {
-        font-size: 25px;
+        font-size: 20px;
     }
 }
 
 @media(max-width:668px) {
     .headline h1 {
-        font-size: 70px;
+        font-size: 28px;
     }
 
     .headline h2 {
-        font-size: 32px;
+        font-size: 18px;
     }
 
     .featurette-divider {
@@ -147,15 +145,15 @@ footer {
 
 @media(max-width:640px) {
     .headline {
-        padding: 75px 0 25px 0;
+        padding: 15px 0 5px 0;
     }
 
     .headline h1 {
-        font-size: 60px;
+        font-size: 28px;
     }
 
     .headline h2 {
-        font-size: 30px;
+        font-size: 18px;
     }
 }
 

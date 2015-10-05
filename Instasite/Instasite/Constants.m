@@ -9,17 +9,19 @@
 #import "Constants.h"
 
 NSString *const kCloseSafariViewControllerNotification = @"kCloseSafariViewControllerNotification";
+
 NSString *const kSSKeychainAccount = @"github";
 NSString *const kSSKeychainService = @"githubToken";
+
 NSString *const kTemplateIndexFilename = @"index";
 NSString *const kTemplateIndexFiletype = @"html";
 NSString *const kTemplateMarkerFilename = @"instasite";
 NSString *const kTemplateMarkerFiletype = @"html";
 NSString *const kTemplateJsonFilename = @"instasite";
 NSString *const kTemplateJsonFiletype = @"json";
-NSString *const kTemplateImagesDirectory = @"img";
+NSString *const kTemplateImageDirectory = @"img";
 NSString *const kTemplateImagePrefix = @"image";
+ NSString *const kTemplateImageFiletype = @"jpeg";
+
 NSString *const kUploadIndexFileName = @"index.html";
 NSString *const kBranchName = @"gh-pages";
-int kSpaceBetweenCells = 10;
-int kCellHeight = 250;

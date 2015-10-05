@@ -14,12 +14,13 @@ static NSString *const kJsonTemplatesKey = @"templates";
 static NSString *const kJsonTitleKey = @"title";
 static NSString *const kJsonSubtitleKey = @"subtitle";
 static NSString *const kJsonSummaryKey = @"summary";
+static NSString *const kJsonCopyrightKey = @"copyright";
 static NSString *const kJsonFeaturesKey = @"features";
 static NSString *const kJsonHeadlineKey = @"headline";
 static NSString *const kJsonSubheadlineKey = @"subheadline";
 static NSString *const kJsonBodyKey = @"body";
+static NSString *const kJsonImagesKey = @"images";
 static NSString *const kJsonImageSrcKey = @"imageSrc";
-static NSString *const kJsonCopyrightKey = @"copyright";
 
 @implementation JsonService
 
@@ -28,6 +29,13 @@ static NSString *const kJsonCopyrightKey = @"copyright";
   if (!templateInput) {
     return nil;
   }
+
+  NSMutableArray *imageRefsArray = [[NSMutableArray alloc] init];
+  for (NSString *imageRef in templateInput.imageRefs) {
+    NSMutableDictionary *imageRefDict = [[NSMutableDictionary alloc] init];
+    imageRefDict[kJsonImageSrcKey] = imageRef;
+    [imageRefsArray addObject:imageRefDict];
+  }
   
   NSMutableArray *featuresArray = [[NSMutableArray alloc] init];
   for (Feature *feature in templateInput.features) {
@@ -35,7 +43,6 @@ static NSString *const kJsonCopyrightKey = @"copyright";
     featureDict[kJsonHeadlineKey] = feature.headline;
     featureDict[kJsonSubheadlineKey] = feature.subheadline;
     featureDict[kJsonBodyKey] = feature.body;
-    featureDict[kJsonImageSrcKey] = feature.imageSrc;
     [featuresArray addObject:featureDict];
   }
   
@@ -45,6 +52,7 @@ static NSString *const kJsonCopyrightKey = @"copyright";
   templateDict[kJsonSummaryKey] = templateInput.summary;
   templateDict[kJsonCopyrightKey] = templateInput.copyright;
   templateDict[kJsonFeaturesKey] = featuresArray;
+  templateDict[kJsonImagesKey] = imageRefsArray;
   
   NSArray *templatesArray = @[templateDict];
   NSDictionary *rootDict = @{kJsonTemplatesKey : templatesArray};
@@ -87,37 +95,46 @@ static NSString *const kJsonCopyrightKey = @"copyright";
     feature.headline = featureDict[kJsonHeadlineKey];
     feature.subheadline = featureDict[kJsonSubheadlineKey];
     feature.body = featureDict[kJsonBodyKey];
-    feature.imageSrc = featureDict[kJsonImageSrcKey];
     [features addObject:feature];
   }
   templateInput.features = features;
+  
+  NSArray *imageRefsArray = templateDict[kJsonImagesKey];
+  NSMutableArray *imageRefs = [[NSMutableArray alloc] init];
+  for (NSDictionary *imageRefDict in imageRefsArray) {
+    [imageRefs addObject:imageRefDict[kJsonImageSrcKey]];
+  }
+  templateInput.imageRefs = imageRefs;
+
   return templateInput;
 }
 
-+ (BOOL)writeJsonFile:(NSData *)data filename:(NSString *)filename type:(NSString *)type templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory {
-  
-  // TODO - get some identifier for the user to use as filename or part of filename
-  NSString *workingDirectory = [documentsDirectory stringByAppendingPathComponent:templateDirectory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:filename];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
-  
-  NSLog(@"Writing file: %@", pathWithType);
-  if ([[NSFileManager defaultManager] createFileAtPath:pathWithType contents:data attributes:nil]) {
-    return YES;
++ (BOOL)writeJsonFile:(NSData *)data fileURL:(NSURL *)fileURL {
+
+  NSLog(@"Writing file: %@", fileURL.relativePath);
+
+  NSError *error;
+  [data writeToURL:fileURL options:NSDataWritingAtomic error:&error];
+
+  if (error) {
+    NSLog(@"Error! NSData:writeToURL: [%@] error: %@", fileURL.relativeString, error.localizedDescription);
+    return NO;
   }
-  NSLog(@"Error! Cannot create file: %@ type: %@ in directory %@", filename, type, templateDirectory);
-  return NO;
+  return YES;
 }
 
-+ (NSData *)readJsonFile:(NSString *)filename type:(NSString *)type templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory {
++ (NSData *)readJsonFile:(NSURL *)fileURL {
   
-  // TODO - get some identifier for the user to use as filename or part of filename
-  NSString *workingDirectory = [documentsDirectory stringByAppendingPathComponent:templateDirectory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:filename];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
+  NSLog(@"Reading file: %@", fileURL.relativePath);
   
-  NSLog(@"Reading file: %@", pathWithType);
-  return [[NSFileManager defaultManager] contentsAtPath:pathWithType];
+  NSError *error;
+  NSData *jsonFile = [NSData dataWithContentsOfURL:fileURL options:NSDataReadingUncached error:&error];
+  if (error) {
+    NSLog(@"Error! NSData:dataWithContentsOfFile: [%@] error: %@", fileURL, error.localizedDescription);
+    return nil;
+  }
+  
+  return jsonFile;
 }
 
 @end

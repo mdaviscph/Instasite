@@ -13,7 +13,7 @@
 
 + (NSData *)fromTemplateInput:(TemplateInput *)templateInput;
 + (TemplateInput *)templateInputFrom:(NSData *)data;
-+ (BOOL)writeJsonFile:(NSData *)data filename:(NSString *)filename type:(NSString *)type templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory;
-+ (NSData *)readJsonFile:(NSString *)filename type:(NSString *)type templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory;
++ (BOOL)writeJsonFile:(NSData *)data fileURL:(NSURL *)fileURL;
++ (NSData *)readJsonFile:(NSURL *)fileURL;
 
 @end

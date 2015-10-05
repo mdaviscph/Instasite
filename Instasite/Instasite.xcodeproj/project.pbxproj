@@ -8,9 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		000613761BB2FCE600E818B7 /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 000613751BB2FCE600E818B7 /* Extensions.m */; settings = {ASSET_TAGS = (); }; };
+		0006EC061BC0B79200B020C5 /* ImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0006EC051BC0B79200B020C5 /* ImagesViewController.m */; settings = {ASSET_TAGS = (); }; };
+		0006EC091BC0BFAF00B020C5 /* ImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0006EC081BC0BFAF00B020C5 /* ImageCell.m */; settings = {ASSET_TAGS = (); }; };
 		000B02751BB36A2D00737578 /* TemplateTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 000B02741BB36A2D00737578 /* TemplateTabBarController.m */; settings = {ASSET_TAGS = (); }; };
 		008035021BB7141C00EB91C6 /* SegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 008035011BB7141C00EB91C6 /* SegmentedControl.m */; settings = {ASSET_TAGS = (); }; };
-		008035051BB733E800EB91C6 /* EditViewControllerImagePickerExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 008035041BB733E800EB91C6 /* EditViewControllerImagePickerExtension.m */; settings = {ASSET_TAGS = (); }; };
 		00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928971BB1A07200383BD0 /* HtmlTemplate.m */; settings = {ASSET_TAGS = (); }; };
 		00E9289B1BB1A8BE00383BD0 /* JsonService.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E9289A1BB1A8BE00383BD0 /* JsonService.m */; settings = {ASSET_TAGS = (); }; };
 		00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E9289D1BB1A9BA00383BD0 /* Feature.m */; settings = {ASSET_TAGS = (); }; };
@@ -76,12 +77,14 @@
 /* Begin PBXFileReference section */
 		000613741BB2FCE600E818B7 /* Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extensions.h; sourceTree = "<group>"; };
 		000613751BB2FCE600E818B7 /* Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Extensions.m; sourceTree = "<group>"; };
+		0006EC041BC0B79200B020C5 /* ImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagesViewController.h; sourceTree = "<group>"; };
+		0006EC051BC0B79200B020C5 /* ImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesViewController.m; sourceTree = "<group>"; };
+		0006EC071BC0BFAF00B020C5 /* ImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCell.h; sourceTree = "<group>"; };
+		0006EC081BC0BFAF00B020C5 /* ImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCell.m; sourceTree = "<group>"; };
 		000B02731BB36A2D00737578 /* TemplateTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateTabBarController.h; sourceTree = "<group>"; };
 		000B02741BB36A2D00737578 /* TemplateTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateTabBarController.m; sourceTree = "<group>"; };
 		008035001BB7141C00EB91C6 /* SegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentedControl.h; sourceTree = "<group>"; };
 		008035011BB7141C00EB91C6 /* SegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentedControl.m; sourceTree = "<group>"; };
-		008035031BB733E800EB91C6 /* EditViewControllerImagePickerExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditViewControllerImagePickerExtension.h; sourceTree = "<group>"; };
-		008035041BB733E800EB91C6 /* EditViewControllerImagePickerExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditViewControllerImagePickerExtension.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		00E928961BB1A07200383BD0 /* HtmlTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HtmlTemplate.h; sourceTree = "<group>"; };
 		00E928971BB1A07200383BD0 /* HtmlTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HtmlTemplate.m; sourceTree = "<group>"; };
 		00E928991BB1A8BE00383BD0 /* JsonService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = JsonService.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -241,10 +244,10 @@
 				6C0E6E321BB1F16F000C7971 /* PublishViewController.m */,
 				00E928AA1BB1EC0F00383BD0 /* EditViewController.h */,
 				00E928AB1BB1EC0F00383BD0 /* EditViewController.m */,
+				0006EC041BC0B79200B020C5 /* ImagesViewController.h */,
+				0006EC051BC0B79200B020C5 /* ImagesViewController.m */,
 				000B02731BB36A2D00737578 /* TemplateTabBarController.h */,
 				000B02741BB36A2D00737578 /* TemplateTabBarController.m */,
-				008035031BB733E800EB91C6 /* EditViewControllerImagePickerExtension.h */,
-				008035041BB733E800EB91C6 /* EditViewControllerImagePickerExtension.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -258,6 +261,8 @@
 				6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */,
 				000613741BB2FCE600E818B7 /* Extensions.h */,
 				000613751BB2FCE600E818B7 /* Extensions.m */,
+				0006EC071BC0BFAF00B020C5 /* ImageCell.h */,
+				0006EC081BC0BFAF00B020C5 /* ImageCell.m */,
 				008035001BB7141C00EB91C6 /* SegmentedControl.h */,
 				008035011BB7141C00EB91C6 /* SegmentedControl.m */,
 			);
@@ -587,6 +592,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				000B02751BB36A2D00737578 /* TemplateTabBarController.m in Sources */,
+				0006EC091BC0BFAF00B020C5 /* ImageCell.m in Sources */,
 				6B05A0071BB32765002627BA /* DisplayTemplateViewController.m in Sources */,
 				00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */,
 				00EA772E1BBC8A3600A70B8A /* CommitJson.m in Sources */,
@@ -602,8 +608,8 @@
 				221BCA2A1BB4B9460057A272 /* CSSFile.m in Sources */,
 				00EA77371BBCA47600A70B8A /* CreateTreeJson.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
-				008035051BB733E800EB91C6 /* EditViewControllerImagePickerExtension.m in Sources */,
 				227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */,
+				0006EC061BC0B79200B020C5 /* ImagesViewController.m in Sources */,
 				00E928A41BB1AB0100383BD0 /* TemplateInput.m in Sources */,
 				227C86801BB07B3500799CD3 /* GitHubService.m in Sources */,
 				22B07C861BB45D5D00ADB5EF /* Keys.m in Sources */,
