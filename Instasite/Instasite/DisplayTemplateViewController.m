@@ -29,12 +29,10 @@
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
   
   self.webView = [[WKWebView alloc]initWithFrame: self.view.frame];
-  [self.view addSubview: self.webView];
   self.webView.navigationDelegate = self;
-
-  NSURL *indexHtmlURL = [self indexHtmlURL];
-  NSURL *indexHtmlDirectoryURL = [self indexHtmlDirectoryURL];
-  [self.webView loadFileURL:indexHtmlURL allowingReadAccessToURL:indexHtmlDirectoryURL];
+  [self.view addSubview: self.webView];
+  
+  [self.webView loadFileURL:self.tabBarVC.indexHtmlURL allowingReadAccessToURL:self.tabBarVC.indexHtmlDirectoryURL];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -45,15 +43,6 @@
 }
 
 #pragma mark - Helper Methods
-
-- (NSURL *)indexHtmlURL {
-  return [HtmlTemplate fileURL:kTemplateIndexFilename type:kTemplateIndexFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
-}
-- (NSURL *)indexHtmlDirectoryURL {
-  NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-  
-  return [NSURL fileURLWithPath:workingDirectory isDirectory:YES];
-}
 
 #pragma mark - WKNavigationDelegate
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {

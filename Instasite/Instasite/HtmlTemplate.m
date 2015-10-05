@@ -9,6 +9,7 @@
 #import "HtmlTemplate.h"
 
 NSString *const kMarkerBase          = @"INSTASITE-";
+
 NSString *const kMarkerTitle         = @"TITLE-";
 NSString *const kMarkerSubtitle      = @"SUBTITLE-";
 NSString *const kMarkerSummary       = @"SUMMARY-";
@@ -17,38 +18,46 @@ NSString *const kMarkerHead          = @"HEAD-";
 NSString *const kMarkerSub           = @"SUB-";
 NSString *const kMarkerBody          = @"BODY-";
 NSString *const kMarkerImageSrc      = @"IMAGE-";
+
 NSString *const kFeatureArray        = @"FEATURES";
+NSString *const kImageRefArray       = @"IMAGES";
 
-static NSString *const kMarkerTitle1        = @"INSTASITE-TITLE-1";
-static NSString *const kMarkerSubtitle1     = @"INSTASITE-SUBTITLE-1";
-static NSString *const kMarkerSummary1      = @"INSTASITE-SUMMARY-1";
-static NSString *const kMarkerCopyRight1    = @"INSTASITE-COPYRIGHT-1";
 
-static NSString *const kMarkerHead1         = @"INSTASITE-HEAD-1";
-static NSString *const kMarkerSub1          = @"INSTASITE-SUB-1";
-static NSString *const kMarkerBody1         = @"INSTASITE-BODY-1";
-static NSString *const kMarkerImageSrc1     = @"INSTASITE-IMAGE-1";
+// TODO - do away with these by looking for all tags starting with kMarkerBase, possibly using regular expression
+static NSString *const kMarkerTitle1        = @"INSTASITE-TITLE-01";
+static NSString *const kMarkerSubtitle1     = @"INSTASITE-SUBTITLE-01";
+static NSString *const kMarkerSummary1      = @"INSTASITE-SUMMARY-01";
+static NSString *const kMarkerCopyRight1    = @"INSTASITE-COPYRIGHT-01";
 
-static NSString *const kMarkerHead2         = @"INSTASITE-HEAD-2";
-static NSString *const kMarkerSub2          = @"INSTASITE-SUB-2";
-static NSString *const kMarkerBody2         = @"INSTASITE-BODY-2";
-static NSString *const kMarkerImageSrc2     = @"INSTASITE-IMAGE-2";
+static NSString *const kMarkerHead1         = @"INSTASITE-HEAD-01";
+static NSString *const kMarkerSub1          = @"INSTASITE-SUB-01";
+static NSString *const kMarkerBody1         = @"INSTASITE-BODY-01";
 
-static NSString *const kMarkerHead3         = @"INSTASITE-HEAD-3";
-static NSString *const kMarkerSub3          = @"INSTASITE-HEAD-3";
-static NSString *const kMarkerBody3         = @"INSTASITE-BODY-3";
-static NSString *const kMarkerImageSrc3     = @"INSTASITE-IMAGE-3";
+static NSString *const kMarkerHead2         = @"INSTASITE-HEAD-02";
+static NSString *const kMarkerSub2          = @"INSTASITE-SUB-02";
+static NSString *const kMarkerBody2         = @"INSTASITE-BODY-02";
 
-static NSString *const kMarkerHead4         = @"INSTASITE-HEAD-4";
-static NSString *const kMarkerSub4          = @"INSTASITE-SUB-4";
-static NSString *const kMarkerBody4         = @"INSTASITE-BODY-4";
-static NSString *const kMarkerImageSrc4     = @"INSTASITE-IMAGE-4";
+static NSString *const kMarkerHead3         = @"INSTASITE-HEAD-03";
+static NSString *const kMarkerSub3          = @"INSTASITE-HEAD-03";
+static NSString *const kMarkerBody3         = @"INSTASITE-BODY-03";
 
-static NSString *const kMarkerHead5         = @"INSTASITE-HEAD-5";
-static NSString *const kMarkerSub5          = @"INSTASITE-SUB-5";
-static NSString *const kMarkerBody5         = @"INSTASITE-BODY-5";
-static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
+static NSString *const kMarkerHead4         = @"INSTASITE-HEAD-04";
+static NSString *const kMarkerSub4          = @"INSTASITE-SUB-04";
+static NSString *const kMarkerBody4         = @"INSTASITE-BODY-04";
 
+static NSString *const kMarkerHead5         = @"INSTASITE-HEAD-05";
+static NSString *const kMarkerSub5          = @"INSTASITE-SUB-05";
+static NSString *const kMarkerBody5         = @"INSTASITE-BODY-05";
+
+static NSString *const kMarkerImageSrc1     = @"INSTASITE-IMAGE-01";
+static NSString *const kMarkerImageSrc2     = @"INSTASITE-IMAGE-02";
+static NSString *const kMarkerImageSrc3     = @"INSTASITE-IMAGE-03";
+static NSString *const kMarkerImageSrc4     = @"INSTASITE-IMAGE-04";
+static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-05";
+static NSString *const kMarkerImageSrc6     = @"INSTASITE-IMAGE-06";
+static NSString *const kMarkerImageSrc7     = @"INSTASITE-IMAGE-07";
+static NSString *const kMarkerImageSrc8     = @"INSTASITE-IMAGE-08";
+static NSString *const kMarkerImageSrc9     = @"INSTASITE-IMAGE-09";
 
 // Very basic HTML template support. Initial version not efficient, see comment below.
 
@@ -75,19 +84,6 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
     return self;
 }
 
-+ (NSURL *)fileURL:(NSString *)filename type:(NSString *)type templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory {
-
-  NSString *workingDirectory = [documentsDirectory stringByAppendingPathComponent:templateDirectory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:filename];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:type];
-
-  NSURL *url = [NSURL fileURLWithPath:pathWithType];
-  if (!url) {
-    NSLog(@"Error! NSURL:fileURLWithPath: [%@]", pathWithType);
-  }
-  return url;
-}
-
 - (void)resetToOriginal {
   self.modifiedHtml = self.originalHtml;
 }
@@ -103,7 +99,7 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
   NSError *error;
   [data writeToURL:htmlURL options:NSDataWritingAtomic error:&error];
   if (error) {
-    NSLog(@"Error! NSData:writeToURL: %@", error.localizedDescription);
+    NSLog(@"Error! NSData:writeToURL: [%@] error: %@", htmlURL.relativeString, error.localizedDescription);
     return NO;
   }
   return YES;
@@ -199,6 +195,12 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
   }
 }
 
+- (void)insertCopyright:(NSString *)copyright {
+  if (copyright) {
+    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerCopyRight1 withString:copyright];
+  }
+}
+
 - (void)insertImageReference:(HtmlTemplatePlacement)place imageSource:(NSString *)imageSrc {
   
   NSString *imageSrcMarker;  
@@ -224,12 +226,6 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
   }
 }
 
-- (void)insertCopyright:(NSString *)copyright {
-  if (copyright) {
-    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerCopyRight1 withString:copyright];
-  }
-}
-
 - (NSString *)html {
   return self.modifiedHtml;
 }
@@ -242,6 +238,7 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
   NSUInteger copyrightCount = 0;
   
   NSArray *features;
+  NSArray *imageRefs;
   
   NSMutableDictionary *markerDict = [[NSMutableDictionary alloc] init];
   
@@ -249,62 +246,81 @@ static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-5";
   // skip the first component which is the start of the html
   for (NSInteger index = 1; index < components.count; index++) {
     NSString *component = components[index];
+    NSInteger number;
     
+    // TODO - refactor this
     if ([component hasPrefix:kMarkerTitle]) {
-      markerDict[kMarkerTitle] = @(++titleCount);
+      number = [self markerNumberFor:kMarkerTitle from:component];
+      if (number > 0) {
+        titleCount = MAX(titleCount, number);
+        markerDict[kMarkerTitle] = @(titleCount);
+      }
     } else if ([component hasPrefix:kMarkerSubtitle]) {
-      markerDict[kMarkerSubtitle] = @(++subtitleCount);
+      number = [self markerNumberFor:kMarkerSubtitle from:component];
+      if (number > 0) {
+        subtitleCount = MAX(subtitleCount, number);
+        markerDict[kMarkerSubtitle] = @(subtitleCount);
+      }
     } else if ([component hasPrefix:kMarkerSummary]) {
-      markerDict[kMarkerSummary] = @(++summaryCount);
+      number = [self markerNumberFor:kMarkerSummary from:component];
+      if (number > 0) {
+        summaryCount = MAX(summaryCount, number);
+        markerDict[kMarkerSummary] = @(summaryCount);
+      }
     } else if ([component hasPrefix:kMarkerCopyright]) {
-      markerDict[kMarkerCopyright] = @(++copyrightCount);
+      number = [self markerNumberFor:kMarkerCopyright from:component];
+      if (number > 0) {
+        copyrightCount = MAX(copyrightCount, number);
+        markerDict[kMarkerCopyright] = @(copyrightCount);
+      }
       
-    } else if ([component hasPrefix:kMarkerHead]) {
-      NSRange range = NSMakeRange(kMarkerHead.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger number = [component substringWithRange:range].integerValue - 1;
+    } else if ([component hasPrefix:kMarkerImageSrc]) {
+      number = [self markerNumberFor:kMarkerImageSrc from:component];
       if (number >= 0) {
-        features = [self appendFeatureDictionary:features toIndex:number];
-        features[number][kMarkerHead] = @(1);
+        imageRefs = [self appendDictionaryToArray:imageRefs toIndex:number-1];
+        imageRefs[number-1][kMarkerImageSrc] = @(1);
+      }
+    
+    } else if ([component hasPrefix:kMarkerHead]) {
+      number = [self markerNumberFor:kMarkerHead from:component];
+      if (number >= 0) {
+        features = [self appendDictionaryToArray:features toIndex:number-1];
+        features[number-1][kMarkerHead] = @(1);
       }
     } else if ([component hasPrefix:kMarkerSub]) {
-      NSRange range = NSMakeRange(kMarkerSub.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger number = [component substringWithRange:range].integerValue - 1;
+      number = [self markerNumberFor:kMarkerSub from:component];
       if (number >= 0) {
-        features = [self appendFeatureDictionary:features toIndex:number];
-        features[number][kMarkerSub] = @(1);
+        features = [self appendDictionaryToArray:features toIndex:number-1];
+        features[number-1][kMarkerSub] = @(1);
       }
     } else if ([component hasPrefix:kMarkerBody]) {
-      NSRange range = NSMakeRange(kMarkerBody.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger number = [component substringWithRange:range].integerValue - 1;
+      number = [self markerNumberFor:kMarkerBody from:component];
       if (number >= 0) {
-        features = [self appendFeatureDictionary:features toIndex:number];
-        features[number][kMarkerBody] = @(1);
-      }
-    } else if ([component hasPrefix:kMarkerImageSrc]) {
-      NSRange range = NSMakeRange(kMarkerImageSrc.length, 1);    // this limits us to single digit number of headlines, etc.
-      NSInteger number = [component substringWithRange:range].integerValue - 1;
-      if (number >= 0) {
-        features = [self appendFeatureDictionary:features toIndex:number];
-        features[number][kMarkerImageSrc] = @(1);
+        features = [self appendDictionaryToArray:features toIndex:number-1];
+        features[number-1][kMarkerBody] = @(1);
       }
     }
   }
   
   markerDict[kFeatureArray] = features;
+  markerDict[kImageRefArray] = imageRefs;
   return markerDict;
 }
 
-- (NSArray *)appendFeatureDictionary:(NSArray *)features toIndex:(NSUInteger)index {
-  if (!features) {
-    return @[[[NSMutableDictionary alloc] init]];
-  }
-  if (features.count > index) {
-    return features;
-  }
-  NSMutableArray *copyWithAdditions = [[NSMutableArray alloc] initWithArray:features];
-  for (NSUInteger another = features.count; another <= index; another++) {
-    NSMutableDictionary *feature = [[NSMutableDictionary alloc] init];
-    [copyWithAdditions addObject:feature];
+- (NSInteger)markerNumberFor:(NSString *)marker from:(NSString *)string {
+  
+  NSRange range = NSMakeRange(marker.length, 2);    // limits support of upto 99 of each type of marker
+  NSInteger number = [string substringWithRange:range].integerValue;
+  
+  return number;
+}
+
+- (NSArray *)appendDictionaryToArray:(NSArray *)array toIndex:(NSUInteger)index {
+  
+  NSMutableArray *copyWithAdditions = [[NSMutableArray alloc] initWithArray:array];
+  for (NSUInteger another = array.count; another <= index; another++) {
+    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
+    [copyWithAdditions addObject:dictionary];
   }
   return copyWithAdditions;
 }

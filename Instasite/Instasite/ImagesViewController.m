@@ -8,6 +8,7 @@
 
 #import "ImagesViewController.h"
 #import "ImageCell.h"
+#import "HtmlTemplate.h"
 #import "TemplateTabBarController.h"
 #import "Constants.h"
 
@@ -18,10 +19,18 @@ static NSString *kCellId = @"ImageCell";
 @interface ImagesViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
+@property (strong, nonatomic) NSArray *imageRefMarkers;
 
 @end
 
 @implementation ImagesViewController
+
+- (NSArray *)imageRefMarkers {
+  if (!_imageRefMarkers) {
+    _imageRefMarkers = self.tabBarVC.templateMarkers[kImageRefArray];
+  }
+  return _imageRefMarkers;
+}
 
 #pragma mark - Lifecycle Methods
 
@@ -39,7 +48,7 @@ static NSString *kCellId = @"ImageCell";
   NSLog(@"ImagesVC viewWillAppear");
   self.tabBarVC.navigationController.navigationBarHidden = NO;
   self.tabBarVC.navigationController.navigationBar.translucent = NO;
-  self.tabBarVC.navigationController.navigationBar.barTintColor = [UIColor lightGrayColor];
+  self.tabBarVC.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
   self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonTapped)];
 }
 
@@ -115,49 +124,29 @@ static NSString *kCellId = @"ImageCell";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-  return self.tabBarVC.images.count;
+  NSUInteger count = MAX(self.tabBarVC.images.count, self.imageRefMarkers.count);
+  return count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
   ImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
-    
-  cell.image = self.tabBarVC.images[indexPath.item];
+  
+  if (indexPath.item < self.tabBarVC.images.count) {
+    cell.placeholder = nil;
+    cell.image = self.tabBarVC.images[indexPath.item];
+  } else {
+    cell.image = nil;
+    cell.placeholder = [NSString stringWithFormat:@"%02lu", indexPath.item];
+  }
   return cell;
 }
 
 #pragma mark <UICollectionViewDelegate>
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-
+  
+  // TODO - currently the image is added as the lowest numbered "empty" cell
+  [self addButtonTapped];
 }
-
-/*
-// Uncomment this method to specify if the specified item should be highlighted during tracking
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-	return YES;
-}
-*/
-
-/*
-// Uncomment this method to specify if the specified item should be selected
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-*/
-
-/*
-// Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
-	return NO;
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
-}
-*/
 
 @end

@@ -14,6 +14,12 @@
 @property (strong, nonatomic) NSString *documentsDirectory;
 @property (strong, nonatomic) NSString *templateDirectory;
 @property (strong, nonatomic) HtmlTemplate *templateCopy;
+@property (strong, nonatomic) NSDictionary *templateMarkers;
 @property (strong, nonatomic) NSMutableArray *images;
+
+@property (strong, nonatomic) NSURL *indexHtmlURL;
+@property (strong, nonatomic) NSURL *indexHtmlDirectoryURL;
+@property (strong, nonatomic) NSURL *templateHtmlURL;
+@property (strong, nonatomic) NSURL *userJsonURL;
 
 @end

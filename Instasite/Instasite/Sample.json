@@ -1,26 +1,33 @@
 {
 templates:
-    [
+  [
      {
      title: "sample title",
      subtitle: "sample subtitle",
      summary: "sample summary",
-     feature:
+     copyright: "sample copyright",
+     features:
          [
           {
               headline: "sample headline",
               subheadline: "sample subheadline",
-              body: "sample body",
-              imageSrc: "sample/imagesrc/file.jpg"
+              body: "sample body"
           },
           {
               headline: "sample headline",
               subheadline: "sample subheadline",
-              body: "sample body",
-              imageSrc: "sample/imagesrc/file.jpg"
+              body: "sample body"
           }
           ],
-     copyright: "2015 sample copyright"
+     images:
+        [
+          {
+            imageSrc: "img/image01.jpeg"
+          },
+          {
+            imageSrc: "img/image02.jpeg"
+          }
+        ],
      }
-     ]
+  ]
 }

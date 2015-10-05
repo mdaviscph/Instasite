@@ -7,7 +7,6 @@
 //
 
 #import "EditViewController.h"
-#import "EditViewControllerImagePickerExtension.h"
 #import "Extensions.h"
 #import "HtmlTemplate.h"
 #import "TemplateInput.h"
@@ -30,6 +29,9 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topStackViewHeightConstraint;
 
+@property (strong, nonatomic) NSArray *featureMarkers;
+@property (strong, nonatomic) NSArray *imageRefMarkers;
+
 @property (nonatomic) NSUInteger topStackSpacing;
 @property (nonatomic) NSUInteger bottomStackSpacing;
 @property (nonatomic) NSUInteger topTextViewHeight;
@@ -37,11 +39,22 @@
 @property (nonatomic) NSUInteger imageButtonHeight;
 @property (nonatomic) UIView *lastTextEditingView;
 
-@property (strong, nonatomic) NSDictionary *markers;
-
 @end
 
 @implementation EditViewController
+
+- (NSArray *)featureMarkers {
+  if (!_featureMarkers) {
+    _featureMarkers = self.tabBarVC.templateMarkers[kFeatureArray];
+  }
+  return _featureMarkers;
+}
+- (NSArray *)imageRefMarkers {
+  if (!_imageRefMarkers) {
+    _imageRefMarkers = self.tabBarVC.templateMarkers[kImageRefArray];
+  }
+  return _imageRefMarkers;
+}
 
 - (void)setLastTextEditingView:(UIView *)lastTextEditingView {
   [_lastTextEditingView endEditing:YES];
@@ -55,20 +68,17 @@
   
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
 
-  self.markers = [self.tabBarVC.templateCopy templateMarkers];
-  NSArray *features = self.markers[kFeatureArray];
-
   [self.featureSegmentedControl removeAllSegments];
-  for (NSUInteger index = 0; index < features.count; index++) {
+  for (NSUInteger index = 0; index < self.featureMarkers.count; index++) {
     [self.featureSegmentedControl insertSegmentWithTitle:[NSString stringWithFormat:@"Feature %lu", index+1] atIndex:index animated:YES];
   }
 
-  NSData *jsonData = [JsonService readJsonFile:kTemplateJsonFilename type:kTemplateJsonFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
+  NSData *jsonData = [JsonService readJsonFile:self.tabBarVC.userJsonURL];
   if (jsonData) {
     self.userInput = [JsonService templateInputFrom:jsonData];
     [self insertUserInputIntoTemplateCopy];
   } else {
-    self.userInput = [[TemplateInput alloc] initWithFeatures:features.count];
+    self.userInput = [[TemplateInput alloc] initWithFeatureCount:self.featureMarkers.count imageCount:self.imageRefMarkers.count];
   }
 
   self.topStackSpacing = 6;
@@ -85,19 +95,19 @@
   self.bottomStackView.axis = UILayoutConstraintAxisVertical;
   self.bottomStackView.spacing = self.bottomStackSpacing;
 
-  if (self.markers[kMarkerTitle]) {
+  if (self.tabBarVC.templateMarkers[kMarkerTitle]) {
     UITextField *titleField = [[UITextField alloc] initWithMarkerType:HtmlMarkerTitle text:self.userInput.title placeholder:@"Title text..." borderStyle:UITextBorderStyleRoundedRect];
     titleField.delegate = self;
     [self.topStackView addArrangedSubview:titleField];
     topStackHeight += titleField.intrinsicContentSize.height + self.topStackSpacing;
   }
-  if (self.markers[kMarkerSubtitle]) {
+  if (self.tabBarVC.templateMarkers[kMarkerSubtitle]) {
     UITextField *subtitleField = [[UITextField alloc] initWithMarkerType:HtmlMarkerSubtitle text:self.userInput.subtitle placeholder:@"Subtitle text..." borderStyle:UITextBorderStyleRoundedRect];
     subtitleField.delegate = self;
     [self.topStackView addArrangedSubview:subtitleField];
     topStackHeight += subtitleField.intrinsicContentSize.height + self.topStackSpacing;
   }
-  if (self.markers[kMarkerSummary]) {
+  if (self.tabBarVC.templateMarkers[kMarkerSummary]) {
     UITextView *summaryTextView = [[UITextView alloc] initWithMarkerType:HtmlMarkerSummary text:self.userInput.summary placeholder:@"Summary text..." borderStyle:UITextBorderStyleRoundedRect];
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:summaryTextView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.topTextViewHeight];
     constraint.active = YES;
@@ -105,7 +115,7 @@
     [self.topStackView addArrangedSubview:summaryTextView];
     topStackHeight += self.topTextViewHeight + self.topStackSpacing;
   }
-  if (self.markers[kMarkerCopyright]) {
+  if (self.tabBarVC.templateMarkers[kMarkerCopyright]) {
     UITextField *copyrightField = [[UITextField alloc] initWithMarkerType:HtmlMarkerCopyright text:self.userInput.copyright placeholder:@"Copyright text..." borderStyle:UITextBorderStyleRoundedRect];
     copyrightField.delegate = self;
     [self.topStackView addArrangedSubview:copyrightField];
@@ -125,6 +135,9 @@
   NSLog(@"EditVC viewWillAppear");
   self.navigationController.navigationBarHidden = NO;
   self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonTapped)];
+  
+  [self updateImageSourceReferences];
+  
   [self startObservingKeyboardEvents];
 }
 
@@ -149,11 +162,26 @@
   [self addFeatureControlsForFeature:self.selectedFeature];
 }
 
+- (void)updateImageSourceReferences {
+  
+  NSMutableArray *imageRefs = [[NSMutableArray alloc] init];
+  for (NSUInteger index = 0; index < self.tabBarVC.images.count; index++) {
+    
+    NSString *imageFile = [NSString stringWithFormat:@"%@%02lu", kTemplateImagePrefix, index + 1];
+    NSString *relativeFilepath = [kTemplateImageDirectory stringByAppendingPathComponent:imageFile];
+    NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:kTemplateImageFiletype];
+    
+    [self.tabBarVC.templateCopy insertImageReference:index imageSource:relativePathWithType];
+    [imageRefs addObject:relativePathWithType];
+  }
+  self.userInput.imageRefs = imageRefs;
+}
+
 - (void)addFeatureControlsForFeature:(NSInteger)index {
 
   NSUInteger bottomStackHeight = 0;
 
-  NSArray *features = self.markers[kFeatureArray];
+  NSArray *features = self.tabBarVC.templateMarkers[kFeatureArray];
   if (index < 0 || index >= features.count) {
     return;
   }
@@ -180,21 +208,6 @@
     [self.bottomStackView addArrangedSubview:bodyTextView];
     bottomStackHeight += self.bottomTextViewHeight + self.bottomStackSpacing;
   }
-  if (featureDict[kMarkerImageSrc]) {
-    UIImage *image;
-    if (feature.imageSrc) {
-      NSString *directoryPath = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-      NSString *imagePath = [directoryPath stringByAppendingPathComponent:feature.imageSrc];
-      image = [UIImage imageWithContentsOfFile:imagePath];
-    }
-      
-    UIButton *imageSrcButton = [[UIButton alloc] initWithTitle:@"Select Image" textColor:self.view.tintColor image:image];
-    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:imageSrcButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.imageButtonHeight];
-    constraint.active = YES;
-    [imageSrcButton addTarget:self action:@selector(selectImageButtonUp:) forControlEvents:UIControlEventTouchUpInside];
-    [self.bottomStackView addArrangedSubview:imageSrcButton];
-    bottomStackHeight += imageSrcButton.frame.size.height + self.bottomStackSpacing;
-  }
 }
 
 - (void)insertUserInputIntoTemplateCopy {
@@ -208,7 +221,9 @@
     [self.tabBarVC.templateCopy insertFeature:index headline:feature.headline];
     [self.tabBarVC.templateCopy insertFeature:index subheadline:feature.subheadline];
     [self.tabBarVC.templateCopy insertFeature:index body:feature.body];
-    [self.tabBarVC.templateCopy insertImageReference:index imageSource:feature.imageSrc];
+  }
+  for (NSUInteger index = 0; index < self.userInput.imageRefs.count; index++) {
+    [self.tabBarVC.templateCopy insertImageReference:index imageSource:self.userInput.imageRefs[index]];
   }
 }
 
@@ -216,7 +231,7 @@
   self.lastTextEditingView = nil;
   
   NSData *jsonData = [JsonService fromTemplateInput:self.userInput];
-  [JsonService writeJsonFile:jsonData filename:kTemplateJsonFilename type:kTemplateJsonFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
+  [JsonService writeJsonFile:jsonData fileURL:self.tabBarVC.userJsonURL];
   
   [self writeWorkingFile];
   [self saveImagesToFiles];
@@ -224,9 +239,7 @@
 
 - (BOOL)writeWorkingFile {
   
-  // TODO - get some identifier for the user to use as filename or part of filename
-  NSURL *templateURL = [HtmlTemplate fileURL:kTemplateIndexFilename type:kTemplateIndexFiletype templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
-  if ([self.tabBarVC.templateCopy writeToURL:templateURL]) {
+  if ([self.tabBarVC.templateCopy writeToURL:self.tabBarVC.indexHtmlURL]) {
     return YES;
   }
   return NO;
@@ -236,7 +249,7 @@
   
   NSFileManager *fileManager = [NSFileManager defaultManager];
   NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-  NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImagesDirectory];
+  NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImageDirectory];
 
   if (self.tabBarVC.images.count > 0) {
     if (![fileManager fileExistsAtPath:imagesDirectory isDirectory:nil]) {
@@ -254,13 +267,15 @@
     UIImage *image = self.tabBarVC.images[index];
     NSData *data = UIImageJPEGRepresentation(image, 1.0);
     
-    NSString *imageFile = [NSString stringWithFormat:@"%@%ld", kTemplateImagePrefix, index + 1];
+    NSString *imageFile = [NSString stringWithFormat:@"%@%02lu", kTemplateImagePrefix, index + 1];
     NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
-    NSString *pathWithType = [filepath stringByAppendingPathExtension:@"jpg"];
+    NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateImageFiletype];
     
-    NSLog(@"Writing file: %@", pathWithType);
-    if (![fileManager createFileAtPath:pathWithType contents:data attributes:nil]) {
-      NSLog(@"Error! Cannot create file: %@", pathWithType);
+    //NSLog(@"Writing file: %@", pathWithType);
+    NSError *error;
+    [data writeToFile:pathWithType options:NSDataWritingAtomic error:&error];
+    if (error) {
+      NSLog(@"Error! Cannot write image file: [%@] error: %@", pathWithType, error.localizedDescription);
       return;
     }
   }
@@ -331,11 +346,6 @@
   
   [self saveUserInput];
   [self publishToGithub];
-}
-
-- (void)selectImageButtonUp:(UIButton *)sender {  
-  self.lastTextEditingView = nil;
-  [self actionSheetForImageSelection:sender];
 }
 
 - (void)doneButtonTapped {

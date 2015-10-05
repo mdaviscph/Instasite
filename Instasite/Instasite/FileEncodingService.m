@@ -13,11 +13,29 @@
 
 + (NSString *)encodeImage:(NSString *)imagePath {
 
-  UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
-  if (!image) {
-    NSLog(@"Error! imageWithContentsOfFile: [%@]", imagePath);
+  // must read as NSData since write is as NSData
+  NSData *imageData = [NSData dataWithContentsOfFile:imagePath];
+  if (!imageData) {
+    NSLog(@"Error! NSData:dataWithContentsOfFile: [%@]", imagePath);
+    return nil;
   }
-  return [UIImageJPEGRepresentation(image, 1.0) base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+  UIImage *image = [UIImage imageWithData:imageData];
+  if (!image) {
+    NSLog(@"Error! UIImage:imageWithData: [%@]", imagePath);
+    return nil;
+  }
+  // TODO - determine if we need to compress the data due to large size
+  NSData *jpegData = UIImageJPEGRepresentation(image, 1.0);
+  if (!jpegData) {
+    NSLog(@"Error! UIImageJPEGRepresentation: [%@]", imagePath);
+    return nil;
+  }
+  NSString *encodedImage = [jpegData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+  if (!encodedImage) {
+    NSLog(@"Error! UIImage:imageWithData: [%@]", imagePath);
+    return nil;
+  }
+  return encodedImage;
 }
 
 + (NSString *)encodeHTML:(NSString *)filePath {

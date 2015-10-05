@@ -31,6 +31,7 @@ enum HtmlMarkerTextEdit: NSInteger {
 typedef enum HtmlMarkerTextEdit HtmlMarkerTextEdit;
 
 extern NSString *const kMarkerBase;
+
 extern NSString *const kMarkerTitle;
 extern NSString *const kMarkerSubtitle;
 extern NSString *const kMarkerSummary;
@@ -38,16 +39,16 @@ extern NSString *const kMarkerCopyright;
 extern NSString *const kMarkerHead;
 extern NSString *const kMarkerSub;
 extern NSString *const kMarkerBody;
-extern NSString *const kMarkerImageSrc;
-extern NSString *const kFeatureArray;
 
+extern NSString *const kFeatureArray;
+extern NSString *const kImageRefArray;
 
 // Very basic HTML template support. Initial version not efficient, see comment in .m file.
 
 @interface HtmlTemplate : NSObject
 
 - (instancetype)initWithURL:(NSURL *)htmlURL;
-+ (NSURL *)fileURL: (NSString *)path type:(NSString *)type templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory;
+
 - (BOOL)writeToURL:(NSURL *)htmlURL;
 
 - (void)insertTitle:(NSString *)title;
@@ -56,8 +57,9 @@ extern NSString *const kFeatureArray;
 - (void)insertFeature:(HtmlTemplatePlacement)place headline:(NSString *)headline;
 - (void)insertFeature:(HtmlTemplatePlacement)place subheadline:(NSString *)subhead;
 - (void)insertFeature:(HtmlTemplatePlacement)place body:(NSString *)body;
-- (void)insertImageReference:(HtmlTemplatePlacement)place imageSource:(NSString *)imageSrc;
 - (void)insertCopyright:(NSString *)copyright;
+
+- (void)insertImageReference:(HtmlTemplatePlacement)place imageSource:(NSString *)imageSrc;
 
 - (NSString *)html;
 

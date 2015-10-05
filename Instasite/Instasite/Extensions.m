@@ -60,22 +60,6 @@
 
 @end
 
-@implementation UIButton (Extensions)
-
-- (instancetype)initWithTitle:(NSString *)text textColor:(UIColor *)textColor image:(UIImage *)image {
-  self = [self init];
-  if (self) {
-    [self setTitle:text forState:UIControlStateNormal];
-    [self setTitleColor:textColor forState:UIControlStateNormal];
-    [self setBackgroundImage:image forState:UIControlStateNormal];
-    [self setContentHuggingPriority:800 forAxis:UILayoutConstraintAxisVertical];
-    [self setContentCompressionResistancePriority:200 forAxis:UILayoutConstraintAxisVertical];
-  }
-  return self;
-}
-
-@end
-
 @implementation NSString (Extensions)
 
 - (NSString *)abbreviate:(NSUInteger)anIndex {

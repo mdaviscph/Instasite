@@ -13,7 +13,6 @@
 @property (strong, nonatomic) NSString *headline;
 @property (strong, nonatomic) NSString *subheadline;
 @property (strong, nonatomic) NSString *body;
-@property (strong, nonatomic) NSString *imageSrc;
 
 - (NSString *)description;
 

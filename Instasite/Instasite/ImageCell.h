@@ -11,5 +11,6 @@
 @interface ImageCell : UICollectionViewCell
 
 @property (strong, nonatomic) UIImage *image;
+@property (strong, nonatomic) NSString *placeholder;
 
 @end

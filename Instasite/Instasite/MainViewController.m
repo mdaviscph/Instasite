@@ -12,7 +12,10 @@
 #import "TemplateTabBarController.h"
 #import "Constants.h"
 
-static NSString *kCellId = @"cellId";
+static NSString *kCellId = @"MainCell";
+static NSUInteger kSpaceBetweenCells = 10;
+static NSUInteger kCellHeight = 250;
+
 @interface MainViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
@@ -99,10 +102,13 @@ static NSString *kCellId = @"cellId";
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+
   NSLog(@"template directory: %@", self.templateDirectories[indexPath.item]);
   TemplateTabBarController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"TemplateTabBarController"];
+
   tabBarVC.documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
   tabBarVC.templateDirectory = self.templateDirectories[indexPath.item];
+
   [self.navigationController pushViewController:tabBarVC animated:YES];
 }
 

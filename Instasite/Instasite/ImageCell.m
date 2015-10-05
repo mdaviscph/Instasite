@@ -12,14 +12,41 @@
 
 @property (strong, nonatomic)UIImageView *imageView;
 @property (strong, nonatomic)UIView *borderView;
+@property (strong, nonatomic)UILabel *placeholderLabel;
 
 @end
 
 @implementation ImageCell
 
+- (void)setPlaceholder:(NSString *)placeholder {
+  _placeholder = placeholder;
+  if (placeholder) {
+    self.placeholderLabel.text = placeholder;
+  } else {
+    [self.placeholderLabel removeFromSuperview];
+    self.placeholderLabel = nil;
+  }
+}
+
+- (UILabel *)placeholderLabel {
+  if (!_placeholderLabel) {
+    _placeholderLabel = [[UILabel alloc] init];
+    _placeholderLabel.backgroundColor = [UIColor darkGrayColor];
+    _placeholderLabel.textAlignment = NSTextAlignmentCenter;
+    _placeholderLabel.textColor = [UIColor whiteColor];
+    [self addViewWithContraints:_placeholderLabel toSuperview:self.borderView withVerticalSpacing:2.0 withHorizontalSpacing:2.0];
+  }
+  return _placeholderLabel;
+}
+
 - (void)setImage:(UIImage *)image {
   _image = image;
-  self.imageView.image = image;
+  if (image) {
+    self.imageView.image = image;
+  } else {
+    [self.imageView removeFromSuperview];
+    self.imageView = nil;
+  }
   NSLog(@"image size: {%.2f,%.2f}", image.size.height, image.size.width);
 }
 
