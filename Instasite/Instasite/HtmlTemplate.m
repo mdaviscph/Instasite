@@ -95,7 +95,8 @@ static NSString *const kMarkerImageSrc9     = @"INSTASITE-IMAGE-09";
     NSLog(@"Error! NSData:dataUsingEncoding: [%@]", htmlURL.relativeString);
     return NO;
   }
-  NSLog(@"Writing file: [%@]", htmlURL.relativeString);
+  
+  //NSLog(@"Writing file: [%@]", htmlURL.relativeString);
   NSError *error;
   [data writeToURL:htmlURL options:NSDataWritingAtomic error:&error];
   if (error) {
@@ -122,6 +123,12 @@ static NSString *const kMarkerImageSrc9     = @"INSTASITE-IMAGE-09";
     self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerSummary1 withString:summary];
   }
 }
+- (void)insertCopyright:(NSString *)copyright {
+  if (copyright) {
+    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerCopyRight1 withString:copyright];
+  }
+}
+
 - (void)insertFeature:(HtmlTemplatePlacement)place headline:(NSString *)headline {
 
   NSString *headlineMarker;
@@ -192,12 +199,6 @@ static NSString *const kMarkerImageSrc9     = @"INSTASITE-IMAGE-09";
   }
   if (body) {
     self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:bodyMarker withString:body];
-  }
-}
-
-- (void)insertCopyright:(NSString *)copyright {
-  if (copyright) {
-    self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:kMarkerCopyRight1 withString:copyright];
   }
 }
 

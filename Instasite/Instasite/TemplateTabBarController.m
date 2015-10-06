@@ -69,6 +69,7 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   
+  NSLog(@"Documents directory: %@", self.documentsDirectory);
   [self copyBundleTemplateDirectory];
 }
 

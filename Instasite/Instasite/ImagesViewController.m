@@ -45,7 +45,7 @@ static NSString *kCellId = @"ImageCell";
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:true];
-  NSLog(@"ImagesVC viewWillAppear");
+
   self.tabBarVC.navigationController.navigationBarHidden = NO;
   self.tabBarVC.navigationController.navigationBar.translucent = NO;
   self.tabBarVC.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];

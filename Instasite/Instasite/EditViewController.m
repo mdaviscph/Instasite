@@ -20,8 +20,9 @@
 #import "CSSFile.h"
 #import "ImageFile.h"
 #import "SegmentedControl.h"
+#import "DisplayTemplateViewController.h"
 
-@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, SegmentedControlDelegate>
+@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, SegmentedControlDelegate, UITabBarControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIStackView *topStackView;
 @property (weak, nonatomic) IBOutlet UIStackView *bottomStackView;
@@ -67,6 +68,7 @@
   [super viewDidLoad];
   
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
+  self.tabBarVC.delegate = self;
 
   [self.featureSegmentedControl removeAllSegments];
   for (NSUInteger index = 0; index < self.featureMarkers.count; index++) {
@@ -132,49 +134,35 @@
 
 -(void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
-  NSLog(@"EditVC viewWillAppear");
+
   self.navigationController.navigationBarHidden = NO;
   self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonTapped)];
   
-  [self updateImageSourceReferences];
+  [self.tabBarVC.templateCopy resetToOriginal];
+  [self assignImageRefsToUserInput];
+  [self insertUserInputIntoTemplateCopy];
   
   [self startObservingKeyboardEvents];
 }
 
--(void)viewWillDisappear:(BOOL)animated {
-  [self saveUserInput];
+-(void)viewDidDisappear:(BOOL)animated {
+  [super viewDidDisappear:animated];
   [self stopObservingKeyboardEvents];
-  [super viewWillDisappear:animated];
 }
 
 #pragma mark - Helper Methods
 
 - (void)reloadFeature {
-  [self updateFeature:-1];
+  [self switchToFeature:-1];
 }
 
-- (void)updateFeature:(NSInteger)index {
+- (void)switchToFeature:(NSInteger)index {
   for (UIView *subview in self.bottomStackView.arrangedSubviews) {
     [self.bottomStackView removeArrangedSubview:subview];
     [subview removeFromSuperview];
   }
   self.selectedFeature = index >= 0 ? index : self.selectedFeature;
   [self addFeatureControlsForFeature:self.selectedFeature];
-}
-
-- (void)updateImageSourceReferences {
-  
-  NSMutableArray *imageRefs = [[NSMutableArray alloc] init];
-  for (NSUInteger index = 0; index < self.tabBarVC.images.count; index++) {
-    
-    NSString *imageFile = [NSString stringWithFormat:@"%@%02lu", kTemplateImagePrefix, index + 1];
-    NSString *relativeFilepath = [kTemplateImageDirectory stringByAppendingPathComponent:imageFile];
-    NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:kTemplateImageFiletype];
-    
-    [self.tabBarVC.templateCopy insertImageReference:index imageSource:relativePathWithType];
-    [imageRefs addObject:relativePathWithType];
-  }
-  self.userInput.imageRefs = imageRefs;
 }
 
 - (void)addFeatureControlsForFeature:(NSInteger)index {
@@ -210,6 +198,20 @@
   }
 }
 
+- (void)assignImageRefsToUserInput {
+  
+  NSMutableArray *imageRefs = [[NSMutableArray alloc] init];
+  for (NSUInteger index = 0; index < self.tabBarVC.images.count; index++) {
+    
+    NSString *imageFile = [NSString stringWithFormat:@"%@%02lu", kTemplateImagePrefix, index + 1];
+    NSString *relativeFilepath = [kTemplateImageDirectory stringByAppendingPathComponent:imageFile];
+    NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:kTemplateImageFiletype];
+    
+    [imageRefs addObject:relativePathWithType];
+  }
+  self.userInput.imageRefs = imageRefs;
+}
+
 - (void)insertUserInputIntoTemplateCopy {
   
   [self.tabBarVC.templateCopy insertTitle:self.userInput.title];
@@ -230,14 +232,15 @@
 - (void)saveUserInput {
   self.lastTextEditingView = nil;
   
+  NSLog(@"saveUserInput");
   NSData *jsonData = [JsonService fromTemplateInput:self.userInput];
   [JsonService writeJsonFile:jsonData fileURL:self.tabBarVC.userJsonURL];
   
-  [self writeWorkingFile];
-  [self saveImagesToFiles];
+  [self writeIndexHtmlFile];
+  [self writeImageFiles];
 }
 
-- (BOOL)writeWorkingFile {
+- (BOOL)writeIndexHtmlFile {
   
   if ([self.tabBarVC.templateCopy writeToURL:self.tabBarVC.indexHtmlURL]) {
     return YES;
@@ -245,7 +248,7 @@
   return NO;
 }
 
-- (void)saveImagesToFiles {
+- (void)writeImageFiles {
   
   NSFileManager *fileManager = [NSFileManager defaultManager];
   NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
@@ -271,7 +274,7 @@
     NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
     NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateImageFiletype];
     
-    //NSLog(@"Writing file: %@", pathWithType);
+    //NSLog(@"Writing image file: %@", pathWithType);
     NSError *error;
     [data writeToFile:pathWithType options:NSDataWritingAtomic error:&error];
     if (error) {
@@ -300,8 +303,8 @@
     publishVC.indexHtmlFilePath = workingDirectory;
     publishVC.JSONfilePath = workingDirectory;
     
-    NSLog(@"CSS: %@", [[files firstObject] description]);
-    NSLog(@"IMAGES: %@", [[files lastObject] description]);
+    //NSLog(@"CSS: %@", [[files firstObject] description]);
+    //NSLog(@"IMAGES: %@", [[files lastObject] description]);
     publishVC.supportingFilePaths = [files firstObject];
     publishVC.imageFilePaths = [files lastObject];
     
@@ -339,7 +342,7 @@
 #pragma mark - IBActions, Selector Methods
 
 - (IBAction)featureSegmentedControlChange:(UISegmentedControl *)sender {
-  [self updateFeature:sender.selectedSegmentIndex];
+  [self switchToFeature:sender.selectedSegmentIndex];
 }
 
 - (void)saveButtonTapped {
@@ -361,6 +364,15 @@
 }
 - (void)keyboardWillHide:(NSNotification *)notification {
   self.scrollView.contentInset = UIEdgeInsetsZero;
+}
+
+#pragma mark - UITabBarControllerDelegate
+
+- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
+  if ([viewController isKindOfClass:[DisplayTemplateViewController class]]) {
+    [self saveUserInput];    
+  }
+  return YES;
 }
 
 #pragma mark - UITextFieldDelegate

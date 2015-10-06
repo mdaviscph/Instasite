@@ -257,10 +257,10 @@
 				00E928AB1BB1EC0F00383BD0 /* EditViewController.m */,
 				0006EC041BC0B79200B020C5 /* ImagesViewController.h */,
 				0006EC051BC0B79200B020C5 /* ImagesViewController.m */,
-				000B02731BB36A2D00737578 /* TemplateTabBarController.h */,
-				000B02741BB36A2D00737578 /* TemplateTabBarController.m */,
 				007D48011BC2F90A0057B5D1 /* ReposViewController.h */,
 				007D48021BC2F90A0057B5D1 /* ReposViewController.m */,
+				000B02731BB36A2D00737578 /* TemplateTabBarController.h */,
+				000B02741BB36A2D00737578 /* TemplateTabBarController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
