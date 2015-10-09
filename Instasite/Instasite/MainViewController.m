@@ -10,6 +10,8 @@
 #import <MPSkewed/MPSkewedParallaxLayout.h>
 #import <MPSkewed/MPSkewedCell.h>
 #import "TemplateTabBarController.h"
+#import "GitHubService.h"
+#import "RepoInfo.h"
 #import "Constants.h"
 
 static NSString *kCellId = @"MainCell";
@@ -18,9 +20,11 @@ static NSUInteger kCellHeight = 250;
 
 @interface MainViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource>
 
-@property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) NSArray *templateDirectories;
-@property (nonatomic, strong) NSArray *imageNames;
+@property (strong, nonatomic) UICollectionView *collectionView;
+@property (strong, nonatomic) NSArray *templateDirectories;
+@property (strong, nonatomic) NSArray *imageNames;
+@property (strong, nonatomic) NSArray *titles;
+@property (strong, nonatomic) NSArray *repos;
 
 @end
 
@@ -28,7 +32,9 @@ static NSUInteger kCellHeight = 250;
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-    
+  
+  [self getExistingRepos];
+  
   // TODO - read this list from the bundle directory
   self.templateDirectories = @[@"startbootstrap-one-page-wonder-1.0.3",
                                @"startbootstrap-agency-1.0-2.4",
@@ -36,6 +42,7 @@ static NSUInteger kCellHeight = 250;
                                @"startbootstrap-creative-1.0.1",
                                @"startbootstrap-clean-blog-1.0.3"];
   self.imageNames = @[@"one-page-wonder",@"agency",@"freelancer",@"creative",@"clean-blog"];
+  self.titles = @[@"ONE PAGE WONDER",@"AGENCY",@"FREELANCER",@"CREATIVE",@"CLEAN BLOG"];
 
   MPSkewedParallaxLayout *layout = [[MPSkewedParallaxLayout alloc] init];
   layout.lineSpacing = kSpaceBetweenCells;
@@ -60,42 +67,44 @@ static NSUInteger kCellHeight = 250;
   [(MPSkewedParallaxLayout *)self.collectionView.collectionViewLayout setItemSize:CGSizeMake(CGRectGetWidth(self.view.bounds), kCellHeight)];
 }
 
-// TODO - determine this list from the bundle directory somehow
-- (NSString *)titleForIndex:(NSInteger)index {
-  NSString *text = nil;
-  switch (index) {
-    case 0:
-      text = @"ONE PAGE WONDER";
-      break;
-    case 1:
-      text = @"AGENCY";
-      break;
-    case 2:
-      text = @"FREELANCER";
-      break;
-    case 3:
-      text = @"CREATIVE";
-      break;
-    case 4:
-      text = @"CLEAN BLOG";
-      break;
-    default:
-      break;
-  }
-  
-  return text;
+#pragma mark - Helper Methods
+
+// TODO - check for access_token
+- (void)getExistingRepos {
+  [GitHubService.sharedInstance getReposWithCompletion:^(NSError *error, NSArray *repos) {
+    if (error) {
+      // TODO - alert popover
+      NSLog(@"Error in getReposWithCompletion: %@", error.localizedDescription);
+    }
+    self.repos = repos;
+    [self.collectionView reloadData];
+  }];
 }
 
 #pragma mark - UICollectionViewDataSource
 
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+  return self.repos.count > 0 ? 2 : 1;
+}
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-  return self.templateDirectories.count;
+  if (section == 0 && self.repos.count > 0) {
+      return self.repos.count;
+  } else {
+    return self.templateDirectories.count;
+  }
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
   MPSkewedCell* cell = (MPSkewedCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
-  cell.image = [UIImage imageNamed: self.imageNames[indexPath.item]];
-  cell.text = [self titleForIndex:indexPath.item];
+  
+  if (indexPath.section == 0 && self.repos.count > 0) {
+    RepoInfo *repo = self.repos[indexPath.item];
+    cell.image = [UIImage imageNamed:self.imageNames[0]];     // TODO - retrieve this from...
+    cell.text = repo.name;
+  } else {
+    cell.image = [UIImage imageNamed:self.imageNames[indexPath.item]];
+    cell.text = self.titles[indexPath.item];
+  }
   return cell;
 }
 
@@ -103,14 +112,20 @@ static NSUInteger kCellHeight = 250;
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
-  NSLog(@"template directory: %@", self.templateDirectories[indexPath.item]);
   TemplateTabBarController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"TemplateTabBarController"];
 
   tabBarVC.documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-  tabBarVC.templateDirectory = self.templateDirectories[indexPath.item];
-
+  
+  if (indexPath.section == 0 && self.repos.count > 0) {
+    RepoInfo *repo = self.repos[indexPath.item];
+    tabBarVC.repoName = repo.name;
+    tabBarVC.templateDirectory = self.templateDirectories[0];     // TODO - retrieve this from...
+  } else {
+    tabBarVC.templateDirectory = self.templateDirectories[indexPath.item];
+  }
+  
+  NSLog(@"template directory: %@", tabBarVC.templateDirectory);
   [self.navigationController pushViewController:tabBarVC animated:YES];
 }
-
 
 @end

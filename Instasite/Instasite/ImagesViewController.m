@@ -46,9 +46,10 @@ static NSString *kCellId = @"ImageCell";
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:true];
 
-  self.tabBarVC.navigationController.navigationBarHidden = NO;
+  self.navigationController.navigationBarHidden = NO;
   self.tabBarVC.navigationController.navigationBar.translucent = NO;
   self.tabBarVC.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
+  self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
   self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonTapped)];
 }
 

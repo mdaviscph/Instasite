@@ -54,25 +54,6 @@
             </objects>
             <point key="canvasLocation" x="2731" y="-41"/>
         </scene>
-        <!--Repos-->
-        <scene sceneID="uGc-H1-L1d">
-            <objects>
-                <tableViewController id="6W9-Xu-AUd" customClass="ReposViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="61M-Wa-cyn">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <connections>
-                            <outlet property="dataSource" destination="6W9-Xu-AUd" id="KGw-c1-99b"/>
-                            <outlet property="delegate" destination="6W9-Xu-AUd" id="sdb-NL-VqN"/>
-                        </connections>
-                    </tableView>
-                    <tabBarItem key="tabBarItem" title="Repos" id="hPG-Rn-g1y"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="aer-IN-mpl" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2804" y="874"/>
-        </scene>
         <!--Add Text-->
         <scene sceneID="9Ca-Ww-Hpo">
             <objects>
@@ -170,6 +151,49 @@
             </objects>
             <point key="canvasLocation" x="2731" y="651"/>
         </scene>
+        <!--Publish-->
+        <scene sceneID="XMc-Yf-VsM">
+            <objects>
+                <viewController id="Qh9-Hk-ohU" customClass="PublishViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Zwj-Tl-AcS"/>
+                        <viewControllerLayoutGuide type="bottom" id="CVy-ZZ-1MC"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bNV-nD-2OP">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7Sm-iU-7SW">
+                                <rect key="frame" x="20" y="72" width="560" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7ox-xO-pAB">
+                                <rect key="frame" x="20" y="110" width="560" height="433"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="7ox-xO-pAB" firstAttribute="leading" secondItem="bNV-nD-2OP" secondAttribute="leadingMargin" id="BWg-Za-V0a"/>
+                            <constraint firstItem="7Sm-iU-7SW" firstAttribute="trailing" secondItem="bNV-nD-2OP" secondAttribute="trailingMargin" id="ImM-GW-Tu9"/>
+                            <constraint firstItem="7ox-xO-pAB" firstAttribute="trailing" secondItem="bNV-nD-2OP" secondAttribute="trailingMargin" id="OBR-yv-xZU"/>
+                            <constraint firstItem="7Sm-iU-7SW" firstAttribute="top" secondItem="Zwj-Tl-AcS" secondAttribute="bottom" constant="8" symbolic="YES" id="RQK-yJ-W60"/>
+                            <constraint firstItem="7ox-xO-pAB" firstAttribute="top" secondItem="7Sm-iU-7SW" secondAttribute="bottom" constant="8" symbolic="YES" id="bT9-P8-xsC"/>
+                            <constraint firstItem="7Sm-iU-7SW" firstAttribute="leading" secondItem="bNV-nD-2OP" secondAttribute="leadingMargin" id="gV3-C9-NCp"/>
+                            <constraint firstItem="CVy-ZZ-1MC" firstAttribute="top" secondItem="7ox-xO-pAB" secondAttribute="bottom" constant="8" symbolic="YES" id="tT4-yx-Mfj"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Publish" id="DBM-5c-z9S"/>
+                    <connections>
+                        <outlet property="previewView" destination="7ox-xO-pAB" id="OC8-au-4xD"/>
+                        <outlet property="repoNameTextField" destination="7Sm-iU-7SW" id="ec2-6r-RjY"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZaC-3Y-xFW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2794" y="989"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="AV1-58-EmL">
             <objects>
@@ -203,7 +227,7 @@
                         <segue destination="Jrj-qB-hpH" kind="relationship" relationship="viewControllers" id="6Y9-rr-KQX"/>
                         <segue destination="SZ7-UW-qUr" kind="relationship" relationship="viewControllers" id="Vdc-uY-XXa"/>
                         <segue destination="5qJ-X2-bnl" kind="relationship" relationship="viewControllers" id="pcS-mW-N2A"/>
-                        <segue destination="6W9-Xu-AUd" kind="relationship" relationship="viewControllers" id="fMr-mq-ibV"/>
+                        <segue destination="Qh9-Hk-ohU" kind="relationship" relationship="viewControllers" id="E3D-rN-Mt7"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HcX-gh-4ZA" userLabel="First Responder" sceneMemberID="firstResponder"/>

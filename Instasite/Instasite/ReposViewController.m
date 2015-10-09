@@ -36,7 +36,7 @@ static NSString *kCellId = @"RepoCell";
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
   
-  [GitHubService getReposWithCompletion:^(NSError *error, NSArray *repos) {
+  [GitHubService.sharedInstance getReposWithCompletion:^(NSError *error, NSArray *repos) {
     if (error) {
       // TODO - alert popover
       NSLog(@"Error in getReposWithCompletion: %@", error.localizedDescription);

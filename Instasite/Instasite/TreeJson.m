@@ -10,8 +10,7 @@
 
 @implementation TreeJson
 
-- (instancetype)initFromJSON:(NSDictionary *)json;
-{
+- (instancetype)initFromJSON:(NSDictionary *)json {
   self = [super init];
   if (self) {
     NSDictionary *author = json[@"author"];

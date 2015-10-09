@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-@class RepoJson;
+@class RepoInfo;
 
 @interface RepoCell : UITableViewCell
 
-@property (strong, nonatomic) RepoJson *repo;
+@property (strong, nonatomic) RepoInfo *repo;
 
 @end

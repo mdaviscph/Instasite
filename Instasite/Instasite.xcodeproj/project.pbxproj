@@ -11,7 +11,8 @@
 		0006EC061BC0B79200B020C5 /* ImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0006EC051BC0B79200B020C5 /* ImagesViewController.m */; settings = {ASSET_TAGS = (); }; };
 		0006EC091BC0BFAF00B020C5 /* ImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0006EC081BC0BFAF00B020C5 /* ImageCell.m */; settings = {ASSET_TAGS = (); }; };
 		000B02751BB36A2D00737578 /* TemplateTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 000B02741BB36A2D00737578 /* TemplateTabBarController.m */; settings = {ASSET_TAGS = (); }; };
-		007D48001BC2F4BA0057B5D1 /* RepoJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D47FF1BC2F4BA0057B5D1 /* RepoJson.m */; settings = {ASSET_TAGS = (); }; };
+		006CED461BC5EEBE004F484D /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 006CED451BC5EEBE004F484D /* UserInfo.m */; settings = {ASSET_TAGS = (); }; };
+		007D48001BC2F4BA0057B5D1 /* RepoInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D47FF1BC2F4BA0057B5D1 /* RepoInfo.m */; settings = {ASSET_TAGS = (); }; };
 		007D48031BC2F90A0057B5D1 /* ReposViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D48021BC2F90A0057B5D1 /* ReposViewController.m */; settings = {ASSET_TAGS = (); }; };
 		007D48061BC2FAA30057B5D1 /* RepoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D48051BC2FAA30057B5D1 /* RepoCell.m */; settings = {ASSET_TAGS = (); }; };
 		008035021BB7141C00EB91C6 /* SegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 008035011BB7141C00EB91C6 /* SegmentedControl.m */; settings = {ASSET_TAGS = (); }; };
@@ -27,8 +28,7 @@
 		00EA77371BBCA47600A70B8A /* CreateTreeJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 00EA77361BBCA47600A70B8A /* CreateTreeJson.m */; settings = {ASSET_TAGS = (); }; };
 		221BCA1E1BB46B100057A272 /* FileEncodingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA1D1BB46B100057A272 /* FileEncodingService.m */; settings = {ASSET_TAGS = (); }; };
 		221BCA221BB472D70057A272 /* testimage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 221BCA211BB472D70057A272 /* testimage.jpg */; settings = {ASSET_TAGS = (); }; };
-		221BCA261BB4B92E0057A272 /* ImageFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA251BB4B92E0057A272 /* ImageFile.m */; settings = {ASSET_TAGS = (); }; };
-		221BCA2A1BB4B9460057A272 /* CSSFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA291BB4B9460057A272 /* CSSFile.m */; settings = {ASSET_TAGS = (); }; };
+		221BCA2A1BB4B9460057A272 /* FileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 221BCA291BB4B9460057A272 /* FileInfo.m */; settings = {ASSET_TAGS = (); }; };
 		227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 227C86761BB0774800799CD3 /* Oauth.storyboard */; settings = {ASSET_TAGS = (); }; };
 		227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867B1BB077D400799CD3 /* OauthViewController.m */; settings = {ASSET_TAGS = (); }; };
 		227C86801BB07B3500799CD3 /* GitHubService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C867F1BB07B3500799CD3 /* GitHubService.m */; settings = {ASSET_TAGS = (); }; };
@@ -54,9 +54,7 @@
 		6B05A01B1BB32C70002627BA /* freelancer.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0161BB32C70002627BA /* freelancer.png */; settings = {ASSET_TAGS = (); }; };
 		6B05A01C1BB32C70002627BA /* one-page-wonder.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0171BB32C70002627BA /* one-page-wonder.png */; settings = {ASSET_TAGS = (); }; };
 		6B05A02E1BB4A0B5002627BA /* FileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A02D1BB4A0B5002627BA /* FileManager.m */; settings = {ASSET_TAGS = (); }; };
-		6C0E6E2D1BB1C18B000C7971 /* Publish.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */; settings = {ASSET_TAGS = (); }; };
 		6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C0E6E321BB1F16F000C7971 /* PublishViewController.m */; settings = {ASSET_TAGS = (); }; };
-		6CAE8E3A1BB4618E00691E48 /* GitHubPullService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CAE8E391BB4618E00691E48 /* GitHubPullService.m */; settings = {ASSET_TAGS = (); }; };
 		A3B14F545D372A79A9897B4B /* libPods-Instasite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C094285F042763CE3DF8F210 /* libPods-Instasite.a */; };
 /* End PBXBuildFile section */
 
@@ -86,8 +84,10 @@
 		0006EC081BC0BFAF00B020C5 /* ImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCell.m; sourceTree = "<group>"; };
 		000B02731BB36A2D00737578 /* TemplateTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateTabBarController.h; sourceTree = "<group>"; };
 		000B02741BB36A2D00737578 /* TemplateTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateTabBarController.m; sourceTree = "<group>"; };
-		007D47FE1BC2F4BA0057B5D1 /* RepoJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RepoJson.h; sourceTree = "<group>"; };
-		007D47FF1BC2F4BA0057B5D1 /* RepoJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RepoJson.m; sourceTree = "<group>"; };
+		006CED441BC5EEBE004F484D /* UserInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfo.h; sourceTree = "<group>"; };
+		006CED451BC5EEBE004F484D /* UserInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfo.m; sourceTree = "<group>"; };
+		007D47FE1BC2F4BA0057B5D1 /* RepoInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RepoInfo.h; sourceTree = "<group>"; };
+		007D47FF1BC2F4BA0057B5D1 /* RepoInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RepoInfo.m; sourceTree = "<group>"; };
 		007D48011BC2F90A0057B5D1 /* ReposViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReposViewController.h; sourceTree = "<group>"; };
 		007D48021BC2F90A0057B5D1 /* ReposViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReposViewController.m; sourceTree = "<group>"; };
 		007D48041BC2FAA30057B5D1 /* RepoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RepoCell.h; sourceTree = "<group>"; };
@@ -116,10 +116,8 @@
 		221BCA1C1BB46B100057A272 /* FileEncodingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileEncodingService.h; sourceTree = "<group>"; };
 		221BCA1D1BB46B100057A272 /* FileEncodingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileEncodingService.m; sourceTree = "<group>"; };
 		221BCA211BB472D70057A272 /* testimage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimage.jpg; sourceTree = "<group>"; };
-		221BCA241BB4B92E0057A272 /* ImageFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFile.h; sourceTree = "<group>"; };
-		221BCA251BB4B92E0057A272 /* ImageFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFile.m; sourceTree = "<group>"; };
-		221BCA281BB4B9460057A272 /* CSSFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSSFile.h; sourceTree = "<group>"; };
-		221BCA291BB4B9460057A272 /* CSSFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSSFile.m; sourceTree = "<group>"; };
+		221BCA281BB4B9460057A272 /* FileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileInfo.h; sourceTree = "<group>"; };
+		221BCA291BB4B9460057A272 /* FileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileInfo.m; sourceTree = "<group>"; };
 		227C86761BB0774800799CD3 /* Oauth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Oauth.storyboard; sourceTree = "<group>"; };
 		227C867A1BB077D400799CD3 /* OauthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OauthViewController.h; sourceTree = "<group>"; };
 		227C867B1BB077D400799CD3 /* OauthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OauthViewController.m; sourceTree = "<group>"; };
@@ -159,11 +157,8 @@
 		6B05A0171BB32C70002627BA /* one-page-wonder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "one-page-wonder.png"; path = "templateImg/one-page-wonder.png"; sourceTree = SOURCE_ROOT; };
 		6B05A02C1BB4A0B5002627BA /* FileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileManager.h; sourceTree = "<group>"; };
 		6B05A02D1BB4A0B5002627BA /* FileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileManager.m; sourceTree = "<group>"; };
-		6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Publish.storyboard; sourceTree = "<group>"; };
 		6C0E6E311BB1F16F000C7971 /* PublishViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishViewController.h; sourceTree = "<group>"; };
 		6C0E6E321BB1F16F000C7971 /* PublishViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishViewController.m; sourceTree = "<group>"; };
-		6CAE8E381BB4618E00691E48 /* GitHubPullService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GitHubPullService.h; sourceTree = "<group>"; };
-		6CAE8E391BB4618E00691E48 /* GitHubPullService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GitHubPullService.m; sourceTree = "<group>"; };
 		6EE31DEC5172B73AABFD04F9 /* Pods-Instasite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instasite.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Instasite/Pods-Instasite.debug.xcconfig"; sourceTree = "<group>"; };
 		A42CA43213D7E88DB56F5FD1 /* Pods-Instasite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instasite.release.xcconfig"; path = "Pods/Target Support Files/Pods-Instasite/Pods-Instasite.release.xcconfig"; sourceTree = "<group>"; };
 		C094285F042763CE3DF8F210 /* libPods-Instasite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Instasite.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -209,8 +204,10 @@
 		00EA772B1BBC89BE00A70B8A /* GitHubJSON */ = {
 			isa = PBXGroup;
 			children = (
-				007D47FE1BC2F4BA0057B5D1 /* RepoJson.h */,
-				007D47FF1BC2F4BA0057B5D1 /* RepoJson.m */,
+				007D47FE1BC2F4BA0057B5D1 /* RepoInfo.h */,
+				007D47FF1BC2F4BA0057B5D1 /* RepoInfo.m */,
+				006CED441BC5EEBE004F484D /* UserInfo.h */,
+				006CED451BC5EEBE004F484D /* UserInfo.m */,
 				00EA772C1BBC8A3600A70B8A /* CommitJson.h */,
 				00EA772D1BBC8A3600A70B8A /* CommitJson.m */,
 				00EA772F1BBC8FFF00A70B8A /* TreeJson.h */,
@@ -234,10 +231,8 @@
 		221BCA231BB4B9180057A272 /* Files */ = {
 			isa = PBXGroup;
 			children = (
-				221BCA241BB4B92E0057A272 /* ImageFile.h */,
-				221BCA251BB4B92E0057A272 /* ImageFile.m */,
-				221BCA281BB4B9460057A272 /* CSSFile.h */,
-				221BCA291BB4B9460057A272 /* CSSFile.m */,
+				221BCA281BB4B9460057A272 /* FileInfo.h */,
+				221BCA291BB4B9460057A272 /* FileInfo.m */,
 			);
 			name = Files;
 			sourceTree = "<group>";
@@ -271,7 +266,6 @@
 				22EFFDEC1BADC11800E28ACB /* LaunchScreen.storyboard */,
 				22EFFDE71BADC11800E28ACB /* Main.storyboard */,
 				227C86761BB0774800799CD3 /* Oauth.storyboard */,
-				6C0E6E2C1BB1C18B000C7971 /* Publish.storyboard */,
 				000613741BB2FCE600E818B7 /* Extensions.h */,
 				000613751BB2FCE600E818B7 /* Extensions.m */,
 				0006EC071BC0BFAF00B020C5 /* ImageCell.h */,
@@ -305,8 +299,6 @@
 				6B05A02D1BB4A0B5002627BA /* FileManager.m */,
 				227C867E1BB07B3500799CD3 /* GitHubService.h */,
 				227C867F1BB07B3500799CD3 /* GitHubService.m */,
-				6CAE8E381BB4618E00691E48 /* GitHubPullService.h */,
-				6CAE8E391BB4618E00691E48 /* GitHubPullService.m */,
 				221BCA1C1BB46B100057A272 /* FileEncodingService.h */,
 				221BCA1D1BB46B100057A272 /* FileEncodingService.m */,
 			);
@@ -547,7 +539,6 @@
 				22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */,
 				22EFFDEB1BADC11800E28ACB /* Assets.xcassets in Resources */,
 				22EFFDE91BADC11800E28ACB /* Main.storyboard in Resources */,
-				6C0E6E2D1BB1C18B000C7971 /* Publish.storyboard in Resources */,
 				6B05A01A1BB32C70002627BA /* creative.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -612,6 +603,7 @@
 				00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */,
 				00EA772E1BBC8A3600A70B8A /* CommitJson.m in Sources */,
 				00E9289B1BB1A8BE00383BD0 /* JsonService.m in Sources */,
+				006CED461BC5EEBE004F484D /* UserInfo.m in Sources */,
 				00EA77311BBC8FFF00A70B8A /* TreeJson.m in Sources */,
 				6B05A02E1BB4A0B5002627BA /* FileManager.m in Sources */,
 				6B05A0041BB3271A002627BA /* MainViewController.m in Sources */,
@@ -620,7 +612,7 @@
 				00E928AC1BB1EC0F00383BD0 /* EditViewController.m in Sources */,
 				008035021BB7141C00EB91C6 /* SegmentedControl.m in Sources */,
 				000613761BB2FCE600E818B7 /* Extensions.m in Sources */,
-				221BCA2A1BB4B9460057A272 /* CSSFile.m in Sources */,
+				221BCA2A1BB4B9460057A272 /* FileInfo.m in Sources */,
 				00EA77371BBCA47600A70B8A /* CreateTreeJson.m in Sources */,
 				007D48031BC2F90A0057B5D1 /* ReposViewController.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
@@ -633,10 +625,8 @@
 				00EA77341BBC9FF700A70B8A /* FileJson.m in Sources */,
 				227C86831BB0876900799CD3 /* Constants.m in Sources */,
 				007D48061BC2FAA30057B5D1 /* RepoCell.m in Sources */,
-				6CAE8E3A1BB4618E00691E48 /* GitHubPullService.m in Sources */,
-				221BCA261BB4B92E0057A272 /* ImageFile.m in Sources */,
 				22EFFDE01BADC11800E28ACB /* main.m in Sources */,
-				007D48001BC2F4BA0057B5D1 /* RepoJson.m in Sources */,
+				007D48001BC2F4BA0057B5D1 /* RepoInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

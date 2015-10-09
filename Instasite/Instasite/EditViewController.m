@@ -17,8 +17,6 @@
 #import "PublishViewController.h"
 #import <SSKeychain/SSKeychain.h>
 #import "FileManager.h"
-#import "CSSFile.h"
-#import "ImageFile.h"
 #import "SegmentedControl.h"
 #import "DisplayTemplateViewController.h"
 
@@ -136,6 +134,7 @@
   [super viewWillAppear:animated];
 
   self.navigationController.navigationBarHidden = NO;
+  self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
   self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonTapped)];
   
   [self.tabBarVC.templateCopy resetToOriginal];
@@ -300,13 +299,13 @@
     
     NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
     
-    publishVC.indexHtmlFilePath = workingDirectory;
-    publishVC.JSONfilePath = workingDirectory;
+    //publishVC.indexHtmlFilePath = workingDirectory;
+    //publishVC.JSONfilePath = workingDirectory;
     
-    //NSLog(@"CSS: %@", [[files firstObject] description]);
+    //NSLog(@"OTHER FILES: %@", [[files firstObject] description]);
     //NSLog(@"IMAGES: %@", [[files lastObject] description]);
-    publishVC.supportingFilePaths = [files firstObject];
-    publishVC.imageFilePaths = [files lastObject];
+    //publishVC.supportingFilePaths = [files firstObject];
+    //publishVC.imageFilePaths = [files lastObject];
     
     [self.navigationController pushViewController:publishVC animated:YES];
   }

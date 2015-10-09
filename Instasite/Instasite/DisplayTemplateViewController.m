@@ -37,8 +37,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
-
-  NSLog(@"DisplayTemplateVC viewWillAppear");
   self.navigationController.navigationBarHidden = YES;
   [self.webView reloadFromOrigin];
 }
