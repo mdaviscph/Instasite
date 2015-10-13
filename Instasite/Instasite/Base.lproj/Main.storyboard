@@ -160,34 +160,40 @@
                         <viewControllerLayoutGuide type="bottom" id="CVy-ZZ-1MC"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="bNV-nD-2OP">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7Sm-iU-7SW">
-                                <rect key="frame" x="20" y="72" width="560" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7ox-xO-pAB">
-                                <rect key="frame" x="20" y="110" width="560" height="433"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="LlU-oi-n2p">
+                                <rect key="frame" x="281" y="225" width="37" height="37"/>
+                                <color key="color" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </activityIndicatorView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="Dds-J8-14g">
+                                <rect key="frame" x="20" y="8" width="560" height="471"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="254" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name of Project (repository) to publish..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xH4-Hl-SFD">
+                                        <rect key="frame" x="0.0" y="0.0" width="560" height="471"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="7ox-xO-pAB" firstAttribute="leading" secondItem="bNV-nD-2OP" secondAttribute="leadingMargin" id="BWg-Za-V0a"/>
-                            <constraint firstItem="7Sm-iU-7SW" firstAttribute="trailing" secondItem="bNV-nD-2OP" secondAttribute="trailingMargin" id="ImM-GW-Tu9"/>
-                            <constraint firstItem="7ox-xO-pAB" firstAttribute="trailing" secondItem="bNV-nD-2OP" secondAttribute="trailingMargin" id="OBR-yv-xZU"/>
-                            <constraint firstItem="7Sm-iU-7SW" firstAttribute="top" secondItem="Zwj-Tl-AcS" secondAttribute="bottom" constant="8" symbolic="YES" id="RQK-yJ-W60"/>
-                            <constraint firstItem="7ox-xO-pAB" firstAttribute="top" secondItem="7Sm-iU-7SW" secondAttribute="bottom" constant="8" symbolic="YES" id="bT9-P8-xsC"/>
-                            <constraint firstItem="7Sm-iU-7SW" firstAttribute="leading" secondItem="bNV-nD-2OP" secondAttribute="leadingMargin" id="gV3-C9-NCp"/>
-                            <constraint firstItem="CVy-ZZ-1MC" firstAttribute="top" secondItem="7ox-xO-pAB" secondAttribute="bottom" constant="8" symbolic="YES" id="tT4-yx-Mfj"/>
+                            <constraint firstItem="Dds-J8-14g" firstAttribute="leading" secondItem="bNV-nD-2OP" secondAttribute="leadingMargin" id="Hop-Y2-t64"/>
+                            <constraint firstItem="LlU-oi-n2p" firstAttribute="centerY" secondItem="bNV-nD-2OP" secondAttribute="centerY" id="JOW-Cj-H9m"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Dds-J8-14g" secondAttribute="trailing" id="OLM-Ue-uS9"/>
+                            <constraint firstItem="LlU-oi-n2p" firstAttribute="centerX" secondItem="bNV-nD-2OP" secondAttribute="centerX" id="Rrh-Su-kgb"/>
+                            <constraint firstItem="CVy-ZZ-1MC" firstAttribute="top" secondItem="Dds-J8-14g" secondAttribute="bottom" constant="8" symbolic="YES" id="XyJ-ug-UDo"/>
+                            <constraint firstItem="Dds-J8-14g" firstAttribute="top" secondItem="Zwj-Tl-AcS" secondAttribute="bottom" constant="8" symbolic="YES" id="lYW-DV-GWl"/>
                         </constraints>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Publish" id="DBM-5c-z9S"/>
                     <connections>
-                        <outlet property="previewView" destination="7ox-xO-pAB" id="OC8-au-4xD"/>
-                        <outlet property="repoNameTextField" destination="7Sm-iU-7SW" id="ec2-6r-RjY"/>
+                        <outlet property="busyIndicator" destination="LlU-oi-n2p" id="EiZ-um-HMZ"/>
+                        <outlet property="repoNameTextField" destination="xH4-Hl-SFD" id="D3J-BK-56M"/>
+                        <outlet property="stackView" destination="Dds-J8-14g" id="o4J-HR-2Wm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZaC-3Y-xFW" userLabel="First Responder" sceneMemberID="firstResponder"/>

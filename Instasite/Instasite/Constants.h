@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+enum FileType {
+  IndexHtml, UserInputJson, Other, ImageJpeg
+};
+typedef enum FileType FileType;
+
 extern NSString *const kCloseSafariViewControllerNotification;
 
 extern NSString *const kSSKeychainAccount;

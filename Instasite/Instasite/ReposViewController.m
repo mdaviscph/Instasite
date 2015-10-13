@@ -49,6 +49,7 @@ static NSString *kCellId = @"RepoCell";
   self.tabBarVC.navigationController.navigationBar.translucent = NO;
   self.tabBarVC.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
   self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonTapped)];
+  self.tabBarVC.navigationItem.leftBarButtonItem = nil;
 }
 
 #pragma mark - Selector Methods

@@ -14,17 +14,25 @@
 #import "UserInfo.h"
 #import "RepoInfo.h"
 #import "CommitJson.h"
+#import "FileJson.h"
 #import <AFNetworking/AFNetworking.h>
 #import <SSKeychain/SSKeychain.h>
 
 @interface GitHubService ()
 
-@property (strong, nonatomic) NSString *accessToken;      // saved to Keychain
-@property (strong, nonatomic) UserInfo *user;             // saved to UserDefaults
+@property (strong, readonly, nonatomic) NSString *accessToken;      // saved to Keychain
+@property (strong, readonly, nonatomic) UserInfo *user;             // saved to UserDefaults
 
 @end
 
 @implementation GitHubService
+
+- (NSString *)accessToken {
+  return [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
+}
+- (UserInfo *)user {
+  return [[UserInfo alloc] initFromUserDefaults];
+}
 
 // use of dispatch_once_t with a static onceToken from Effective Objective-C 2.0
 + (instancetype)sharedInstance {
@@ -32,14 +40,12 @@
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     sharedInstance = [[self alloc] init];
-    [sharedInstance initializeInstance];
   });
   return sharedInstance;
 }
 
-- (void)initializeInstance {
-  self.accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
-  self.user = [[UserInfo alloc] initFromUserDefaults];
+- (BOOL)isAuthorized {
+  return self.accessToken != nil;
 }
 
 + (void)saveTokenInURLtoKeychain:(NSURL *)url {
@@ -82,10 +88,9 @@
   if (self.user) {
     return self.user;
   }
-
-  NSString *url = @"https://api.github.com/user";
   
   AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:false];
+  NSString *url = @"https://api.github.com/user";
   
   [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
@@ -109,14 +114,16 @@
   return nil;
 }
 
+- (NSString *)ghPagesUrl {
+  return [NSString stringWithFormat:@"http://%@.github.io", self.user.name];
+}
+
 - (void)getReposWithCompletion:(void(^)(NSError *error, NSArray *repos))completion {
-  
+
+  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
   NSString *url = @"https://api.github.com/user/repos";
-  
-  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:false];
-  
+
   NSDictionary *parameters = @{@"type": @"owner"};
-  
   [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
     NSMutableArray *repos = [[NSMutableArray alloc] init];
@@ -147,15 +154,13 @@
 
 - (void)createRepo:(NSString *)repoName description:(NSString *)description completion:(void(^)(NSError *))completion {
   
-  NSString *url = @"https://api.github.com/user/repos";
-  
   AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
-  
-  NSDictionary *parameters = @{@"name": repoName, @"description": description, @"auto_init": @(1)};
-  
+  NSString *url = @"https://api.github.com/user/repos";
+
+  NSDictionary *parameters = @{@"name": repoName, @"description": description};  //, @"auto_init": @(1)};
   [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
-    NSLog(@"POST(create repo): [%@] responseObject: %@", url, responseObject);
+    //NSLog(@"POST(create repo): [%@] responseObject: %@", url, responseObject);
     if (completion) {
       completion(nil);
     }
@@ -175,13 +180,12 @@
 
 - (void)getRepo:(NSString *)repoName completion:(void(^)(NSError *))completion {
   
-  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@", self.user.name, repoName];
-
   AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:false];
+  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@", self.user.name, repoName];
   
   [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
-    NSLog(@"GET(repo): [%@] responseObject: %@", url, responseObject);
+    //NSLog(@"GET(repo): [%@] responseObject: %@", url, responseObject);
     if (completion) {
       completion(nil);
     }
@@ -202,9 +206,8 @@
 
 - (void)getPages:(NSString *)repoName completion:(void(^)(NSError *))completion {
   
-  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/pages", self.user.name, repoName];
-  
   AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:false];
+  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/pages", self.user.name, repoName];
   
   [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
@@ -229,14 +232,12 @@
 
 - (void)getRefs:(NSString *)repoName completion:(void(^)(NSError *, CommitJson *))completion {
   
-  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/git/refs/heads", self.user.name, repoName];
-
   AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:false];
+  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/git/refs/heads", self.user.name, repoName];
   
   [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
-    NSLog(@"GET(refs): [%@] responseObject: %@", url, responseObject);
-    
+    //NSLog(@"GET(refs): [%@] responseObject: %@", url, responseObject);
     NSArray *objects = responseObject;
     CommitJson *commit = [[CommitJson alloc] initFromJSON:objects.firstObject];
     if (completion) {
@@ -257,18 +258,46 @@
   }];
 }
 
-- (void)createBranchForRepo:(NSString *)repoName parentSHA:(NSString *)sha completion:(void(^)(NSError *))completion {
-  
-  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/git/refs", self.user.name, repoName];
-  NSString *ref = [NSString stringWithFormat:@"refs/heads/%@", kBranchName];
+- (void)getFile:(FileInfo *)file forRepo:(NSString *)repoName completion:(void(^)(NSError *, FileJson *))completion {
+
+  NSString *filePath = [file filepathFromTemplateDirectory];
   
   AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
+  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@", self.user.name, repoName, filePath];
   
+  NSDictionary *parameters = @{@"ref": kBranchName, @"path": filePath};
+  [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    
+    //NSLog(@"GET(file): [%@] responseObject: %@", url, responseObject);
+    FileJson *file = [[FileJson alloc] initFromJSON:responseObject];
+    if (completion) {
+      completion(nil, file);
+    }
+    
+  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+    
+    NSLog(@"Error! GET(file): [%@] error: %@", url, error.localizedDescription);
+    NSString *message = operation.responseObject[@"message"];
+    NSString *failedUrl = error.userInfo[@"NSErrorFailingURLKey"];
+    NSString *detail = error.userInfo[@"NSLocalizedDescription"];
+    NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);
+    
+    if (completion) {
+      completion(error, nil);
+    }
+  }];
+}
+
+- (void)createBranchForRepo:(NSString *)repoName parentSHA:(NSString *)sha completion:(void(^)(NSError *))completion {
+  
+  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
+  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/git/refs", self.user.name, repoName];
+  
+  NSString *ref = [NSString stringWithFormat:@"refs/heads/%@", kBranchName];
   NSDictionary *parameters = @{@"ref": ref, @"sha": sha};
-  
   [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
     
-    NSLog(@"POST(create branch): [%@] responseObject: %@", url, responseObject);
+    //NSLog(@"POST(create branch): [%@] responseObject: %@", url, responseObject);
     if (completion) {
       completion(nil);
     }
@@ -286,21 +315,19 @@
   }];
 }
 
-- (void)pushIndexHtmlFile:(FileInfo *)file forRepo:(NSString *)repoName completion:(void (^)(NSError *))completion {
+- (void)pushIndexHtmlFile:(FileInfo *)file forRepo:(NSString *)repoName withSha:(NSString *)sha completion:(void (^)(NSError *))completion {
 
   NSString *localPath = [file filepathIncludingDocumentsDirectory];
   NSString *filePath = [file filepathFromTemplateDirectory];
   
+  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
   NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@", self.user.name, repoName, filePath];
   
-  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
-  
-  NSString *encodedFile = [FileEncodingService encodeHTML:localPath];
-  
-  NSDictionary *parameters = @{@"branch": kBranchName, @"message": @"index file", @"content": encodedFile};
-  
+  NSString *encodedFile = [FileEncodingService encodeFile:localPath withType:file.type];
+  NSDictionary *parameters = sha ? @{@"branch": kBranchName, @"sha": sha, @"message": @"index file", @"content": encodedFile} : @{@"branch": kBranchName, @"message": @"index file", @"content": encodedFile};
   [manager PUT:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-    //NSLog(@"PUT(html): [%@]", url);
+
+    NSLog(@"PUT(index html): [%@]", filePath);
     if (completion) {
       completion(nil);
     }
@@ -322,22 +349,15 @@
   
   NSString *localPath = [file filepathIncludingDocumentsDirectory];
   NSString *filePath = [file filepathFromTemplateDirectory];
-  
+
+  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
   NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@", self.user.name, repoName, filePath];
   
-  NSString *encodedFile = [FileEncodingService encodeJSON:localPath];
-  // possible for there to not be a userInput JSON file if no text entered
-  if (!encodedFile) {
-    completion(nil);
-    return;
-  }
-  
+  NSString *encodedFile = [FileEncodingService encodeFile:localPath withType:file.type];
   NSDictionary *parameters = @{@"branch": kBranchName, @"message":@"InstaSite json data", @"content": encodedFile};
-  
-  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
-  
   [manager PUT:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-    //NSLog(@"PUT(json): [%@]", url);
+
+    //NSLog(@"PUT(json file): [%@]", filePath);
     if (completion) {
       completion(nil);
     }
@@ -355,88 +375,59 @@
   }];
 }
 
-- (void)pushImageFiles:(NSMutableArray *)files forRepo:(NSString *)repoName completion:(void(^)(NSError *))completion {
-
+- (void)pushFiles:(NSArray *)files forRepo:(NSString *)repoName completion:(void(^)(NSError *, NSArray *))completion {
+  
   FileInfo *file = files.lastObject;
-  [files removeLastObject];
+  NSLog(@"(%@) to (%@)", [files.lastObject name], [files.firstObject name]);
+  NSMutableArray *filesRemaining = [[NSMutableArray alloc] initWithArray:files];
+  [filesRemaining removeLastObject];
   
   NSString *localPath = [file filepathIncludingDocumentsDirectory];
   NSString *filePath = [file filepathFromTemplateDirectory];
-  
-  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@", self.user.name, repoName, filePath];
-  
-  NSString *encodedFile = [FileEncodingService encodeImage:localPath];
-  
-  NSDictionary *parameters = @{@"branch": kBranchName, @"message":@"image file", @"content": encodedFile};
   
   AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
-  
-  [manager PUT:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-    NSLog(@"PUT(image file): local: [%@] url: [%@]", localPath, url);
-    
-    if (files.count > 0) {
-      [self pushImageFiles:files forRepo:repoName completion:^(NSError *error) {
-        if (completion) {
-          completion(error);
-        }
-      }];
-    }
-    if (completion) {
-      completion(nil);
-    }
-    
-  } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
-    
-    NSLog(@"Error! PUT(image file): [%@] error: %@", url, error.localizedDescription);
-    NSString *message = operation.responseObject[@"message"];
-    NSString *failedUrl = error.userInfo[@"NSErrorFailingURLKey"];
-    NSString *detail = error.userInfo[@"NSLocalizedDescription"];
-    NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);
-    if (completion) {
-      completion(error);
-    }
-  }];
-}
-
-- (void)pushSupportingFiles:(NSMutableArray *)files forRepo:(NSString *)repoName completion:(void(^)(NSError *))completion {
-  
-  FileInfo *file = files.lastObject;
-  [files removeLastObject];
-  
-  NSString *localPath = [file filepathIncludingDocumentsDirectory];
-  NSString *filePath = [file filepathFromTemplateDirectory];
-  
   NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/contents/%@", self.user.name, repoName, filePath];
   
-  NSString *encodedFile = [FileEncodingService encodeSupportingFile:localPath];
-  
+  NSString *encodedFile = [FileEncodingService encodeFile:localPath withType:file.type];
   NSDictionary *parameters = @{@"branch": kBranchName, @"message":@"supporting file", @"content": encodedFile};
-  
-  AFHTTPRequestOperationManager *manager = [self createManagerWithSerializer:true];
-  
   [manager PUT:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-    NSLog(@"PUT(supporting file): local: [%@] url: [%@]", localPath, url);
+
+    NSLog(@"PUT(file): [%@]", filePath);
     
-    if (files.count > 0) {
-      [self pushSupportingFiles:files forRepo:repoName completion:^(NSError *error) {
-        if (completion) {
-          completion(error);
-        }
-      }];
+    double delay = 0.2;
+    if (filesRemaining.count == 1) {
+      delay = 0.8;
     }
-    if (completion) {
-      completion(nil);
+    if (filesRemaining.count > 0) {
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self pushFiles:filesRemaining forRepo:repoName completion:^(NSError *error, NSArray *remainingFiles) {
+          if (completion) {
+            NSLog(@"FFF");
+            completion(error, remainingFiles);
+            NSLog(@"GGG");
+          }
+        }];
+      });
+    } else {
+      if (completion) {
+        NSLog(@"DDD");
+        completion(nil, nil);
+        NSLog(@"EEE");
+      }
     }
     
   } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
     
-    NSLog(@"Error! PUT(supporting file): [%@] error: %@", url, error.localizedDescription);
+    NSLog(@"Error! PUT(file): [%@] error: %@", url, error.localizedDescription);
     NSString *message = operation.responseObject[@"message"];
     NSString *failedUrl = error.userInfo[@"NSErrorFailingURLKey"];
     NSString *detail = error.userInfo[@"NSLocalizedDescription"];
     NSLog(@"message: %@ url: [%@] detail: %@", message, failedUrl, detail);
     if (completion) {
-      completion(error);
+      [filesRemaining addObject:file];
+      NSLog(@"HHH");
+      completion(error, filesRemaining);
+      NSLog(@"III");
     }
   }];
 }

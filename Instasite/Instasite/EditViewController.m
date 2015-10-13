@@ -18,7 +18,6 @@
 #import <SSKeychain/SSKeychain.h>
 #import "FileManager.h"
 #import "SegmentedControl.h"
-#import "DisplayTemplateViewController.h"
 
 @interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, SegmentedControlDelegate, UITabBarControllerDelegate>
 
@@ -135,7 +134,8 @@
 
   self.navigationController.navigationBarHidden = NO;
   self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
-  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonTapped)];
+  self.tabBarVC.navigationItem.rightBarButtonItem = nil;
+  self.tabBarVC.navigationItem.leftBarButtonItem = nil;
   
   [self.tabBarVC.templateCopy resetToOriginal];
   [self assignImageRefsToUserInput];
@@ -283,34 +283,6 @@
   }
 }
 
-- (void)publishToGithub {
-  
-  if (![SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
-    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
-    UIViewController *oauthVC = [oauthStoryboard instantiateInitialViewController];
-    [self.navigationController pushViewController:oauthVC animated:YES];
-  }
-  if ([SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount]) {
-    UIStoryboard *publishStoryboard = [UIStoryboard storyboardWithName:@"Publish" bundle:[NSBundle mainBundle]];
-    PublishViewController *publishVC = [publishStoryboard instantiateInitialViewController];
-    
-    FileManager *fileManager = [[FileManager alloc] init];
-    NSArray *files = [fileManager enumerateFilesInDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
-    
-    NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-    
-    //publishVC.indexHtmlFilePath = workingDirectory;
-    //publishVC.JSONfilePath = workingDirectory;
-    
-    //NSLog(@"OTHER FILES: %@", [[files firstObject] description]);
-    //NSLog(@"IMAGES: %@", [[files lastObject] description]);
-    //publishVC.supportingFilePaths = [files firstObject];
-    //publishVC.imageFilePaths = [files lastObject];
-    
-    [self.navigationController pushViewController:publishVC animated:YES];
-  }
-}
-
 - (void)advanceNextResponder:(UIView *)textEditingView {
 
   NSInteger tag = textEditingView.tag;
@@ -347,7 +319,6 @@
 - (void)saveButtonTapped {
   
   [self saveUserInput];
-  [self publishToGithub];
 }
 
 - (void)doneButtonTapped {
@@ -368,7 +339,7 @@
 #pragma mark - UITabBarControllerDelegate
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
-  if ([viewController isKindOfClass:[DisplayTemplateViewController class]]) {
+  if (![viewController isKindOfClass:[EditViewController class]]) {
     [self saveUserInput];    
   }
   return YES;
@@ -429,8 +400,7 @@
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
 
-  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonTapped)];
-
+  self.tabBarVC.navigationItem.rightBarButtonItem = nil;
   switch (textView.tag) {
     case HtmlMarkerSummary:
       [self.tabBarVC.templateCopy insertSummary:textView.text];

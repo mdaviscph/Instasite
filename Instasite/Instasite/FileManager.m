@@ -49,20 +49,20 @@
       
     } else {
       //NSLog(@"File at: %@", file);
-      NSString* filename = [file stringByDeletingPathExtension];
-      NSString* filetype = [file pathExtension];
+      NSString* fileName = [file stringByDeletingPathExtension];
+      NSString* fileExtension = [file pathExtension];
       if ([file hasPrefix:kTemplateImagePrefix]) {
-        FileInfo *imageFile = [[FileInfo alloc] initWithFileName:filename fileType:filetype relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
+        FileInfo *imageFile = [[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:ImageJpeg relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
         [imageFiles addObject:imageFile];
-        [supportingFiles addObject:imageFile];
       } else if ([file hasPrefix:kTemplateIndexFilename]) {
-        // ignore index.html
+        // ignore index file
       } else if ([file hasPrefix:kTemplateMarkerFilename]) {
         // ignore marker file
       } else if ([file hasPrefix:kTemplateJsonFilename]) {
-        // ignore json file
+        FileInfo *jsonFile = [[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:UserInputJson relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
+        [supportingFiles addObject:jsonFile];
       } else {
-        FileInfo *supportingFile = [[FileInfo alloc] initWithFileName:filename fileType:filetype relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
+        FileInfo *supportingFile = [[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:Other relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
         [supportingFiles addObject:supportingFile];
       }
     }
