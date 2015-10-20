@@ -57,10 +57,9 @@ static NSUInteger kCellHeight = 250;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:true];
+  [super viewWillAppear:YES];
   self.navigationController.navigationBarHidden = YES;
 }
-
 
 - (void)viewDidLayoutSubviews {
   [super viewDidLayoutSubviews];
@@ -112,7 +111,7 @@ static NSUInteger kCellHeight = 250;
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
-  TemplateTabBarController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"TemplateTabBarController"];
+  TemplateTabBarController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"TemplateTabBarVC"];
 
   tabBarVC.documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
   

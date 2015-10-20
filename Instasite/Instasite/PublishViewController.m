@@ -17,7 +17,7 @@
 #import "FileJson.h"
 #import "Constants.h"
 
-@interface PublishViewController () <UITextFieldDelegate, WKNavigationDelegate, UIScrollViewDelegate>
+@interface PublishViewController () <UITextFieldDelegate, WKNavigationDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *repoNameTextField;
 @property (weak, nonatomic) IBOutlet UIStackView *stackView;
@@ -49,35 +49,32 @@
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
 
-  self.tabBarVC.navigationController.navigationBarHidden = NO;
+  self.navigationController.navigationBarHidden = YES;
+  if (![GitHubService.sharedInstance isAuthorized]) {
+    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
+    UIViewController *oauthVC = [oauthStoryboard instantiateInitialViewController];
+    [self.navigationController pushViewController:oauthVC animated:YES];
+  }
+  
+  self.navigationController.navigationBarHidden = NO;
+  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)];
   self.tabBarVC.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)];
 
   self.user = [GitHubService.sharedInstance getUserInfo:^(NSError *error, UserInfo *user) {
     if (error) {
       // TODO - alert popover
       NSLog(@"Error in getUserInfo: %@", error.localizedDescription);
+      self.tabBarVC.navigationItem.rightBarButtonItem = nil;
     } else {
       [user saveToUserDefaults];
       self.user = user;
-      self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)];
     }
   }];
-  if (self.user) {
-    self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)];
-  } else {
-    self.tabBarVC.navigationItem.rightBarButtonItem = nil;
-  }
 }
 
 #pragma mark - Selector Methods
 
 - (void)publishButtonTapped {
-  
-  if (![GitHubService.sharedInstance isAuthorized]) {
-    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
-    UIViewController *oauthVC = [oauthStoryboard instantiateInitialViewController];
-    [self.navigationController pushViewController:oauthVC animated:YES];
-  }
   
   [self.busyIndicator startAnimating];
   
@@ -135,7 +132,7 @@
   NSArray *allFiles = [fileManager enumerateFilesInDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
   
   NSMutableArray *supportingFiles = [[NSMutableArray alloc] init];
-  [supportingFiles addObject:indexFile];    // index file must be first in array so it is last to be PUT to github, otherwise github pages won't build
+  [supportingFiles addObject:indexFile];
   [supportingFiles addObjectsFromArray:allFiles.firstObject];     // include files: CSS, font, user input data as JSON, etc.
   [supportingFiles addObjectsFromArray:allFiles.lastObject];      // include image files
 
@@ -147,30 +144,31 @@
       return;
     }
     self.tabBarVC.repoName = repoName;
-    [GitHubService.sharedInstance pushFiles:supportingFiles forRepo:repoName completion:^(NSError *error, NSArray *remainingFiles) {
-      if (error && remainingFiles) {
-        NSLog(@"(%lu) Files not pushed: %@", remainingFiles.count, remainingFiles);
+    // TODO - less crude method of retrying 3 times
+    [GitHubService.sharedInstance pushFiles:supportingFiles forRepo:repoName completion:^(NSError *error, NSArray *filesIncludingLastFailed) {
+      if (error && filesIncludingLastFailed) {
+        NSLog(@"(%lu) Files not pushed: %@", filesIncludingLastFailed.count, filesIncludingLastFailed);
         [supportingFiles removeAllObjects];
-        [supportingFiles addObjectsFromArray:remainingFiles];
-        [GitHubService.sharedInstance pushFiles:supportingFiles forRepo:repoName completion:^(NSError *error, NSArray *remainingFiles) {
-          if (error && remainingFiles) {
-            NSLog(@"(%lu) Files not pushed: %@", remainingFiles.count, remainingFiles);
+        [supportingFiles addObjectsFromArray:filesIncludingLastFailed];
+        [GitHubService.sharedInstance pushFiles:supportingFiles forRepo:repoName completion:^(NSError *error, NSArray *filesIncludingLastFailed) {
+          if (error && filesIncludingLastFailed) {
+            NSLog(@"(%lu) Files not pushed: %@", filesIncludingLastFailed.count, filesIncludingLastFailed);
             [supportingFiles removeAllObjects];
-            [supportingFiles addObjectsFromArray:remainingFiles];
-            [GitHubService.sharedInstance pushFiles:supportingFiles forRepo:repoName completion:^(NSError *error, NSArray *remainingFiles) {
-              if (error && remainingFiles) {
+            [supportingFiles addObjectsFromArray:filesIncludingLastFailed];
+            [GitHubService.sharedInstance pushFiles:supportingFiles forRepo:repoName completion:^(NSError *error, NSArray *filesIncludingLastFailed) {
+              if (error && filesIncludingLastFailed) {
                 // TODO - alert popover
-                NSLog(@"(%lu) Files not pushed: %@", remainingFiles.count, remainingFiles);
+                NSLog(@"(%lu) Files not pushed: %@", filesIncludingLastFailed.count, filesIncludingLastFailed);
               } else {
-                NSLog(@"AAA");
+                //NSLog(@"AAA");
               }
             }];
           } else {
-            NSLog(@"BBB");
+            //NSLog(@"BBB");
           }
         }];
       } else {
-        NSLog(@"CCC");
+        //NSLog(@"CCC");
         [self loadWebView];
       }
     }];
@@ -179,22 +177,24 @@
 
 - (void)republishRepo:(NSString *)repoName {
   
-  // TODO - also push json file and image files
   FileInfo *indexFile = [[FileInfo alloc] initWithFileName:kTemplateIndexFilename extension:kTemplateIndexFiletype type:IndexHtml relativePath:nil templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
-  [GitHubService.sharedInstance getFile:indexFile forRepo:repoName completion:^(NSError *error, FileJson *file) {
-    if (error) {
-      // TODO - alert popover
-      return;
+  FileInfo *jsonFile = [[FileInfo alloc] initWithFileName:kTemplateJsonFilename extension:kTemplateJsonFiletype type:UserInputJson relativePath:nil templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
+  FileManager *fileManager = [[FileManager alloc] init];
+  NSArray *allFiles = [fileManager enumerateFilesInDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
+  
+  NSMutableArray *supportingFiles = [[NSMutableArray alloc] init];
+  [supportingFiles addObject:indexFile];
+  [supportingFiles addObject:jsonFile];
+  [supportingFiles addObjectsFromArray:allFiles.lastObject];      // include image files
+
+  [GitHubService.sharedInstance pushFiles:supportingFiles forRepo:repoName completion:^(NSError *error, NSArray *filesIncludingLastFailed) {
+
+    if (error && filesIncludingLastFailed) {
+      NSLog(@"(%lu) Files not pushed: %@", filesIncludingLastFailed.count, filesIncludingLastFailed);
+    } else {
+      //NSLog(@"LLL");
+      [self loadWebView];
     }
-    [GitHubService.sharedInstance pushIndexHtmlFile:indexFile forRepo:repoName withSha:file.sha completion:^(NSError *error) {
-      if (error) {
-        // TODO - alert popover
-        return;
-      } else {
-        //NSURL *ghPagesURL = [self ghPagesIndexHtmlFileURLforRepo:repoName];
-        [self loadWebView];
-      }
-    }];
   }];
 }
 
@@ -215,11 +215,6 @@
 }
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
   //NSLog(@"webView:didFinishNavigation:");
-}
-
-#pragma mark - UIScrollViewDelegate
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
-  return self.webView;
 }
 
 @end

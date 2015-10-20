@@ -55,7 +55,12 @@
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"[%@][%@.%@]", self.path?self.path:@"", self.name, self.extension];
+  if (self.name && self.extension) {
+    return [self.name stringByAppendingPathExtension:self.extension];
+  } else if (self.extension) { // only an extension (e.g., .nojekyll)
+    return [@"." stringByAppendingString:self.extension];
+  }
+  return self.name;
 }
 
 @end

@@ -56,11 +56,11 @@
         [imageFiles addObject:imageFile];
       } else if ([file hasPrefix:kTemplateIndexFilename]) {
         // ignore index file
-      } else if ([file hasPrefix:kTemplateMarkerFilename]) {
-        // ignore marker file
-      } else if ([file hasPrefix:kTemplateJsonFilename]) {
+      } else if ([fileExtension isEqualToString:kTemplateJsonFiletype]) {
         FileInfo *jsonFile = [[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:UserInputJson relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
         [supportingFiles addObject:jsonFile];
+      } else if ([file hasPrefix:kTemplateMarkerFilename]) {
+        // ignore marker file
       } else {
         FileInfo *supportingFile = [[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:Other relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
         [supportingFiles addObject:supportingFile];

@@ -222,7 +222,7 @@
         <!--Template Tab Bar Controller-->
         <scene sceneID="2aJ-kI-wuF">
             <objects>
-                <tabBarController storyboardIdentifier="TemplateTabBarController" automaticallyAdjustsScrollViewInsets="NO" id="FUf-xc-Akf" customClass="TemplateTabBarController" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TemplateTabBarVC" automaticallyAdjustsScrollViewInsets="NO" id="FUf-xc-Akf" customClass="TemplateTabBarController" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="a7g-jw-3PZ">
                         <autoresizingMask key="autoresizingMask"/>
