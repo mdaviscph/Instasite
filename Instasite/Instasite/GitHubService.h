@@ -7,17 +7,35 @@
 //
 
 #import <Foundation/Foundation.h>
+@class FileInfo;
+@class UserInfo;
+@class CommitJson;
+@class FileJson;
 
 @interface GitHubService : NSObject
 
-+ (void)exchangeCodeInURL:(NSURL *)url;
-+ (void)serviceForRepoNameInput:(NSString *)repoNameInput descriptionInput:(NSString *)descriptionInput completion:(void(^)(NSError *))completion;
++ (instancetype)sharedInstance;
 
-+ (void)getUsernameFromGithub:(void(^)(NSError *error, NSString *username))completion;
+- (BOOL)isAuthorized;
 
-+ (void)pushFilesToGithub:(NSString *)repoName indexHtmlFile:(NSString *)indexHtmlFile user:(NSString *)userName email:(NSString *)userEmail completion:(void(^)(NSError *))completion;
-+ (void)pushImagesToGithub:(NSString *)imageName imagePath:(NSString *)imagePath user:(NSString *)userName email:(NSString *)userEmail forRepo:(NSString *)repoName completion:(void(^)(NSError *))completion;
-+ (void)pushCSSToGithub:(NSMutableArray *)cssFiles user:(NSString *)userName email:(NSString *)userEmail forRepo:(NSString *)repoName completion:(void(^)(NSError *))completion;
-+ (void)pushJSONToGithub:(NSString *)jsonPath user:(NSString *)userName email:(NSString *)userEmail forRepo:(NSString *)repoName completion:(void(^)(NSError *))completion;
++ (void)saveTokenInURLtoKeychain:(NSURL *)url;
+
+- (UserInfo *)getUserInfo:(void(^)(NSError *error, UserInfo *user))completion;
+- (NSString *)ghPagesUrl;
+
+- (void)getReposWithCompletion:(void(^)(NSError *error, NSArray *repos))completion;
+- (void)getRepo:(NSString *)repoName completion:(void(^)(NSError *))completion;
+- (void)getRefs:(NSString *)repoName completion:(void(^)(NSError *, CommitJson *))completion;
+- (void)getPages:(NSString *)repoName completion:(void(^)(NSError *))completion;
+
+- (void)getFile:(FileInfo *)file forRepo:(NSString *)repoName completion:(void(^)(NSError *, FileJson *))completion;
+
+- (void)createRepo:(NSString *)repoName description:(NSString *)description completion:(void(^)(NSError *))completion;
+- (void)createBranchForRepo:(NSString *)repoName parentSHA:(NSString *)sha completion:(void(^)(NSError *))completion;
+
+- (void)pushIndexHtmlFile:(FileInfo *)file forRepo:(NSString *)repoName withSha:(NSString *)sha completion:(void(^)(NSError *))completion;
+- (void)pushJsonFile:(FileInfo *)file forRepo:(NSString *)repoName completion:(void(^)(NSError *))completion;
+
+- (void)pushFiles:(NSArray *)files forRepo:(NSString *)repoName completion:(void(^)(NSError *, NSArray *))completion;
 
 @end

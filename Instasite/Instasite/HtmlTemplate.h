@@ -48,16 +48,18 @@ extern NSString *const kImageRefArray;
 @interface HtmlTemplate : NSObject
 
 - (instancetype)initWithURL:(NSURL *)htmlURL;
+- (void)resetToOriginal;
 
 - (BOOL)writeToURL:(NSURL *)htmlURL;
 
 - (void)insertTitle:(NSString *)title;
 - (void)insertSubtitle:(NSString *)subtitle;
 - (void)insertSummary:(NSString *)summary;
+- (void)insertCopyright:(NSString *)copyright;
+
 - (void)insertFeature:(HtmlTemplatePlacement)place headline:(NSString *)headline;
 - (void)insertFeature:(HtmlTemplatePlacement)place subheadline:(NSString *)subhead;
 - (void)insertFeature:(HtmlTemplatePlacement)place body:(NSString *)body;
-- (void)insertCopyright:(NSString *)copyright;
 
 - (void)insertImageReference:(HtmlTemplatePlacement)place imageSource:(NSString *)imageSrc;
 

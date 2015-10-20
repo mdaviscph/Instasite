@@ -10,8 +10,7 @@
 
 @implementation CommitJson
 
-- (instancetype)initFromJSON:(NSDictionary *)json;
-{
+- (instancetype)initFromJSON:(NSDictionary *)json {
   self = [super init];
   if (self) {
     NSDictionary *object = json[@"object"];

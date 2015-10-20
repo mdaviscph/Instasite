@@ -152,7 +152,8 @@
             
             UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, latoA / 2, width - 20, realH)];
             textLabel.layer.anchorPoint = CGPointMake(.5, .5);
-            textLabel.font = [UIFont fontWithName:@"HelveticaNeue-ultralight" size:38];
+            //textLabel.font = [UIFont fontWithName:@"HelveticaNeue-ultralight" size:38];
+            textLabel.font = [UIFont fontWithName:@"HelveticaNeue-light" size:38];
             textLabel.numberOfLines = 3;
             textLabel.textColor = [UIColor whiteColor];
             textLabel.shadowColor = [UIColor blackColor];

@@ -111,7 +111,7 @@ static NSString *const kJsonImageSrcKey = @"imageSrc";
 
 + (BOOL)writeJsonFile:(NSData *)data fileURL:(NSURL *)fileURL {
 
-  NSLog(@"Writing file: %@", fileURL.relativePath);
+  //NSLog(@"Writing file: %@", fileURL.relativePath);
 
   NSError *error;
   [data writeToURL:fileURL options:NSDataWritingAtomic error:&error];
@@ -125,7 +125,7 @@ static NSString *const kJsonImageSrcKey = @"imageSrc";
 
 + (NSData *)readJsonFile:(NSURL *)fileURL {
   
-  NSLog(@"Reading file: %@", fileURL.relativePath);
+  //NSLog(@"Reading file: %@", fileURL.relativePath);
   
   NSError *error;
   NSData *jsonFile = [NSData dataWithContentsOfURL:fileURL options:NSDataReadingUncached error:&error];

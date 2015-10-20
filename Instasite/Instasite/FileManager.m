@@ -7,8 +7,7 @@
 //
 
 #import "FileManager.h"
-#import "CSSFile.h"
-#import "ImageFile.h"
+#import "FileInfo.h"
 #import "Constants.h"
 
 @implementation FileManager
@@ -22,7 +21,7 @@
 - (NSArray *)filesInDirectory:(NSString *)directory relativePath:(NSString *)relativePath startingDirectory:(NSString *)startingDirectory documentsDirectory:(NSString *)documentsDirectory {
 
   NSFileManager *manager = [NSFileManager defaultManager];
-  NSMutableArray *cssFiles = [[NSMutableArray alloc] init];
+  NSMutableArray *supportingFiles = [[NSMutableArray alloc] init];
   NSMutableArray *imageFiles = [[NSMutableArray alloc] init];
   
   NSString *directoryPath = [documentsDirectory stringByAppendingPathComponent:startingDirectory];
@@ -45,28 +44,30 @@
       //NSLog(@"Directory at: %@", file);
       
       NSArray *fileObjects = [self filesInDirectory:file relativePath:newRelativePath startingDirectory:startingDirectory documentsDirectory:documentsDirectory];
-      [cssFiles addObjectsFromArray:fileObjects.firstObject];
+      [supportingFiles addObjectsFromArray:fileObjects.firstObject];
       [imageFiles addObjectsFromArray:fileObjects.lastObject];
       
     } else {
       //NSLog(@"File at: %@", file);
+      NSString* fileName = [file stringByDeletingPathExtension];
+      NSString* fileExtension = [file pathExtension];
       if ([file hasPrefix:kTemplateImagePrefix]) {
-        ImageFile *imagefile = [[ImageFile alloc] initWithFileName:file filePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
-        [imageFiles addObject:imagefile];
-        [cssFiles addObject:imagefile];
+        FileInfo *imageFile = [[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:ImageJpeg relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
+        [imageFiles addObject:imageFile];
       } else if ([file hasPrefix:kTemplateIndexFilename]) {
-        // ignore index.html
+        // ignore index file
+      } else if ([fileExtension isEqualToString:kTemplateJsonFiletype]) {
+        FileInfo *jsonFile = [[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:UserInputJson relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
+        [supportingFiles addObject:jsonFile];
       } else if ([file hasPrefix:kTemplateMarkerFilename]) {
         // ignore marker file
-      } else if ([file hasPrefix:kTemplateJsonFilename]) {
-        // ignore json file
       } else {
-        CSSFile *cssfile = [[CSSFile alloc] initWithFileName:file filePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
-        [cssFiles addObject:cssfile];
+        FileInfo *supportingFile = [[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:Other relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
+        [supportingFiles addObject:supportingFile];
       }
     }
   }
-  return @[cssFiles, imageFiles];
+  return @[supportingFiles, imageFiles];
 }
 
 - (BOOL)copyDirectory:(NSString *)directory overwrite:(BOOL)overwrite documentsDirectory:(NSString *)documentsDirectory {

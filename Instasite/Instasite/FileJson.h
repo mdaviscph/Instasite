@@ -13,11 +13,14 @@
 @property (strong, nonatomic) NSString *path;
 @property (strong, nonatomic) NSString *mode;
 @property (strong, nonatomic) NSString *type;
+@property (strong, nonatomic) NSString *encoding;
 @property (strong, nonatomic) NSString *sha;
 @property (strong, nonatomic) NSString *content;
 
-- (instancetype)initWithPath:(NSString *)path mode:(NSString *)mode type:(NSString *)type sha:(NSString *)sha content:(NSString *)content;
+- (instancetype)initWithPath:(NSString *)path mode:(NSString *)mode type:(NSString *)type encoding:(NSString *)encoding sha:(NSString *)sha content:(NSString *)content;
 - (instancetype)initWithPath:(NSString *)path sha:(NSString *)sha content:(NSString *)content;
+- (instancetype)initFromJSON:(NSDictionary *)json;
+
 - (NSDictionary *)createJson;
 
 @end

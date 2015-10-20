@@ -6,12 +6,11 @@
 //  Copyright © 2015 Instasite. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "Constants.h"
+#import <Foundation/Foundation.h>
 
 @interface FileEncodingService : NSObject
-+ (NSString *)encodeImage:(NSString *)imagePath;
-+ (NSString *)encodeHTML:(NSString *)filePath;
-+ (NSString *)encodeCSS:(NSString *)cssPath;
-+(NSString *)encodeJSON:(NSString *)JSONPath;
+
++ (NSString *)encodeFile:(NSString *)filePath withType:(FileType)type;
 
 @end

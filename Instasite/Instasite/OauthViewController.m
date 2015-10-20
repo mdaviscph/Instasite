@@ -24,48 +24,54 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+  self.navigationController.navigationBarHidden = YES;
+
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(safariLogin:) name:kCloseSafariViewControllerNotification object:nil];
 }
 
-- (void)didReceiveMemoryWarning {
-  [super didReceiveMemoryWarning];
-  // Dispose of any resources that can be recreated.
-}
-
 - (void)safariLogin:(NSNotification *)notification {
-  // get the url form the auth callback
+  // get the url from the auth callback
   NSURL *url = notification.object;
   NSLog(@"safariLogin: %@", url);
-  [GitHubService exchangeCodeInURL:url];
+  [GitHubService saveTokenInURLtoKeychain:url];
   
-  [self.safariVC dismissViewControllerAnimated:true completion:nil];
-  AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-  UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-  UIViewController *vc = [mainStoryboard instantiateInitialViewController];
+  [self popBackToCallingVC];
+}
+
+- (void)popBackToCallingVC {
+
+  // TODO - detect that signup is happening so we can go directly to a login without returning
+
+  // this didn't work..
+  //[self.navigationController popViewControllerAnimated:YES];
+  //[self.navigationController popViewControllerAnimated:YES];
+  // this also didn't work..
+  //UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+  //UIViewController *tabBarVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"TemplateTabBarVC"];
+  //[self.navigationController popToViewController:tabBarVC animated:YES];
   
-  appDelegate.window.rootViewController = vc;
-  
+  [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (IBAction)signupAction:(UIButton *)sender {
   NSURL *signupURL = [NSURL URLWithString:@"https://github.com/join"];
   self.safariVC = [[SFSafariViewController alloc] initWithURL:signupURL];
   self.safariVC.delegate = self;
-  [self presentViewController:self.safariVC animated:true completion:nil];
+  [self.navigationController pushViewController:self.safariVC animated:YES];
 }
 
 - (IBAction)loginAction:(UIButton *)sender {
   NSURL *authURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://github.com/login/oauth/authorize?client_id=%@&redirect_uri=instasite://oauth&scope=user,repo", kClientId]];
   self.safariVC = [[SFSafariViewController alloc] initWithURL:authURL];
   self.safariVC.delegate = self;
-  [self presentViewController:self.safariVC animated:true completion:nil];
+  [self.navigationController pushViewController:self.safariVC animated:YES];
 }
 
 #pragma mark - SFSafariViewControllerDelegate
 
 //Called on Done Pressed
 - (void)safariViewControllerDidFinish:(SFSafariViewController *)controller {
-  [controller dismissViewControllerAnimated:true completion:nil];
+  [self popBackToCallingVC];
 }
 
 @end

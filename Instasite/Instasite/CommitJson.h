@@ -14,4 +14,6 @@
 @property (strong, nonatomic) NSString *objectType;
 @property (strong, nonatomic) NSString *objectUrl;
 
+- (instancetype)initFromJSON:(NSDictionary *)json;
+
 @end

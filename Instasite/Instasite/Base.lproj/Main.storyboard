@@ -151,6 +151,55 @@
             </objects>
             <point key="canvasLocation" x="2731" y="651"/>
         </scene>
+        <!--Publish-->
+        <scene sceneID="XMc-Yf-VsM">
+            <objects>
+                <viewController id="Qh9-Hk-ohU" customClass="PublishViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Zwj-Tl-AcS"/>
+                        <viewControllerLayoutGuide type="bottom" id="CVy-ZZ-1MC"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bNV-nD-2OP">
+                        <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="LlU-oi-n2p">
+                                <rect key="frame" x="281" y="225" width="37" height="37"/>
+                                <color key="color" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </activityIndicatorView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="Dds-J8-14g">
+                                <rect key="frame" x="20" y="8" width="560" height="471"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="254" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name of Project (repository) to publish..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xH4-Hl-SFD">
+                                        <rect key="frame" x="0.0" y="0.0" width="560" height="471"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Dds-J8-14g" firstAttribute="leading" secondItem="bNV-nD-2OP" secondAttribute="leadingMargin" id="Hop-Y2-t64"/>
+                            <constraint firstItem="LlU-oi-n2p" firstAttribute="centerY" secondItem="bNV-nD-2OP" secondAttribute="centerY" id="JOW-Cj-H9m"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Dds-J8-14g" secondAttribute="trailing" id="OLM-Ue-uS9"/>
+                            <constraint firstItem="LlU-oi-n2p" firstAttribute="centerX" secondItem="bNV-nD-2OP" secondAttribute="centerX" id="Rrh-Su-kgb"/>
+                            <constraint firstItem="CVy-ZZ-1MC" firstAttribute="top" secondItem="Dds-J8-14g" secondAttribute="bottom" constant="8" symbolic="YES" id="XyJ-ug-UDo"/>
+                            <constraint firstItem="Dds-J8-14g" firstAttribute="top" secondItem="Zwj-Tl-AcS" secondAttribute="bottom" constant="8" symbolic="YES" id="lYW-DV-GWl"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <tabBarItem key="tabBarItem" title="Publish" id="DBM-5c-z9S"/>
+                    <connections>
+                        <outlet property="busyIndicator" destination="LlU-oi-n2p" id="EiZ-um-HMZ"/>
+                        <outlet property="repoNameTextField" destination="xH4-Hl-SFD" id="D3J-BK-56M"/>
+                        <outlet property="stackView" destination="Dds-J8-14g" id="o4J-HR-2Wm"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZaC-3Y-xFW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2794" y="989"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="AV1-58-EmL">
             <objects>
@@ -173,7 +222,7 @@
         <!--Template Tab Bar Controller-->
         <scene sceneID="2aJ-kI-wuF">
             <objects>
-                <tabBarController storyboardIdentifier="TemplateTabBarController" automaticallyAdjustsScrollViewInsets="NO" id="FUf-xc-Akf" customClass="TemplateTabBarController" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TemplateTabBarVC" automaticallyAdjustsScrollViewInsets="NO" id="FUf-xc-Akf" customClass="TemplateTabBarController" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="a7g-jw-3PZ">
                         <autoresizingMask key="autoresizingMask"/>
@@ -184,6 +233,7 @@
                         <segue destination="Jrj-qB-hpH" kind="relationship" relationship="viewControllers" id="6Y9-rr-KQX"/>
                         <segue destination="SZ7-UW-qUr" kind="relationship" relationship="viewControllers" id="Vdc-uY-XXa"/>
                         <segue destination="5qJ-X2-bnl" kind="relationship" relationship="viewControllers" id="pcS-mW-N2A"/>
+                        <segue destination="Qh9-Hk-ohU" kind="relationship" relationship="viewControllers" id="E3D-rN-Mt7"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HcX-gh-4ZA" userLabel="First Responder" sceneMemberID="firstResponder"/>

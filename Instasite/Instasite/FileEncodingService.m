@@ -11,63 +11,41 @@
 
 @implementation FileEncodingService
 
-+ (NSString *)encodeImage:(NSString *)imagePath {
-
-  // must read as NSData since write is as NSData
-  NSData *imageData = [NSData dataWithContentsOfFile:imagePath];
-  if (!imageData) {
-    NSLog(@"Error! NSData:dataWithContentsOfFile: [%@]", imagePath);
-    return nil;
-  }
-  UIImage *image = [UIImage imageWithData:imageData];
-  if (!image) {
-    NSLog(@"Error! UIImage:imageWithData: [%@]", imagePath);
-    return nil;
-  }
-  // TODO - determine if we need to compress the data due to large size
-  NSData *jpegData = UIImageJPEGRepresentation(image, 1.0);
-  if (!jpegData) {
-    NSLog(@"Error! UIImageJPEGRepresentation: [%@]", imagePath);
-    return nil;
-  }
-  NSString *encodedImage = [jpegData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
-  if (!encodedImage) {
-    NSLog(@"Error! UIImage:imageWithData: [%@]", imagePath);
-    return nil;
-  }
-  return encodedImage;
-}
-
-+ (NSString *)encodeHTML:(NSString *)filePath {
-
-  NSError *error;
-  NSData *data = [NSData dataWithContentsOfFile:filePath options:NSDataReadingUncached error:&error];
-  if (error) {
-    NSLog(@"Error! NSData:dataWithContentsOfFile: [%@] error: %@", filePath, error.localizedDescription);
-  }
-  NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
-  return baseString;
-}
-
-+(NSString *)encodeCSS:(NSString *)cssPath{
++ (NSString *)encodeFile:(NSString *)filePath withType:(FileType)type {
   
-  NSError *error;
-  NSData *data = [NSData dataWithContentsOfFile:cssPath options:NSDataReadingUncached error:&error];
-  if (error) {
-    NSLog(@"Error! NSData:dataWithContentsOfFile: [%@] error: %@", cssPath, error.localizedDescription);
+  NSData *data;
+  if (type == ImageJpeg) {
+    // must read as NSData since write is as NSData
+    NSError *error;
+    NSData *imageData = [NSData dataWithContentsOfFile:filePath options:NSDataReadingUncached error:&error];
+    if (error) {
+      NSLog(@"Error! NSData:dataWithContentsOfFile: [%@] error: %@", filePath, error.localizedDescription);
+      return nil;
+    }
+    UIImage *image = [UIImage imageWithData:imageData];
+    if (!image) {
+      NSLog(@"Error! UIImage:imageWithData: [%@]", filePath);
+      return nil;
+    }
+    // TODO - determine if we need to compress the data due to large size
+    data = UIImageJPEGRepresentation(image, 1.0);
+    if (!data) {
+      NSLog(@"Error! UIImageJPEGRepresentation: [%@]", filePath);
+      return nil;
+    }
+  } else {
+    NSError *error;
+    data = [NSData dataWithContentsOfFile:filePath options:NSDataReadingUncached error:&error];
+    if (error) {
+      NSLog(@"Error! NSData:dataWithContentsOfFile: [%@] error: %@", filePath, error.localizedDescription);
+      return nil;
+    }
   }
   NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
-  return baseString;
-}
-
-+(NSString *)encodeJSON:(NSString *)JSONPath{
-  
-  NSError *error;
-  NSData *data = [NSData dataWithContentsOfFile:JSONPath options:NSDataReadingUncached error:&error];
-  if (error) {
-    NSLog(@"Error! NSData:dataWithContentsOfFile: [%@] error: %@", JSONPath, error.localizedDescription);
+  if (!baseString) {
+    NSLog(@"Error! NSData:base64EncodedStringWithOptions: [%@]", filePath);
+    return nil;
   }
-  NSString *baseString = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
   return baseString;
 }
 

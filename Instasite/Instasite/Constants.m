@@ -13,6 +13,10 @@ NSString *const kCloseSafariViewControllerNotification = @"kCloseSafariViewContr
 NSString *const kSSKeychainAccount = @"github";
 NSString *const kSSKeychainService = @"githubToken";
 
+NSString *const kUserDefaultsNameKey = @"userName";
+NSString *const kUserDefaultsFullNameKey = @"fullName";
+NSString *const kUserDefaultsEmailKey = @"userEmail";
+
 NSString *const kTemplateIndexFilename = @"index";
 NSString *const kTemplateIndexFiletype = @"html";
 NSString *const kTemplateMarkerFilename = @"instasite";
@@ -21,7 +25,6 @@ NSString *const kTemplateJsonFilename = @"instasite";
 NSString *const kTemplateJsonFiletype = @"json";
 NSString *const kTemplateImageDirectory = @"img";
 NSString *const kTemplateImagePrefix = @"image";
- NSString *const kTemplateImageFiletype = @"jpeg";
+NSString *const kTemplateImageFiletype = @"jpeg";
 
-NSString *const kUploadIndexFileName = @"index.html";
 NSString *const kBranchName = @"gh-pages";

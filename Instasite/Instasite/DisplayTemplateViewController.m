@@ -37,9 +37,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
-  
   self.navigationController.navigationBarHidden = YES;
-  [self.webView reload];
+  [self.webView reloadFromOrigin];
 }
 
 #pragma mark - Helper Methods
@@ -52,7 +51,7 @@
   NSLog(@"Error! webView:didFailProvisionalNavigation: error: %@", error.localizedDescription);
 }
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-  NSLog(@"webView:didFinishNavigation:");
+  //NSLog(@"webView:didFinishNavigation:");
 }
 
 @end

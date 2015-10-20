@@ -14,7 +14,7 @@
 
 static NSString *kCellId = @"ImageCell";
 
-//<UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource>
+//<UICollectionViewDelegateFlowLayout>
 
 @interface ImagesViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -44,12 +44,14 @@ static NSString *kCellId = @"ImageCell";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:true];
-  NSLog(@"ImagesVC viewWillAppear");
-  self.tabBarVC.navigationController.navigationBarHidden = NO;
-  self.tabBarVC.navigationController.navigationBar.translucent = NO;
-  self.tabBarVC.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
+  [super viewWillAppear:YES];
+
+  self.navigationController.navigationBarHidden = NO;
+  self.navigationController.navigationBar.translucent = NO;
+  self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
+  self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
   self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonTapped)];
+  self.tabBarVC.navigationItem.leftBarButtonItem = nil;
 }
 
 //- (void)viewDidLayoutSubviews {
@@ -136,12 +138,12 @@ static NSString *kCellId = @"ImageCell";
     cell.image = self.tabBarVC.images[indexPath.item];
   } else {
     cell.image = nil;
-    cell.placeholder = [NSString stringWithFormat:@"%02lu", indexPath.item];
+    cell.placeholder = [NSString stringWithFormat:@"%02lu", indexPath.item+1];
   }
   return cell;
 }
 
-#pragma mark <UICollectionViewDelegate>
+#pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
   
