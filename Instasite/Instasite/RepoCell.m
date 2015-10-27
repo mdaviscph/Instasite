@@ -7,25 +7,25 @@
 //
 
 #import "RepoCell.h"
-#import "RepoInfo.h"
+#import "RepoJsonResponse.h"
 
 @interface RepoCell ()
 
 @property (strong, nonatomic)UIView *borderView;
 @property (strong, nonatomic)UILabel *nameLabel;
 @property (strong, nonatomic)UILabel *descriptionLabel;
-@property (strong, nonatomic)UILabel *urlLabel;
+@property (strong, nonatomic)UILabel *ownerLabel;
 @property (strong, nonatomic)UIStackView *stackView;
 
 @end
 
 @implementation RepoCell
 
-- (void)setRepo:(RepoInfo *)repo {
+- (void)setRepo:(RepoJsonResponse *)repo {
   _repo = repo;
   self.nameLabel.text = repo.name;
   self.descriptionLabel.text = repo.aDescription;
-  self.urlLabel.text = repo.htmlURL;
+  self.ownerLabel.text = repo.owner;
 }
 
 - (UILabel *)nameLabel {
@@ -46,14 +46,14 @@
   }
   return _descriptionLabel;
 }
-- (UILabel *)urlLabel {
-  if (!_urlLabel) {
-    _urlLabel = [[UILabel alloc] init];
-    _urlLabel.backgroundColor = [UIColor whiteColor];
-    _urlLabel.numberOfLines = 0;
-    [self.stackView addArrangedSubview:_urlLabel];
+- (UILabel *)ownerLabel {
+  if (!_ownerLabel) {
+    _ownerLabel = [[UILabel alloc] init];
+    _ownerLabel.backgroundColor = [UIColor whiteColor];
+    _ownerLabel.numberOfLines = 0;
+    [self.stackView addArrangedSubview:_ownerLabel];
   }
-  return _urlLabel;
+  return _ownerLabel;
 }
 
 - (UIStackView *)stackView {

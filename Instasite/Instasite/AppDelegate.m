@@ -27,8 +27,7 @@
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
   
   //NSLog(@"AppDelegate application:openURL: [%@]", url.absoluteString);
-  [[NSNotificationCenter defaultCenter] postNotificationName:kCloseSafariViewControllerNotification object:url];
-  
+  [[NSNotificationCenter defaultCenter] postNotificationName:kOpenURLnotificationName object:nil userInfo:@{kOpenURLdictionaryKey : url}];
   return YES;
 }
 

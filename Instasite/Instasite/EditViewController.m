@@ -204,7 +204,7 @@
     
     NSString *imageFile = [NSString stringWithFormat:@"%@%02lu", kTemplateImagePrefix, index + 1];
     NSString *relativeFilepath = [kTemplateImageDirectory stringByAppendingPathComponent:imageFile];
-    NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:kTemplateImageFiletype];
+    NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:kTemplateImageExtension];
     
     [imageRefs addObject:relativePathWithType];
   }
@@ -271,7 +271,7 @@
     
     NSString *imageFile = [NSString stringWithFormat:@"%@%02lu", kTemplateImagePrefix, index + 1];
     NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
-    NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateImageFiletype];
+    NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateImageExtension];
     
     //NSLog(@"Writing image file: %@", pathWithType);
     NSError *error;

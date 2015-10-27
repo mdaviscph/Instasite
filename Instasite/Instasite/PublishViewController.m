@@ -8,14 +8,13 @@
 
 #import "PublishViewController.h"
 #import "TemplateTabBarController.h"
-#import <WebKit/WebKit.h>
-#import "GitHubService.h"
 #import "FileManager.h"
 #import "FileInfo.h"
-#import "UserInfo.h"
-#import "CommitJson.h"
-#import "FileJson.h"
 #import "Constants.h"
+#import "GitHubTree.h"
+#import "GitHubRepo.h"
+#import "GitHubUser.h"
+#import <WebKit/WebKit.h>
 
 @interface PublishViewController () <UITextFieldDelegate, WKNavigationDelegate>
 
@@ -25,7 +24,6 @@
 
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 @property (strong, nonatomic) WKWebView *webView;
-@property (strong, nonatomic) UserInfo *user;
 
 @end
 
@@ -35,7 +33,7 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-
+  
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
 
   self.repoNameTextField.delegate = self;
@@ -49,27 +47,24 @@
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
 
-  self.navigationController.navigationBarHidden = YES;
-  if (![GitHubService.sharedInstance isAuthorized]) {
-    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
-    UIViewController *oauthVC = [oauthStoryboard instantiateInitialViewController];
-    [self.navigationController pushViewController:oauthVC animated:YES];
-  }
-  
   self.navigationController.navigationBarHidden = NO;
-  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)];
-  self.tabBarVC.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)];
 
-  self.user = [GitHubService.sharedInstance getUserInfo:^(NSError *error, UserInfo *user) {
-    if (error) {
-      // TODO - alert popover
-      NSLog(@"Error in getUserInfo: %@", error.localizedDescription);
-      self.tabBarVC.navigationItem.rightBarButtonItem = nil;
-    } else {
-      [user saveToUserDefaults];
-      self.user = user;
-    }
-  }];
+  if (self.tabBarVC.userName) {
+    [self enableNavigationItemButtons];
+    
+  } else {
+    GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:self.tabBarVC.accessToken];
+    [gitHubUser retrieveNameWithCompletion:^(NSError *error, NSString *name) {
+      if (error) {
+        // TODO - alert popover
+        return;
+      }
+      
+      [[NSUserDefaults standardUserDefaults] setObject:name forKey:kUserDefaultsNameKey];
+      NSLog(@"User name saved to user defaults.");
+      [self enableNavigationItemButtons];
+    }];
+  }
 }
 
 #pragma mark - Selector Methods
@@ -90,17 +85,22 @@
 }
 
 - (void)refreshButtonTapped {
-  [self.webView reloadFromOrigin];
+  [self.webView reload];
 }
 
 #pragma mark - Helper Methods
 
+- (void)enableNavigationItemButtons {
+  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)];
+  self.tabBarVC.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)];
+}
+
 - (NSURL *)ghPagesIndexHtmlFileURLforRepo:(NSString *)repoName {
 
-  NSURL *ghPagesURL = [NSURL URLWithString:[GitHubService.sharedInstance ghPagesUrl]];
+  NSURL *ghPagesURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@.github.io", self.tabBarVC.userName]];
   ghPagesURL = [ghPagesURL URLByAppendingPathComponent:repoName];
   ghPagesURL = [ghPagesURL URLByAppendingPathComponent:kTemplateIndexFilename];
-  ghPagesURL = [ghPagesURL URLByAppendingPathExtension:kTemplateIndexFiletype];
+  ghPagesURL = [ghPagesURL URLByAppendingPathExtension:kTemplateIndexExtension];
 
   if (!ghPagesURL) {
     NSLog(@"Error! NSURL for: [%@]", ghPagesURL.absoluteString);
@@ -110,7 +110,7 @@
 
 - (NSURL *)ghPagesURLforRepo:(NSString *)repoName {
 
-  NSURL *ghPagesURL = [NSURL URLWithString:[GitHubService.sharedInstance ghPagesUrl]];
+  NSURL *ghPagesURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@.github.io", self.tabBarVC.userName]];
   ghPagesURL = [ghPagesURL URLByAppendingPathComponent:repoName isDirectory:YES];
   
   if (!ghPagesURL) {
@@ -121,80 +121,72 @@
 
 - (void)loadWebView {
   [self.busyIndicator stopAnimating];
-  NSString *repoName = self.repoNameTextField.text;
-  [self.webView loadRequest:[NSURLRequest requestWithURL:[self ghPagesURLforRepo:repoName]]];
+  NSURL *repoURL = [self ghPagesURLforRepo:self.tabBarVC.repoName];
+  NSLog(@"WKWebView:loadRequest: [%@]", repoURL.absoluteString);
+  [self.webView loadRequest:[NSURLRequest requestWithURL:repoURL]];
 }
 
 - (void)publishAllFilesForRepo:(NSString *)repoName {
   
-  FileInfo *indexFile = [[FileInfo alloc] initWithFileName:kTemplateIndexFilename extension:kTemplateIndexFiletype type:IndexHtml relativePath:nil templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
-  FileManager *fileManager = [[FileManager alloc] init];
-  NSArray *allFiles = [fileManager enumerateFilesInDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
+  NSString *description = [NSString stringWithFormat:@"This repository created with a GitHub Pages branch for %@ (with HTML template %@ from Start Bootstrap) by iOS app InstaSite v1.0.", self.tabBarVC.userName, self.tabBarVC.templateDirectory];
+ 
+  FileInfoMutableArray *initialFiles = [[FileInfoMutableArray alloc] initWithArray:[self initialFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
   
-  NSMutableArray *supportingFiles = [[NSMutableArray alloc] init];
-  [supportingFiles addObject:indexFile];
-  [supportingFiles addObjectsFromArray:allFiles.firstObject];     // include files: CSS, font, user input data as JSON, etc.
-  [supportingFiles addObjectsFromArray:allFiles.lastObject];      // include image files
-
-  NSString *description = [NSString stringWithFormat:@"This repository created with a GitHub Pages branch for %@ with HTML template %@ from Start Bootstrap using InstaSite v1.0.", self.user.name, self.tabBarVC.templateDirectory];
-  
-  [GitHubService.sharedInstance createRepo:repoName description:description completion:^(NSError *error) {
-    if (error) {
-      // TODO - alert popover
-      return;
-    }
-    self.tabBarVC.repoName = repoName;
-    // TODO - less crude method of retrying 3 times
-    [GitHubService.sharedInstance pushFiles:supportingFiles forRepo:repoName completion:^(NSError *error, NSArray *filesIncludingLastFailed) {
-      if (error && filesIncludingLastFailed) {
-        NSLog(@"(%lu) Files not pushed: %@", filesIncludingLastFailed.count, filesIncludingLastFailed);
-        [supportingFiles removeAllObjects];
-        [supportingFiles addObjectsFromArray:filesIncludingLastFailed];
-        [GitHubService.sharedInstance pushFiles:supportingFiles forRepo:repoName completion:^(NSError *error, NSArray *filesIncludingLastFailed) {
-          if (error && filesIncludingLastFailed) {
-            NSLog(@"(%lu) Files not pushed: %@", filesIncludingLastFailed.count, filesIncludingLastFailed);
-            [supportingFiles removeAllObjects];
-            [supportingFiles addObjectsFromArray:filesIncludingLastFailed];
-            [GitHubService.sharedInstance pushFiles:supportingFiles forRepo:repoName completion:^(NSError *error, NSArray *filesIncludingLastFailed) {
-              if (error && filesIncludingLastFailed) {
-                // TODO - alert popover
-                NSLog(@"(%lu) Files not pushed: %@", filesIncludingLastFailed.count, filesIncludingLastFailed);
-              } else {
-                //NSLog(@"AAA");
-              }
-            }];
-          } else {
-            //NSLog(@"BBB");
-          }
-        }];
-      } else {
-        //NSLog(@"CCC");
-        [self loadWebView];
-      }
-    }];
-  }];
+  [self createRepoWithFiles:initialFiles user:self.tabBarVC.userName repo:repoName branch:kBranchName comment:description accessToken:self.tabBarVC.accessToken];
 }
 
 - (void)republishRepo:(NSString *)repoName {
   
-  FileInfo *indexFile = [[FileInfo alloc] initWithFileName:kTemplateIndexFilename extension:kTemplateIndexFiletype type:IndexHtml relativePath:nil templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
-  FileInfo *jsonFile = [[FileInfo alloc] initWithFileName:kTemplateJsonFilename extension:kTemplateJsonFiletype type:UserInputJson relativePath:nil templateDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
+  FileInfoMutableArray *changedFiles = [[FileInfoMutableArray alloc] initWithArray:[self changedFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
+  // TODO - rest of this method
+}
+
+- (FileInfoArray *)initialFileListForDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
   FileManager *fileManager = [[FileManager alloc] init];
-  NSArray *allFiles = [fileManager enumerateFilesInDirectory:self.tabBarVC.templateDirectory documentsDirectory:self.tabBarVC.documentsDirectory];
-  
-  NSMutableArray *supportingFiles = [[NSMutableArray alloc] init];
-  [supportingFiles addObject:indexFile];
-  [supportingFiles addObject:jsonFile];
-  [supportingFiles addObjectsFromArray:allFiles.lastObject];      // include image files
-
-  [GitHubService.sharedInstance pushFiles:supportingFiles forRepo:repoName completion:^(NSError *error, NSArray *filesIncludingLastFailed) {
-
-    if (error && filesIncludingLastFailed) {
-      NSLog(@"(%lu) Files not pushed: %@", filesIncludingLastFailed.count, filesIncludingLastFailed);
-    } else {
-      //NSLog(@"LLL");
-      [self loadWebView];
+  return [fileManager enumerateFilesInDirectory:directory rootDirectory:rootDirectory];
+}
+- (FileInfoArray *)changedFileListForDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
+  FileInfoArray *allFiles = [self initialFileListForDirectory:directory rootDirectory:rootDirectory];
+  FileInfoMutableArray *changedFiles = [[FileInfoMutableArray alloc] init];
+  for (FileInfo *file in allFiles) {
+    switch (file.type) {
+      case IndexHtml:
+      case UserInputJson:
+      case ImageJpeg:
+        [changedFiles addObject:file];
+        break;
+      default:
+        break;
     }
+  }
+  return changedFiles;
+}
+
+- (void)createRepoWithFiles:(FileInfoArray *)files user:(NSString *)userName repo:(NSString *)repoName branch:(NSString *)branch comment:(NSString *)comment accessToken:(NSString *)accessToken {
+
+  GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:repoName accessToken:accessToken];
+  [gitHubRepo createWithComment:comment completion:^(NSError *error) {
+
+    if (error) {
+      // TODO - alert popover
+      return;
+    }
+    NSLog(@"Repo %@ created.", repoName);
+
+    GitHubTree *gitHubTree = [[GitHubTree alloc] initWithFiles:files userName:userName repoName:repoName branch:branch accessToken:accessToken];
+    [gitHubTree createAndCommitWithCompletion:^(NSError *error) {
+      if (error) {
+        // TODO - alert popover
+        return;
+      }
+      NSLog(@"GitHub tree created for %@.", branch);
+      
+      self.tabBarVC.repoName = repoName;
+      double delay = 3.0;     // give GitHub pages some time to finish build
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadWebView];
+      });
+    }];
   }];
 }
 

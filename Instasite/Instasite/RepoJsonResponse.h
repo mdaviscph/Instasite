@@ -1,5 +1,5 @@
 //
-//  RepoInfo.h
+//  RepoJsonResponse.h
 //  Instasite
 //
 //  Created by mike davis on 10/5/15.
@@ -8,14 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@interface RepoInfo : NSObject
+@interface RepoJsonResponse : NSObject
 
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *fullName;
 @property (strong, nonatomic) NSString *aDescription;
-@property (strong, nonatomic) NSString *htmlURL;
 @property (strong, nonatomic) NSString *defaultBranch;
+@property (strong, nonatomic) NSString *owner;
 
-- (instancetype)initFromJSON:(NSDictionary *)json;
+- (instancetype)initFromJson:(NSDictionary *)json;
 
 @end

@@ -12,19 +12,18 @@
 
 @implementation FileManager
 
-- (NSArray *)enumerateFilesInDirectory:(NSString *)directory documentsDirectory:(NSString *)documentsDirectory{
+- (NSArray *)enumerateFilesInDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
   
-  NSLog(@"Enumerate directory at: %@/%@", documentsDirectory, directory);
-  return [self filesInDirectory:nil relativePath:nil startingDirectory:directory documentsDirectory:documentsDirectory];
+  NSLog(@"Enumerate directory at: %@/%@", rootDirectory, directory);
+  return [self filesInDirectory:nil relativePath:nil startingDirectory:directory rootDirectory:rootDirectory];
 }
 
-- (NSArray *)filesInDirectory:(NSString *)directory relativePath:(NSString *)relativePath startingDirectory:(NSString *)startingDirectory documentsDirectory:(NSString *)documentsDirectory {
+- (NSArray *)filesInDirectory:(NSString *)directory relativePath:(NSString *)relativePath startingDirectory:(NSString *)startingDirectory rootDirectory:(NSString *)rootDirectory {
 
   NSFileManager *manager = [NSFileManager defaultManager];
-  NSMutableArray *supportingFiles = [[NSMutableArray alloc] init];
-  NSMutableArray *imageFiles = [[NSMutableArray alloc] init];
+  FileInfoMutableArray *fileList = [[NSMutableArray alloc] init];
   
-  NSString *directoryPath = [documentsDirectory stringByAppendingPathComponent:startingDirectory];
+  NSString *directoryPath = [rootDirectory stringByAppendingPathComponent:startingDirectory];
   directoryPath = relativePath ? [directoryPath stringByAppendingPathComponent:relativePath] : directoryPath;
   directoryPath = directory ? [directoryPath stringByAppendingPathComponent:directory] : directoryPath;
   
@@ -35,48 +34,52 @@
   
   NSError *error;
   NSArray *files = [manager contentsOfDirectoryAtPath:directoryPath error:&error];
+  // TODO - handle error
   
   for (NSString *file in files) {
+    
     BOOL isDirectory;
     NSString *filepath = [directoryPath stringByAppendingPathComponent:file];
     [manager fileExistsAtPath:filepath isDirectory:&isDirectory];
     if (isDirectory) {
       //NSLog(@"Directory at: %@", file);
       
-      NSArray *fileObjects = [self filesInDirectory:file relativePath:newRelativePath startingDirectory:startingDirectory documentsDirectory:documentsDirectory];
-      [supportingFiles addObjectsFromArray:fileObjects.firstObject];
-      [imageFiles addObjectsFromArray:fileObjects.lastObject];
+      [fileList addObjectsFromArray:[self filesInDirectory:file relativePath:newRelativePath startingDirectory:startingDirectory rootDirectory:rootDirectory]];
       
     } else {
       //NSLog(@"File at: %@", file);
+      
       NSString* fileName = [file stringByDeletingPathExtension];
       NSString* fileExtension = [file pathExtension];
-      if ([file hasPrefix:kTemplateImagePrefix]) {
-        FileInfo *imageFile = [[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:ImageJpeg relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
-        [imageFiles addObject:imageFile];
-      } else if ([file hasPrefix:kTemplateIndexFilename]) {
-        // ignore index file
-      } else if ([fileExtension isEqualToString:kTemplateJsonFiletype]) {
-        FileInfo *jsonFile = [[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:UserInputJson relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
-        [supportingFiles addObject:jsonFile];
+      FileType fileType;
+      
+
+      if ([fileExtension isEqualToString:kTemplateJsonExtension]) {
+        fileType = UserInputJson;
       } else if ([file hasPrefix:kTemplateMarkerFilename]) {
-        // ignore marker file
+        fileType = InstaSite;
+      } else if ([file hasPrefix:kTemplateImagePrefix]) {
+          fileType = ImageJpeg;
+      } else if ([fileExtension isEqualToString:kTemplateIndexExtension]) {
+          fileType = IndexHtml;
       } else {
-        FileInfo *supportingFile = [[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:Other relativePath:newRelativePath templateDirectory:startingDirectory documentsDirectory:documentsDirectory];
-        [supportingFiles addObject:supportingFile];
+        fileType = Other;
+      }
+      if (fileType != InstaSite && fileType != UserInputJson) {
+        [fileList addObject:[[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:fileType relativePath:newRelativePath remoteDirectory:startingDirectory localDirectory:rootDirectory]];
       }
     }
   }
-  return @[supportingFiles, imageFiles];
+  return fileList;
 }
 
-- (BOOL)copyDirectory:(NSString *)directory overwrite:(BOOL)overwrite documentsDirectory:(NSString *)documentsDirectory {
+- (BOOL)copyDirectory:(NSString *)fromDirectory overwrite:(BOOL)overwrite toDirectory:(NSString *)toDirectory {
 
   NSFileManager *fileManager = [NSFileManager defaultManager];
   fileManager.delegate = self;
   
-  NSString *newDirectory = [documentsDirectory stringByAppendingPathComponent:directory];
-  NSString *bundlePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:directory];
+  NSString *newDirectory = [toDirectory stringByAppendingPathComponent:fromDirectory];
+  NSString *bundlePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:fromDirectory];
 
   BOOL directoryExists = [fileManager fileExistsAtPath:newDirectory];
   

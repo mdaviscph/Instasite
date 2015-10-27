@@ -10,8 +10,12 @@
 #import "HtmlTemplate.h"
 #import "Constants.h"
 #import "FileManager.h"
+#import <SSKeychain/SSKeychain.h>
 
 @interface TemplateTabBarController ()
+
+@property (strong, readwrite, nonatomic) NSString *accessToken;      // retrieved from Keychain
+@property (strong, readwrite, nonatomic) NSString *userName;         // retrieved from UserDefaults
 
 @end
 
@@ -64,10 +68,30 @@
   return _templateMarkers;
 }
 
+- (NSString *)accessToken {
+  if (!_accessToken) {
+    _accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
+  }
+  return _accessToken;
+}
+
+- (NSString *)userName {
+  if (!_userName) {
+    _userName = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDefaultsNameKey];
+  }
+  return _userName;
+}
+
+
 #pragma mark - Lifecycle Methods
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+  
+  if (!self.accessToken) {
+    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
+    [self.navigationController pushViewController:[oauthStoryboard instantiateInitialViewController] animated:YES];
+  }
   
   NSLog(@"Documents directory: %@", self.documentsDirectory);
   [self copyBundleTemplateDirectory];
@@ -79,7 +103,7 @@
   
   NSString *workingDirectory = [self.documentsDirectory stringByAppendingPathComponent:self.templateDirectory];
   NSString *filepath = [workingDirectory stringByAppendingPathComponent:kTemplateIndexFilename];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateIndexFiletype];
+  NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateIndexExtension];
   
   NSURL *url = [NSURL fileURLWithPath:pathWithType];
   if (!url) {
@@ -102,7 +126,7 @@
   
   NSString *workingDirectory = [self.documentsDirectory stringByAppendingPathComponent:self.templateDirectory];
   NSString *filepath = [workingDirectory stringByAppendingPathComponent:kTemplateMarkerFilename];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateMarkerFiletype];
+  NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateMarkerExtension];
   
   NSURL *url = [NSURL fileURLWithPath:pathWithType];
   if (!url) {
@@ -115,7 +139,7 @@
   
   NSString *workingDirectory = [self.documentsDirectory stringByAppendingPathComponent:self.templateDirectory];
   NSString *filepath = [workingDirectory stringByAppendingPathComponent:kTemplateJsonFilename];
-  NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateJsonFiletype];
+  NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateJsonExtension];
   
   NSURL *url = [NSURL fileURLWithPath:pathWithType];
   if (!url) {
@@ -127,9 +151,10 @@
 // Copy the entire template folder from main bundle to the documents directory one time
 -(void)copyBundleTemplateDirectory {
   FileManager *fileManager = [[FileManager alloc] init];
-  [fileManager copyDirectory:self.templateDirectory overwrite:NO documentsDirectory:self.documentsDirectory];
+  [fileManager copyDirectory:self.templateDirectory overwrite:NO toDirectory:self.documentsDirectory];
 }
-  
+
+// TODO - should we move this into FileManager class?
 - (void)loadImagesFromFiles {
   
   NSError *error;

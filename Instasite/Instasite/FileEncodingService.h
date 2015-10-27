@@ -6,8 +6,8 @@
 //  Copyright © 2015 Instasite. All rights reserved.
 //
 
-#import "Constants.h"
 #import <Foundation/Foundation.h>
+#import "TypeDefsEnums.h"
 
 @interface FileEncodingService : NSObject
 

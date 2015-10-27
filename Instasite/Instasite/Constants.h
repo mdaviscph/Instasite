@@ -8,12 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-enum FileType {
-  IndexHtml, UserInputJson, Other, ImageJpeg
-};
-typedef enum FileType FileType;
-
-extern NSString *const kCloseSafariViewControllerNotification;
+extern NSString *const kOpenURLnotificationName;
+extern NSString *const kOpenURLdictionaryKey;
 
 extern NSString *const kSSKeychainAccount;
 extern NSString *const kSSKeychainService;
@@ -23,14 +19,14 @@ extern NSString *const kUserDefaultsFullNameKey;
 extern NSString *const kUserDefaultsEmailKey;
 
 extern NSString *const kTemplateIndexFilename;
-extern NSString *const kTemplateIndexFiletype;
+extern NSString *const kTemplateIndexExtension;
 extern NSString *const kTemplateMarkerFilename;
-extern NSString *const kTemplateMarkerFiletype;
+extern NSString *const kTemplateMarkerExtension;
 extern NSString *const kTemplateJsonFilename;
-extern NSString *const kTemplateJsonFiletype;
+extern NSString *const kTemplateJsonExtension;
 extern NSString *const kTemplateImageDirectory;
 extern NSString *const kTemplateImagePrefix;
-extern NSString *const kTemplateImageFiletype;
+extern NSString *const kTemplateImageExtension;
 
 extern NSString *const kBranchName;
 

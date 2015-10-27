@@ -10,7 +10,7 @@
 
 @interface FileManager : NSObject <NSFileManagerDelegate>
 
-- (NSArray *)enumerateFilesInDirectory:(NSString *)directory documentsDirectory:(NSString *)documentsDirectory;
-- (BOOL)copyDirectory:(NSString *)directory overwrite:(BOOL)overwrite documentsDirectory:(NSString *)documentsDirectory;
+- (NSArray *)enumerateFilesInDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory;
+- (BOOL)copyDirectory:(NSString *)fromDirectory overwrite:(BOOL)overwrite toDirectory:(NSString *)toDirectory;
 
 @end

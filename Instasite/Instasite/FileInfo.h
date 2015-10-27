@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Constants.h"
+#import "TypeDefsEnums.h"
 
 @interface FileInfo : NSObject
 
@@ -15,14 +15,13 @@
 @property (strong,nonatomic) NSString *extension;
 @property (nonatomic) FileType type;
 @property (strong,nonatomic) NSString *path;
-@property (strong,nonatomic) NSString *templateDirectory;
-@property (strong,nonatomic) NSString *documentsDirectory;
+@property (strong,nonatomic) NSString *remoteDirectory;
+@property (strong,nonatomic) NSString *localDirectory;
 
-- (instancetype)initWithFileName:(NSString *)name extension:(NSString *)extension type:(FileType)type relativePath:(NSString *)path templateDirectory:(NSString *)templateDirectory documentsDirectory:(NSString *)documentsDirectory;
+- (instancetype)initWithFileName:(NSString *)name extension:(NSString *)extension type:(FileType)type relativePath:(NSString *)path remoteDirectory:(NSString *)remoteDirectory localDirectory:(NSString *)localDirectory;
 
-- (NSString *)filepathIncludingDocumentsDirectory;
-- (NSString *)filepathFromTemplateDirectory;
-- (NSString *)mimeTypeFromType;
+- (NSString *)filepathIncludingLocalDirectory;
+- (NSString *)filepathFromRemoteDirectory;
 
 - (NSString *)description;
 
