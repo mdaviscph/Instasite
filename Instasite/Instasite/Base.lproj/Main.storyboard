@@ -163,10 +163,6 @@
                         <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="LlU-oi-n2p">
-                                <rect key="frame" x="281" y="225" width="37" height="37"/>
-                                <color key="color" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                            </activityIndicatorView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="Dds-J8-14g">
                                 <rect key="frame" x="20" y="8" width="560" height="471"/>
                                 <subviews>
@@ -177,14 +173,18 @@
                                     </textField>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="LlU-oi-n2p">
+                                <rect key="frame" x="282" y="225" width="37" height="37"/>
+                                <color key="color" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Dds-J8-14g" firstAttribute="leading" secondItem="bNV-nD-2OP" secondAttribute="leadingMargin" id="Hop-Y2-t64"/>
-                            <constraint firstItem="LlU-oi-n2p" firstAttribute="centerY" secondItem="bNV-nD-2OP" secondAttribute="centerY" id="JOW-Cj-H9m"/>
+                            <constraint firstItem="LlU-oi-n2p" firstAttribute="centerY" secondItem="bNV-nD-2OP" secondAttribute="centerY" id="KKS-av-hre"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Dds-J8-14g" secondAttribute="trailing" id="OLM-Ue-uS9"/>
-                            <constraint firstItem="LlU-oi-n2p" firstAttribute="centerX" secondItem="bNV-nD-2OP" secondAttribute="centerX" id="Rrh-Su-kgb"/>
                             <constraint firstItem="CVy-ZZ-1MC" firstAttribute="top" secondItem="Dds-J8-14g" secondAttribute="bottom" constant="8" symbolic="YES" id="XyJ-ug-UDo"/>
+                            <constraint firstItem="LlU-oi-n2p" firstAttribute="centerX" secondItem="bNV-nD-2OP" secondAttribute="centerX" id="Z0D-Nd-j1r"/>
                             <constraint firstItem="Dds-J8-14g" firstAttribute="top" secondItem="Zwj-Tl-AcS" secondAttribute="bottom" constant="8" symbolic="YES" id="lYW-DV-GWl"/>
                         </constraints>
                     </view>

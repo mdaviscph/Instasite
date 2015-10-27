@@ -9,8 +9,7 @@
 #import "OauthViewController.h"
 #import "Keys.h"
 #import "Constants.h"
-#import "GitHubService.h"
-#import "AppDelegate.h"
+#import "GitHubAccessToken.h"
 #import <SSKeychain/SSKeychain.h>
 #import <SafariServices/SafariServices.h>
 
@@ -26,15 +25,36 @@
   [super viewDidLoad];
   self.navigationController.navigationBarHidden = YES;
 
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(safariLogin:) name:kCloseSafariViewControllerNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(safariLogin:) name:kOpenURLnotificationName object:nil];
 }
 
 - (void)safariLogin:(NSNotification *)notification {
   // get the url from the auth callback
-  NSURL *url = notification.object;
-  NSLog(@"safariLogin: %@", url);
-  [GitHubService saveTokenInURLtoKeychain:url];
+  NSURL *openURL = notification.userInfo[kOpenURLdictionaryKey];
+  //NSLog(@"safariLogin: %@", openURL);
   
+  if (openURL) {
+    NSString *code;
+    NSURLComponents *components = [NSURLComponents componentsWithURL:openURL resolvingAgainstBaseURL:NO];
+    for (NSURLQueryItem *queryItem in components.queryItems) {
+      if ([queryItem.name isEqualToString:@"code"]) {
+        code = queryItem.value;
+      }
+    }
+    if (code) {
+      GitHubAccessToken *gitHubToken = [[GitHubAccessToken alloc] initWithCode:code clientId:kClientId clientSecret:kClientSecret];
+      [gitHubToken retrieveTokenWithCompletion:^(NSError *error, NSString *token) {
+        
+        if (error) {
+          // TODO - alert popover
+          return;
+        }
+        
+        [SSKeychain setPassword:[@"token " stringByAppendingString:token] forService:kSSKeychainService account:kSSKeychainAccount];
+        NSLog(@"Token saved to keychain.");
+      }];
+    }
+  }
   [self popBackToCallingVC];
 }
 

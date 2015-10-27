@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+
 @class HtmlTemplate;
 
 @interface TemplateTabBarController : UITabBarController
@@ -23,5 +24,8 @@
 @property (strong, nonatomic) NSURL *indexHtmlDirectoryURL;
 @property (strong, nonatomic) NSURL *templateHtmlURL;
 @property (strong, nonatomic) NSURL *userJsonURL;
+
+@property (strong, readonly, nonatomic) NSString *accessToken;      // retrieved from Keychain
+@property (strong, readonly, nonatomic) NSString *userName;         // retrieved from UserDefaults
 
 @end

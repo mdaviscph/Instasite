@@ -10,14 +10,14 @@
 #import "TemplateTabBarController.h"
 #import "RepoCell.h"
 #import "Constants.h"
-#import "GitHubService.h"
+#import "GitHubUser.h"
 
 static NSString *kCellId = @"RepoCell";
 
 @interface ReposViewController ()
 
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
-@property (strong, nonatomic) NSArray *repos;
+@property (strong, nonatomic) NSArray *repoNames;
 
 @end
 
@@ -36,14 +36,7 @@ static NSString *kCellId = @"RepoCell";
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
   
-  [GitHubService.sharedInstance getReposWithCompletion:^(NSError *error, NSArray *repos) {
-    if (error) {
-      // TODO - alert popover
-      NSLog(@"Error in getReposWithCompletion: %@", error.localizedDescription);
-    }
-    self.repos = repos;
-    [self.tableView reloadData];
-  }];
+  [self getExistingRepos];
   
   self.navigationController.navigationBarHidden = NO;
   self.navigationController.navigationBar.translucent = NO;
@@ -58,6 +51,22 @@ static NSString *kCellId = @"RepoCell";
   // TODO - create a new repo
 }
 
+#pragma mark - Helper Methods
+
+- (void)getExistingRepos {
+  
+  GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:self.tabBarVC.accessToken];
+  [gitHubUser retrieveReposWithBranch:kBranchName completion:^(NSError *error, NSArray *repoNames) {
+    
+    if (error) {
+      // TODO - alert popover
+      NSLog(@"Error in GitHubUser:retrieveReposWithBranch: error: %@", error.localizedDescription);
+    }
+    self.repoNames = repoNames;
+    [self.tableView reloadData];
+  }];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -65,13 +74,13 @@ static NSString *kCellId = @"RepoCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  return self.repos ? self.repos.count : 0;
+  return self.repoNames.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   RepoCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellId forIndexPath:indexPath];
     
-  cell.repo = self.repos[indexPath.row];
+  cell.repo = self.repoNames[indexPath.row];
   return cell;
 }
 

@@ -10,9 +10,9 @@
 #import <MPSkewed/MPSkewedParallaxLayout.h>
 #import <MPSkewed/MPSkewedCell.h>
 #import "TemplateTabBarController.h"
-#import "GitHubService.h"
-#import "RepoInfo.h"
+#import "GitHubUser.h"
 #import "Constants.h"
+#import <SSKeychain/SSKeychain.h>
 
 static NSString *kCellId = @"MainCell";
 static NSUInteger kSpaceBetweenCells = 10;
@@ -24,7 +24,7 @@ static NSUInteger kCellHeight = 250;
 @property (strong, nonatomic) NSArray *templateDirectories;
 @property (strong, nonatomic) NSArray *imageNames;
 @property (strong, nonatomic) NSArray *titles;
-@property (strong, nonatomic) NSArray *repos;
+@property (strong, nonatomic) NSArray *repoNames;
 
 @end
 
@@ -33,7 +33,10 @@ static NSUInteger kCellHeight = 250;
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  [self getExistingRepos];
+  NSString *accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
+  if (accessToken) {
+    [self getExistingReposUsing:accessToken];
+  }
   
   // TODO - read this list from the bundle directory
   self.templateDirectories = @[@"startbootstrap-one-page-wonder-1.0.3",
@@ -68,14 +71,17 @@ static NSUInteger kCellHeight = 250;
 
 #pragma mark - Helper Methods
 
-// TODO - check for access_token
-- (void)getExistingRepos {
-  [GitHubService.sharedInstance getReposWithCompletion:^(NSError *error, NSArray *repos) {
+// TODO - check for access_token?
+- (void)getExistingReposUsing:(NSString *)accessToken {
+  
+  GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:accessToken];
+  [gitHubUser retrieveReposWithBranch:kBranchName completion:^(NSError *error, NSArray *repoNames) {
+
     if (error) {
       // TODO - alert popover
-      NSLog(@"Error in getReposWithCompletion: %@", error.localizedDescription);
+      NSLog(@"Error in GitHubUser:retrieveReposWithBranch: error: %@", error.localizedDescription);
     }
-    self.repos = repos;
+    self.repoNames = repoNames;
     [self.collectionView reloadData];
   }];
 }
@@ -83,11 +89,11 @@ static NSUInteger kCellHeight = 250;
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-  return self.repos.count > 0 ? 2 : 1;
+  return self.repoNames.count > 0 ? 2 : 1;
 }
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-  if (section == 0 && self.repos.count > 0) {
-      return self.repos.count;
+  if (section == 1 && self.repoNames.count > 0) {
+      return self.repoNames.count;
   } else {
     return self.templateDirectories.count;
   }
@@ -96,10 +102,9 @@ static NSUInteger kCellHeight = 250;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
   MPSkewedCell* cell = (MPSkewedCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
   
-  if (indexPath.section == 0 && self.repos.count > 0) {
-    RepoInfo *repo = self.repos[indexPath.item];
+  if (indexPath.section == 1 && self.repoNames.count > 0) {
     cell.image = [UIImage imageNamed:self.imageNames[0]];     // TODO - retrieve this from...
-    cell.text = repo.name;
+    cell.text = self.repoNames[indexPath.item];
   } else {
     cell.image = [UIImage imageNamed:self.imageNames[indexPath.item]];
     cell.text = self.titles[indexPath.item];
@@ -115,9 +120,8 @@ static NSUInteger kCellHeight = 250;
 
   tabBarVC.documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
   
-  if (indexPath.section == 0 && self.repos.count > 0) {
-    RepoInfo *repo = self.repos[indexPath.item];
-    tabBarVC.repoName = repo.name;
+  if (indexPath.section == 1 && self.repoNames.count > 0) {
+    tabBarVC.repoName = self.repoNames[indexPath.item];
     tabBarVC.templateDirectory = self.templateDirectories[0];     // TODO - retrieve this from...
   } else {
     tabBarVC.templateDirectory = self.templateDirectories[indexPath.item];

@@ -1,5 +1,5 @@
 //
-//  UserInfo.h
+//  UserJsonResponse.h
 //  Instasite
 //
 //  Created by mike davis on 10/7/15.
@@ -8,14 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface UserInfo : NSObject
+@interface UserJsonResponse : NSObject
 
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *fullName;
 @property (strong, nonatomic) NSString *email;
 
-- (instancetype)initFromJSON:(NSDictionary *)json;
-- (instancetype)initFromUserDefaults;
-- (void)saveToUserDefaults;
+- (instancetype)initFromJson:(NSDictionary *)json;
 
 @end
