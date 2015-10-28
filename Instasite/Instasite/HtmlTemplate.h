@@ -61,7 +61,7 @@ extern NSString *const kImageRefArray;
 - (void)insertFeature:(HtmlTemplatePlacement)place subheadline:(NSString *)subhead;
 - (void)insertFeature:(HtmlTemplatePlacement)place body:(NSString *)body;
 
-- (void)insertImageReference:(HtmlTemplatePlacement)place imageSource:(NSString *)imageSrc;
+- (void)insertImageReference:(NSString *)marker imageSource:(NSString *)imageSrc;
 
 - (NSString *)html;
 

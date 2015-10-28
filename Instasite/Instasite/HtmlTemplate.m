@@ -17,7 +17,7 @@ NSString *const kMarkerCopyright     = @"COPYRIGHT-";
 NSString *const kMarkerHead          = @"HEAD-";
 NSString *const kMarkerSub           = @"SUB-";
 NSString *const kMarkerBody          = @"BODY-";
-NSString *const kMarkerImageSrc      = @"IMAGE-";
+NSString *const kMarkerImageSrc      = @"image";
 
 NSString *const kFeatureArray        = @"FEATURES";
 NSString *const kImageRefArray       = @"IMAGES";
@@ -48,16 +48,6 @@ static NSString *const kMarkerBody4         = @"INSTASITE-BODY-04";
 static NSString *const kMarkerHead5         = @"INSTASITE-HEAD-05";
 static NSString *const kMarkerSub5          = @"INSTASITE-SUB-05";
 static NSString *const kMarkerBody5         = @"INSTASITE-BODY-05";
-
-static NSString *const kMarkerImageSrc1     = @"INSTASITE-IMAGE-01";
-static NSString *const kMarkerImageSrc2     = @"INSTASITE-IMAGE-02";
-static NSString *const kMarkerImageSrc3     = @"INSTASITE-IMAGE-03";
-static NSString *const kMarkerImageSrc4     = @"INSTASITE-IMAGE-04";
-static NSString *const kMarkerImageSrc5     = @"INSTASITE-IMAGE-05";
-static NSString *const kMarkerImageSrc6     = @"INSTASITE-IMAGE-06";
-static NSString *const kMarkerImageSrc7     = @"INSTASITE-IMAGE-07";
-static NSString *const kMarkerImageSrc8     = @"INSTASITE-IMAGE-08";
-static NSString *const kMarkerImageSrc9     = @"INSTASITE-IMAGE-09";
 
 // Very basic HTML template support. Initial version not efficient, see comment below.
 
@@ -202,27 +192,10 @@ static NSString *const kMarkerImageSrc9     = @"INSTASITE-IMAGE-09";
   }
 }
 
-- (void)insertImageReference:(HtmlTemplatePlacement)place imageSource:(NSString *)imageSrc {
+- (void)insertImageReference:(NSString *)marker imageSource:(NSString *)imageSrc {
   
-  NSString *imageSrcMarker;  
-  switch (place) {
-    case HtmlPlaceOne:
-      imageSrcMarker = kMarkerImageSrc1;
-      break;
-    case HtmlPlaceTwo:
-      imageSrcMarker = kMarkerImageSrc2;
-      break;
-    case HtmlPlaceThree:
-      imageSrcMarker = kMarkerImageSrc3;
-      break;
-    case HtmlPlaceFour:
-      imageSrcMarker = kMarkerImageSrc4;
-      break;
-    case HtmlPlaceFive:
-      imageSrcMarker = kMarkerImageSrc5;
-      break;
-  }
   if (imageSrc) {
+    NSString *imageSrcMarker = [kMarkerBase stringByAppendingString:marker];
     self.modifiedHtml = [self.modifiedHtml stringByReplacingOccurrencesOfString:imageSrcMarker withString:imageSrc];
   }
 }
@@ -277,26 +250,26 @@ static NSString *const kMarkerImageSrc9     = @"INSTASITE-IMAGE-09";
       
     } else if ([component hasPrefix:kMarkerImageSrc]) {
       number = [self markerNumberFor:kMarkerImageSrc from:component];
-      if (number >= 0) {
+      if (number > 0) {
         imageRefs = [self appendDictionaryToArray:imageRefs toIndex:number-1];
         imageRefs[number-1][kMarkerImageSrc] = @(1);
       }
     
     } else if ([component hasPrefix:kMarkerHead]) {
       number = [self markerNumberFor:kMarkerHead from:component];
-      if (number >= 0) {
+      if (number > 0) {
         features = [self appendDictionaryToArray:features toIndex:number-1];
         features[number-1][kMarkerHead] = @(1);
       }
     } else if ([component hasPrefix:kMarkerSub]) {
       number = [self markerNumberFor:kMarkerSub from:component];
-      if (number >= 0) {
+      if (number > 0) {
         features = [self appendDictionaryToArray:features toIndex:number-1];
         features[number-1][kMarkerSub] = @(1);
       }
     } else if ([component hasPrefix:kMarkerBody]) {
       number = [self markerNumberFor:kMarkerBody from:component];
-      if (number >= 0) {
+      if (number > 0) {
         features = [self appendDictionaryToArray:features toIndex:number-1];
         features[number-1][kMarkerBody] = @(1);
       }

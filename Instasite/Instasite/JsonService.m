@@ -21,6 +21,7 @@ static NSString *const kJsonSubheadlineKey = @"subheadline";
 static NSString *const kJsonBodyKey = @"body";
 static NSString *const kJsonImagesKey = @"images";
 static NSString *const kJsonImageSrcKey = @"imageSrc";
+static NSString *const kJsonImageNameKey = @"name";
 
 @implementation JsonService
 
@@ -31,9 +32,10 @@ static NSString *const kJsonImageSrcKey = @"imageSrc";
   }
 
   NSMutableArray *imageRefsArray = [[NSMutableArray alloc] init];
-  for (NSString *imageRef in templateInput.imageRefs) {
+  for (NSString *markerName in templateInput.imageRefs.allKeys) {
     NSMutableDictionary *imageRefDict = [[NSMutableDictionary alloc] init];
-    imageRefDict[kJsonImageSrcKey] = imageRef;
+    imageRefDict[kJsonImageNameKey] = markerName;
+    imageRefDict[kJsonImageSrcKey] = templateInput.imageRefs[markerName];
     [imageRefsArray addObject:imageRefDict];
   }
   
@@ -100,9 +102,13 @@ static NSString *const kJsonImageSrcKey = @"imageSrc";
   templateInput.features = features;
   
   NSArray *imageRefsArray = templateDict[kJsonImagesKey];
-  NSMutableArray *imageRefs = [[NSMutableArray alloc] init];
+  NSMutableDictionary *imageRefs = [[NSMutableDictionary alloc] init];
   for (NSDictionary *imageRefDict in imageRefsArray) {
-    [imageRefs addObject:imageRefDict[kJsonImageSrcKey]];
+    NSString *name = imageRefDict[kJsonImageNameKey];
+    NSString *ref = imageRefDict[kJsonImageSrcKey];
+    if (ref && name) {
+      [imageRefs setObject:ref forKey:name];
+    }
   }
   templateInput.imageRefs = imageRefs;
 

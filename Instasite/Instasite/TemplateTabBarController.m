@@ -9,11 +9,19 @@
 #import "TemplateTabBarController.h"
 #import "HtmlTemplate.h"
 #import "Constants.h"
-#import "FileManager.h"
+#import "FileInfo.h"
+#import "FileService.h"
+#import "TypeDefsEnums.h"
 #import <SSKeychain/SSKeychain.h>
 
 @interface TemplateTabBarController ()
 
+// public readonly properties
+@property (strong, readwrite, nonatomic) NSURL *indexHtmlURL;
+@property (strong, readwrite, nonatomic) NSURL *indexHtmlDirectoryURL;
+@property (strong, readwrite, nonatomic) NSURL *templateHtmlURL;
+@property (strong, readwrite, nonatomic) NSURL *userJsonURL;
+// public readonly properties
 @property (strong, readwrite, nonatomic) NSString *accessToken;      // retrieved from Keychain
 @property (strong, readwrite, nonatomic) NSString *userName;         // retrieved from UserDefaults
 
@@ -46,10 +54,23 @@
   return _userJsonURL;
 }
 
-- (NSArray *)images {
+- (NSString *)accessToken {
+  if (!_accessToken) {
+    _accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
+  }
+  return _accessToken;
+}
+- (NSString *)userName {
+  if (!_userName) {
+    _userName = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDefaultsNameKey];
+  }
+  return _userName;
+}
+
+- (NSMutableDictionary *)images {
   if (!_images) {
-    _images = [[NSMutableArray alloc] init];
-    [self loadImagesFromFiles];
+    _images = [[NSMutableDictionary alloc] init];
+    [self loadImageDataFromFiles];
   }
   return _images;
 }
@@ -67,21 +88,6 @@
   }
   return _templateMarkers;
 }
-
-- (NSString *)accessToken {
-  if (!_accessToken) {
-    _accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
-  }
-  return _accessToken;
-}
-
-- (NSString *)userName {
-  if (!_userName) {
-    _userName = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDefaultsNameKey];
-  }
-  return _userName;
-}
-
 
 #pragma mark - Lifecycle Methods
 
@@ -105,21 +111,21 @@
   NSString *filepath = [workingDirectory stringByAppendingPathComponent:kTemplateIndexFilename];
   NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateIndexExtension];
   
-  NSURL *url = [NSURL fileURLWithPath:pathWithType];
-  if (!url) {
+  NSURL *fileURL = [NSURL fileURLWithPath:pathWithType];
+  if (!fileURL) {
     NSLog(@"Error! NSURL:fileURLWithPath: [%@]", pathWithType);
   }
-  return url;
+  return fileURL;
 }
 
 - (NSURL *)indexDirectoryURL {
   NSString *workingDirectory = [self.documentsDirectory stringByAppendingPathComponent:self.templateDirectory];
   
-  NSURL *url = [NSURL fileURLWithPath:workingDirectory isDirectory:YES];
-  if (!url) {
+  NSURL *fileURL = [NSURL fileURLWithPath:workingDirectory isDirectory:YES];
+  if (!fileURL) {
     NSLog(@"Error! NSURL:fileURLWithPath: [%@]", workingDirectory);
   }
-  return url;
+  return fileURL;
 }
 
 - (NSURL *)templateFileURL {
@@ -128,11 +134,11 @@
   NSString *filepath = [workingDirectory stringByAppendingPathComponent:kTemplateMarkerFilename];
   NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateMarkerExtension];
   
-  NSURL *url = [NSURL fileURLWithPath:pathWithType];
-  if (!url) {
+  NSURL *fileURL = [NSURL fileURLWithPath:pathWithType];
+  if (!fileURL) {
     NSLog(@"Error! NSURL:fileURLWithPath: [%@]", pathWithType);
   }
-  return url;
+  return fileURL;
 }
 
 - (NSURL *)jsonFileURL {
@@ -141,49 +147,34 @@
   NSString *filepath = [workingDirectory stringByAppendingPathComponent:kTemplateJsonFilename];
   NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateJsonExtension];
   
-  NSURL *url = [NSURL fileURLWithPath:pathWithType];
-  if (!url) {
+  NSURL *fileURL = [NSURL fileURLWithPath:pathWithType];
+  if (!fileURL) {
     NSLog(@"Error! NSURL:fileURLWithPath: [%@]", pathWithType);
   }
-  return url;
+  return fileURL;
 }
 
 // Copy the entire template folder from main bundle to the documents directory one time
 -(void)copyBundleTemplateDirectory {
-  FileManager *fileManager = [[FileManager alloc] init];
-  [fileManager copyDirectory:self.templateDirectory overwrite:NO toDirectory:self.documentsDirectory];
+  
+  FileService *fileService = [[FileService alloc] init];
+  [fileService copyDirectory:self.templateDirectory overwrite:NO toDirectory:self.documentsDirectory];
 }
 
-// TODO - should we move this into FileManager class?
-- (void)loadImagesFromFiles {
+- (void)loadImageDataFromFiles {
   
-  NSError *error;
-  NSFileManager *fileManager = [NSFileManager defaultManager];
-  NSString *workingDirectory = [self.documentsDirectory stringByAppendingPathComponent:self.templateDirectory];
-  NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImageDirectory];
+  NSString *imageDirectory = [self.templateDirectory stringByAppendingPathComponent:kTemplateImageDirectory];
   
-  NSArray *files = [fileManager contentsOfDirectoryAtPath:imagesDirectory error:&error];
+  FileService *fileService = [[FileService alloc] init];
+  FileInfoArray *imageFiles = [fileService enumerateFilesInDirectory:imageDirectory rootDirectory:self.documentsDirectory];
   
-  for (NSString *file in files) {
-    BOOL isDirectory;
-    NSString *filepath = [imagesDirectory stringByAppendingPathComponent:file];
-    [fileManager fileExistsAtPath:filepath isDirectory:&isDirectory];
+  for (FileInfo *file in imageFiles) {
     
-    if (!isDirectory) {
-      //NSLog(@"Image File at: %@", file);
-      if ([file hasPrefix:kTemplateImagePrefix]) {
-        
-        // must read as NSData since write is as NSData
-        NSData *imageData = [NSData dataWithContentsOfFile:filepath];
-        UIImage *image = [UIImage imageWithData:imageData];
-        
-        if (image) {
-          // for now just add image to array
-          // TODO - get image number from filename
-          // TODO - perhaps switch to using a dictionary with number (or filename) as key
-          [self.images addObject:image];
-        }
-      }
+    NSLog(@"Loading image File: %@", file);
+    NSData *imageData = [NSData dataWithContentsOfFile:[file filepathIncludingLocalDirectory]];
+    
+    if (imageData) {
+      [self.images setObject:imageData forKey:file.name];
     }
   }
 }

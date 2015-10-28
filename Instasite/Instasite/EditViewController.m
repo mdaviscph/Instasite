@@ -16,7 +16,7 @@
 #import "TemplateTabBarController.h"
 #import "PublishViewController.h"
 #import <SSKeychain/SSKeychain.h>
-#import "FileManager.h"
+#import "FileService.h"
 #import "SegmentedControl.h"
 
 @interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, SegmentedControlDelegate, UITabBarControllerDelegate>
@@ -27,8 +27,6 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topStackViewHeightConstraint;
 
-@property (strong, nonatomic) NSArray *featureMarkers;
-@property (strong, nonatomic) NSArray *imageRefMarkers;
 
 @property (nonatomic) NSUInteger topStackSpacing;
 @property (nonatomic) NSUInteger bottomStackSpacing;
@@ -37,6 +35,12 @@
 @property (nonatomic) NSUInteger imageButtonHeight;
 @property (nonatomic) UIView *lastTextEditingView;
 
+@property (strong, nonatomic) NSArray *featureMarkers;
+@property (strong, nonatomic) NSArray *imageRefMarkers;
+
+@property (nonatomic) NSInteger selectedFeature;
+@property (strong, nonatomic) TemplateTabBarController *tabBarVC;
+@property (strong, nonatomic) TemplateInput *userInput;
 @end
 
 @implementation EditViewController
@@ -77,7 +81,7 @@
     self.userInput = [JsonService templateInputFrom:jsonData];
     [self insertUserInputIntoTemplateCopy];
   } else {
-    self.userInput = [[TemplateInput alloc] initWithFeatureCount:self.featureMarkers.count imageCount:self.imageRefMarkers.count];
+    self.userInput = [[TemplateInput alloc] initWithFeatureCount:self.featureMarkers.count];
   }
 
   self.topStackSpacing = 6;
@@ -199,14 +203,14 @@
 
 - (void)assignImageRefsToUserInput {
   
-  NSMutableArray *imageRefs = [[NSMutableArray alloc] init];
-  for (NSUInteger index = 0; index < self.tabBarVC.images.count; index++) {
+  NSMutableDictionary *imageRefs = [[NSMutableDictionary alloc] init];
+  for (NSString *fileName in self.tabBarVC.images.allKeys) {
     
-    NSString *imageFile = [NSString stringWithFormat:@"%@%02lu", kTemplateImagePrefix, index + 1];
-    NSString *relativeFilepath = [kTemplateImageDirectory stringByAppendingPathComponent:imageFile];
-    NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:kTemplateImageExtension];
+    NSString *relativeFilepath = [kTemplateImageDirectory stringByAppendingPathComponent:fileName];
+    NSString *relativePathWithExtension = [relativeFilepath stringByAppendingPathExtension:kTemplateImageExtension];
     
-    [imageRefs addObject:relativePathWithType];
+    // marker name is the file name
+    [imageRefs setObject:relativePathWithExtension forKey:fileName];
   }
   self.userInput.imageRefs = imageRefs;
 }
@@ -223,8 +227,8 @@
     [self.tabBarVC.templateCopy insertFeature:index subheadline:feature.subheadline];
     [self.tabBarVC.templateCopy insertFeature:index body:feature.body];
   }
-  for (NSUInteger index = 0; index < self.userInput.imageRefs.count; index++) {
-    [self.tabBarVC.templateCopy insertImageReference:index imageSource:self.userInput.imageRefs[index]];
+  for (NSString *markerName in self.userInput.imageRefs.allKeys) {
+    [self.tabBarVC.templateCopy insertImageReference:markerName imageSource:self.userInput.imageRefs[markerName]];
   }
 }
 
@@ -264,13 +268,11 @@
     }
   }
 
-  for (NSUInteger index = 0; index < self.tabBarVC.images.count; index++) {
+  for (NSString *fileName in self.tabBarVC.images.allKeys) {
     
-    UIImage *image = self.tabBarVC.images[index];
-    NSData *data = UIImageJPEGRepresentation(image, 1.0);
+    NSData *data = self.tabBarVC.images[fileName];
     
-    NSString *imageFile = [NSString stringWithFormat:@"%@%02lu", kTemplateImagePrefix, index + 1];
-    NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
+    NSString *filepath = [imagesDirectory stringByAppendingPathComponent:fileName];
     NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateImageExtension];
     
     //NSLog(@"Writing image file: %@", pathWithType);

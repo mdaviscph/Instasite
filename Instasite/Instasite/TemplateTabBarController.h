@@ -14,16 +14,17 @@
 
 @property (strong, nonatomic) NSString *documentsDirectory;
 @property (strong, nonatomic) NSString *templateDirectory;
+
 @property (strong, nonatomic) NSString *repoName;
 
 @property (strong, nonatomic) HtmlTemplate *templateCopy;
 @property (strong, nonatomic) NSDictionary *templateMarkers;
-@property (strong, nonatomic) NSMutableArray *images;
+@property (strong, nonatomic) NSMutableDictionary *images;
 
-@property (strong, nonatomic) NSURL *indexHtmlURL;
-@property (strong, nonatomic) NSURL *indexHtmlDirectoryURL;
-@property (strong, nonatomic) NSURL *templateHtmlURL;
-@property (strong, nonatomic) NSURL *userJsonURL;
+@property (strong, readonly, nonatomic) NSURL *indexHtmlURL;
+@property (strong, readonly, nonatomic) NSURL *indexHtmlDirectoryURL;
+@property (strong, readonly, nonatomic) NSURL *templateHtmlURL;
+@property (strong, readonly, nonatomic) NSURL *userJsonURL;
 
 @property (strong, readonly, nonatomic) NSString *accessToken;      // retrieved from Keychain
 @property (strong, readonly, nonatomic) NSString *userName;         // retrieved from UserDefaults

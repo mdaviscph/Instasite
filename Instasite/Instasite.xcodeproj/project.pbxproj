@@ -70,7 +70,7 @@
 		6B05A01A1BB32C70002627BA /* creative.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0151BB32C70002627BA /* creative.png */; settings = {ASSET_TAGS = (); }; };
 		6B05A01B1BB32C70002627BA /* freelancer.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0161BB32C70002627BA /* freelancer.png */; settings = {ASSET_TAGS = (); }; };
 		6B05A01C1BB32C70002627BA /* one-page-wonder.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0171BB32C70002627BA /* one-page-wonder.png */; settings = {ASSET_TAGS = (); }; };
-		6B05A02E1BB4A0B5002627BA /* FileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A02D1BB4A0B5002627BA /* FileManager.m */; settings = {ASSET_TAGS = (); }; };
+		6B05A02E1BB4A0B5002627BA /* FileService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A02D1BB4A0B5002627BA /* FileService.m */; settings = {ASSET_TAGS = (); }; };
 		6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C0E6E321BB1F16F000C7971 /* PublishViewController.m */; settings = {ASSET_TAGS = (); }; };
 		A3B14F545D372A79A9897B4B /* libPods-Instasite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C094285F042763CE3DF8F210 /* libPods-Instasite.a */; };
 /* End PBXBuildFile section */
@@ -207,8 +207,8 @@
 		6B05A0151BB32C70002627BA /* creative.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = creative.png; path = templateImg/creative.png; sourceTree = SOURCE_ROOT; };
 		6B05A0161BB32C70002627BA /* freelancer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = freelancer.png; path = templateImg/freelancer.png; sourceTree = SOURCE_ROOT; };
 		6B05A0171BB32C70002627BA /* one-page-wonder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "one-page-wonder.png"; path = "templateImg/one-page-wonder.png"; sourceTree = SOURCE_ROOT; };
-		6B05A02C1BB4A0B5002627BA /* FileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FileManager.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		6B05A02D1BB4A0B5002627BA /* FileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FileManager.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		6B05A02C1BB4A0B5002627BA /* FileService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FileService.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		6B05A02D1BB4A0B5002627BA /* FileService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FileService.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		6C0E6E311BB1F16F000C7971 /* PublishViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishViewController.h; sourceTree = "<group>"; };
 		6C0E6E321BB1F16F000C7971 /* PublishViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PublishViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		6EE31DEC5172B73AABFD04F9 /* Pods-Instasite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instasite.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Instasite/Pods-Instasite.debug.xcconfig"; sourceTree = "<group>"; };
@@ -399,8 +399,8 @@
 			children = (
 				00E928991BB1A8BE00383BD0 /* JsonService.h */,
 				00E9289A1BB1A8BE00383BD0 /* JsonService.m */,
-				6B05A02C1BB4A0B5002627BA /* FileManager.h */,
-				6B05A02D1BB4A0B5002627BA /* FileManager.m */,
+				6B05A02C1BB4A0B5002627BA /* FileService.h */,
+				6B05A02D1BB4A0B5002627BA /* FileService.m */,
 				221BCA1C1BB46B100057A272 /* FileEncodingService.h */,
 				221BCA1D1BB46B100057A272 /* FileEncodingService.m */,
 			);
@@ -715,7 +715,7 @@
 				00E9289B1BB1A8BE00383BD0 /* JsonService.m in Sources */,
 				0073C4891BD6A1F300760638 /* TreeJsonResponse.m in Sources */,
 				006CED461BC5EEBE004F484D /* UserJsonResponse.m in Sources */,
-				6B05A02E1BB4A0B5002627BA /* FileManager.m in Sources */,
+				6B05A02E1BB4A0B5002627BA /* FileService.m in Sources */,
 				6B05A0041BB3271A002627BA /* MainViewController.m in Sources */,
 				221BCA1E1BB46B100057A272 /* FileEncodingService.m in Sources */,
 				00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */,

@@ -20,6 +20,7 @@ static NSString *kCellId = @"ImageCell";
 
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 @property (strong, nonatomic) NSArray *imageRefMarkers;
+@property (strong, nonatomic) NSString *selectedImageFileName;
 
 @end
 
@@ -50,7 +51,7 @@ static NSString *kCellId = @"ImageCell";
   self.navigationController.navigationBar.translucent = NO;
   self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
   self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
-  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonTapped)];
+  self.tabBarVC.navigationItem.rightBarButtonItem = nil;
   self.tabBarVC.navigationItem.leftBarButtonItem = nil;
 }
 
@@ -61,31 +62,31 @@ static NSString *kCellId = @"ImageCell";
 
 #pragma mark - Selector Methods
 
-- (void)addButtonTapped {
-  [self actionSheetForImageSelection];
+- (void)importImageFor:(NSString *)name {
+  [self actionSheetForImageSelection:name];
 }
 
 #pragma mark - Helper Methods
 
-- (void)actionSheetForImageSelection {
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Select an Image" message:@"from" preferredStyle:UIAlertControllerStyleActionSheet];
+- (void)actionSheetForImageSelection:(NSString *)name {
+  NSString *title = [@"photo for " stringByAppendingString:name];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleActionSheet];
   alert.modalPresentationStyle = UIModalPresentationPopover;
   alert.popoverPresentationController.barButtonItem = self.tabBarVC.navigationItem.rightBarButtonItem;
 
   if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
       [self startImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
     }];
     [alert addAction:action];
   }
   if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
       [self startImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     }];
     [alert addAction:action];
-  }
-  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Saved Photos Album" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+  } else if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]) {
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
       [self startImagePickerForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
     }];
     [alert addAction:action];
@@ -110,7 +111,9 @@ static NSString *kCellId = @"ImageCell";
   [picker dismissViewControllerAnimated:YES completion:nil];
   
   UIImage *image = info[UIImagePickerControllerEditedImage];
-  [self.tabBarVC.images addObject:image];
+  NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+
+  [self.tabBarVC.images setObject:imageData forKey:self.selectedImageFileName];
   
   [self.collectionView reloadData];
 }
@@ -126,19 +129,21 @@ static NSString *kCellId = @"ImageCell";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-  NSUInteger count = MAX(self.tabBarVC.images.count, self.imageRefMarkers.count);
+  NSUInteger count = self.imageRefMarkers.count;
   return count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
   ImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
   
-  if (indexPath.item < self.tabBarVC.images.count) {
+  NSString *imageName = [NSString stringWithFormat:@"image%02lu", indexPath.item+1];
+  NSData *imageData = self.tabBarVC.images[imageName];
+  if (imageData) {
     cell.placeholder = nil;
-    cell.image = self.tabBarVC.images[indexPath.item];
+    cell.image = [UIImage imageWithData:imageData];
   } else {
     cell.image = nil;
-    cell.placeholder = [NSString stringWithFormat:@"%02lu", indexPath.item+1];
+    cell.placeholder = imageName;
   }
   return cell;
 }
@@ -147,8 +152,8 @@ static NSString *kCellId = @"ImageCell";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
   
-  // TODO - currently the image is added as the lowest numbered "empty" cell
-  [self addButtonTapped];
+  self.selectedImageFileName = [NSString stringWithFormat:@"image%02lu", indexPath.item+1];
+  [self importImageFor:self.selectedImageFileName];
 }
 
 @end

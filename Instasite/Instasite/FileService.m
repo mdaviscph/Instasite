@@ -1,16 +1,16 @@
 //
-//  FileManager.m
+//  FileService.m
 //  Instasite
 //
 //  Created by Cathy Oun on 9/23/15.
 //  Copyright © 2015 Instasite. All rights reserved.
 //
 
-#import "FileManager.h"
+#import "FileService.h"
 #import "FileInfo.h"
 #import "Constants.h"
 
-@implementation FileManager
+@implementation FileService
 
 - (NSArray *)enumerateFilesInDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
   

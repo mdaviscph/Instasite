@@ -12,7 +12,7 @@
 
 @implementation TemplateInput
 
-- (instancetype)initWithFeatureCount:(NSUInteger)featureCount imageCount:(NSUInteger)imageCount {
+- (instancetype)initWithFeatureCount:(NSUInteger)featureCount {
   self = [super init];
   if (self) {
     NSMutableArray *mutableFeatures = [[NSMutableArray alloc] init];
@@ -20,11 +20,6 @@
       [mutableFeatures addObject:[[Feature alloc] init]];
     }
     _features = mutableFeatures;
-    NSMutableArray *mutableImageRefs = [[NSMutableArray alloc] init];
-    for (NSUInteger index = 0; index < imageCount; index++) {
-      [mutableImageRefs addObject:[[NSString alloc] init]];
-    }
-    _imageRefs = mutableImageRefs;
   }
   return self;
 }

@@ -22,10 +22,12 @@ templates:
      images:
         [
           {
-            imageSrc: "img/image01.jpeg"
+            name: "first_image",
+            imageSrc: "img/first_image.jpeg"
           },
           {
-            imageSrc: "img/image02.jpeg"
+            name: "second_image",
+            imageSrc: "img/second_image.jpeg"
           }
         ],
      }

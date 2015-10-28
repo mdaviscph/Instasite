@@ -8,7 +8,7 @@
 
 #import "PublishViewController.h"
 #import "TemplateTabBarController.h"
-#import "FileManager.h"
+#import "FileService.h"
 #import "FileInfo.h"
 #import "Constants.h"
 #import "GitHubTree.h"
@@ -142,8 +142,8 @@
 }
 
 - (FileInfoArray *)initialFileListForDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
-  FileManager *fileManager = [[FileManager alloc] init];
-  return [fileManager enumerateFilesInDirectory:directory rootDirectory:rootDirectory];
+  FileService *fileService = [[FileService alloc] init];
+  return [fileService enumerateFilesInDirectory:directory rootDirectory:rootDirectory];
 }
 - (FileInfoArray *)changedFileListForDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
   FileInfoArray *allFiles = [self initialFileListForDirectory:directory rootDirectory:rootDirectory];

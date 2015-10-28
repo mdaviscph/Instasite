@@ -15,9 +15,9 @@
 @property (strong, nonatomic) NSString *summary;
 @property (strong, nonatomic) NSString *copyright;
 @property (strong, nonatomic) NSArray *features;
-@property (strong, nonatomic) NSArray *imageRefs;
+@property (strong, nonatomic) NSDictionary *imageRefs;
 
-- (instancetype)initWithFeatureCount:(NSUInteger)featureCount imageCount:(NSUInteger)imageCount;
+- (instancetype)initWithFeatureCount:(NSUInteger)featureCount;
 - (NSString *)description;
 
 @end
