@@ -26,13 +26,6 @@ static NSString *kCellId = @"ImageCell";
 
 @implementation ImagesViewController
 
-- (NSArray *)imageRefMarkers {
-  if (!_imageRefMarkers) {
-    _imageRefMarkers = self.tabBarVC.templateMarkers[kImageRefArray];
-  }
-  return _imageRefMarkers;
-}
-
 #pragma mark - Lifecycle Methods
 
 - (void)viewDidLoad {

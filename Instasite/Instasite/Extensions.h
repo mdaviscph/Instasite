@@ -12,13 +12,13 @@
 
 @interface UITextField (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type text:(NSString *)text placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style;
+- (instancetype)initWithTag:(NSInteger)tag text:(NSString *)text placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style;
 
 @end
 
 @interface UITextView (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type text:(NSString *)text placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style;
+- (instancetype)initWithTag:(NSInteger)tag text:(NSString *)text placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style;
 - (void)setText:(NSString *)text orPlaceholder:(NSString *)placeholder;
 - (void)clearPlaceholder;
 

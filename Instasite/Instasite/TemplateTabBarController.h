@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TypeDefsEnums.h"
 
 @class HtmlTemplate;
 
@@ -18,7 +19,7 @@
 @property (strong, nonatomic) NSString *repoName;
 
 @property (strong, nonatomic) HtmlTemplate *templateCopy;
-@property (strong, nonatomic) NSDictionary *templateMarkers;
+@property (strong, nonatomic) InputGroupDictionary *inputGroups;
 @property (strong, nonatomic) NSMutableDictionary *images;
 
 @property (strong, readonly, nonatomic) NSURL *indexHtmlURL;

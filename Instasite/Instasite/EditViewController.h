@@ -10,6 +10,4 @@
 
 @interface EditViewController : UIViewController
 
-- (void)reloadFeature;
-
 @end

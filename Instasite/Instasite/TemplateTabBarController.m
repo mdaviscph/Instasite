@@ -11,7 +11,6 @@
 #import "Constants.h"
 #import "FileInfo.h"
 #import "FileService.h"
-#import "TypeDefsEnums.h"
 #import <SSKeychain/SSKeychain.h>
 
 @interface TemplateTabBarController ()
@@ -82,11 +81,11 @@
   return _templateCopy;
 }
 
-- (NSDictionary *)templateMarkers {
-  if (!_templateMarkers) {
-    _templateMarkers = [self.templateCopy templateMarkers];
+- (InputGroupDictionary *)inputGroups {
+  if (!_inputGroups) {
+    _inputGroups = [self.templateCopy createInputGroups];
   }
-  return _templateMarkers;
+  return _inputGroups;
 }
 
 #pragma mark - Lifecycle Methods
@@ -101,6 +100,8 @@
   
   NSLog(@"Documents directory: %@", self.documentsDirectory);
   [self copyBundleTemplateDirectory];
+  
+  ///NSLog(@"Count of groups: %lu", self.inputGroups.count);
 }
 
 #pragma mark - Helper Methods

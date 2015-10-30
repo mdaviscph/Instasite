@@ -6,6 +6,11 @@
 //  Copyright © 2015 Instasite. All rights reserved.
 //
 
+enum TemplateFieldType {
+  FieldTXF, FieldTXV, FieldIMG
+};
+typedef enum TemplateFieldType TemplateFieldType;
+
 enum FileType {
   IndexHtml, UserInputJson, Other, ImageJpeg, InstaSite
 };
@@ -19,3 +24,12 @@ typedef NSMutableArray FileJsonRequestMutableArray;
 
 typedef NSArray RepoJsonResponseArray;
 typedef NSMutableArray RepoJsonResponseMutableArray;
+
+typedef NSDictionary InputFieldDictionary;
+typedef NSMutableDictionary InputFieldMutableDictionary;
+
+typedef NSDictionary InputCategoryDictionary;
+typedef NSMutableDictionary InputCategoryMutableDictionary;
+
+typedef NSDictionary InputGroupDictionary;
+typedef NSMutableDictionary InputGroupMutableDictionary;

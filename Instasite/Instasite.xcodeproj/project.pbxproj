@@ -23,6 +23,10 @@
 		0073C4991BD861E400760638 /* GitHubTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 0073C4981BD861E400760638 /* GitHubTree.m */; settings = {ASSET_TAGS = (); }; };
 		0073C49F1BDB38A700760638 /* GitHubRepo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0073C49E1BDB38A700760638 /* GitHubRepo.m */; settings = {ASSET_TAGS = (); }; };
 		0073C4A21BDB3A3800760638 /* GitHubRepoApiWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 0073C4A11BDB3A3800760638 /* GitHubRepoApiWrapper.m */; settings = {ASSET_TAGS = (); }; };
+		0073DEA51BE16E780079E9BD /* InputGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 0073DEA41BE16E780079E9BD /* InputGroup.m */; settings = {ASSET_TAGS = (); }; };
+		0073DEA81BE16E8F0079E9BD /* InputCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 0073DEA71BE16E8F0079E9BD /* InputCategory.m */; settings = {ASSET_TAGS = (); }; };
+		0073DEAB1BE16E9F0079E9BD /* InputField.m in Sources */ = {isa = PBXBuildFile; fileRef = 0073DEAA1BE16E9F0079E9BD /* InputField.m */; settings = {ASSET_TAGS = (); }; };
+		0073DEAE1BE2C09D0079E9BD /* TemplateField.m in Sources */ = {isa = PBXBuildFile; fileRef = 0073DEAD1BE2C09D0079E9BD /* TemplateField.m */; settings = {ASSET_TAGS = (); }; };
 		007D48001BC2F4BA0057B5D1 /* RepoJsonResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D47FF1BC2F4BA0057B5D1 /* RepoJsonResponse.m */; settings = {ASSET_TAGS = (); }; };
 		007D48031BC2F90A0057B5D1 /* ReposViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D48021BC2F90A0057B5D1 /* ReposViewController.m */; settings = {ASSET_TAGS = (); }; };
 		007D48061BC2FAA30057B5D1 /* RepoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D48051BC2FAA30057B5D1 /* RepoCell.m */; settings = {ASSET_TAGS = (); }; };
@@ -126,6 +130,14 @@
 		0073C49E1BDB38A700760638 /* GitHubRepo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GitHubRepo.m; sourceTree = "<group>"; };
 		0073C4A01BDB3A3800760638 /* GitHubRepoApiWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GitHubRepoApiWrapper.h; sourceTree = "<group>"; };
 		0073C4A11BDB3A3800760638 /* GitHubRepoApiWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GitHubRepoApiWrapper.m; sourceTree = "<group>"; };
+		0073DEA31BE16E780079E9BD /* InputGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputGroup.h; sourceTree = "<group>"; };
+		0073DEA41BE16E780079E9BD /* InputGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputGroup.m; sourceTree = "<group>"; };
+		0073DEA61BE16E8F0079E9BD /* InputCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputCategory.h; sourceTree = "<group>"; };
+		0073DEA71BE16E8F0079E9BD /* InputCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputCategory.m; sourceTree = "<group>"; };
+		0073DEA91BE16E9F0079E9BD /* InputField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputField.h; sourceTree = "<group>"; };
+		0073DEAA1BE16E9F0079E9BD /* InputField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputField.m; sourceTree = "<group>"; };
+		0073DEAC1BE2C09D0079E9BD /* TemplateField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateField.h; sourceTree = "<group>"; };
+		0073DEAD1BE2C09D0079E9BD /* TemplateField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateField.m; sourceTree = "<group>"; };
 		007D47FE1BC2F4BA0057B5D1 /* RepoJsonResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RepoJsonResponse.h; sourceTree = "<group>"; };
 		007D47FF1BC2F4BA0057B5D1 /* RepoJsonResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RepoJsonResponse.m; sourceTree = "<group>"; };
 		007D48011BC2F90A0057B5D1 /* ReposViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReposViewController.h; sourceTree = "<group>"; };
@@ -245,10 +257,20 @@
 		009403F91BB999FB005E547C /* User Input */ = {
 			isa = PBXGroup;
 			children = (
+				00E928961BB1A07200383BD0 /* HtmlTemplate.h */,
+				00E928971BB1A07200383BD0 /* HtmlTemplate.m */,
 				00E9289C1BB1A9BA00383BD0 /* Feature.h */,
 				00E9289D1BB1A9BA00383BD0 /* Feature.m */,
 				00E928A21BB1AB0100383BD0 /* TemplateInput.h */,
 				00E928A31BB1AB0100383BD0 /* TemplateInput.m */,
+				0073DEA31BE16E780079E9BD /* InputGroup.h */,
+				0073DEA41BE16E780079E9BD /* InputGroup.m */,
+				0073DEA61BE16E8F0079E9BD /* InputCategory.h */,
+				0073DEA71BE16E8F0079E9BD /* InputCategory.m */,
+				0073DEA91BE16E9F0079E9BD /* InputField.h */,
+				0073DEAA1BE16E9F0079E9BD /* InputField.m */,
+				0073DEAC1BE2C09D0079E9BD /* TemplateField.h */,
+				0073DEAD1BE2C09D0079E9BD /* TemplateField.m */,
 			);
 			name = "User Input";
 			sourceTree = "<group>";
@@ -383,8 +405,6 @@
 		227C86751BB0772E00799CD3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				00E928961BB1A07200383BD0 /* HtmlTemplate.h */,
-				00E928971BB1A07200383BD0 /* HtmlTemplate.m */,
 				00EA772B1BBC89BE00A70B8A /* GitHubJSON */,
 				00D3534F1BDC65AA00EA97E7 /* GitHubAPI */,
 				00D353591BDEB93100EA97E7 /* GitHubObjects */,
@@ -704,6 +724,9 @@
 				000B02751BB36A2D00737578 /* TemplateTabBarController.m in Sources */,
 				0073C48F1BD6A3C300760638 /* CommitTreeJsonResponse.m in Sources */,
 				0073C49F1BDB38A700760638 /* GitHubRepo.m in Sources */,
+				0073DEA81BE16E8F0079E9BD /* InputCategory.m in Sources */,
+				0073DEAB1BE16E9F0079E9BD /* InputField.m in Sources */,
+				0073DEA51BE16E780079E9BD /* InputGroup.m in Sources */,
 				0006EC091BC0BFAF00B020C5 /* ImageCell.m in Sources */,
 				6B05A0071BB32765002627BA /* DisplayTemplateViewController.m in Sources */,
 				00D353451BDBF43D00EA97E7 /* RepoJsonRequest.m in Sources */,
@@ -725,6 +748,7 @@
 				221BCA2A1BB4B9460057A272 /* FileInfo.m in Sources */,
 				007D48031BC2F90A0057B5D1 /* ReposViewController.m in Sources */,
 				22EFFDE31BADC11800E28ACB /* AppDelegate.m in Sources */,
+				0073DEAE1BE2C09D0079E9BD /* TemplateField.m in Sources */,
 				227C867C1BB077D400799CD3 /* OauthViewController.m in Sources */,
 				00D3534E1BDC5D9400EA97E7 /* OAuthJsonResponse.m in Sources */,
 				0073C48C1BD6A27B00760638 /* CommitTreeJsonRequest.m in Sources */,
