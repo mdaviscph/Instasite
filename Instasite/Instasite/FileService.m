@@ -58,7 +58,7 @@
         fileType = UserInputJson;
       } else if ([file hasPrefix:kTemplateMarkerFilename]) {
         fileType = InstaSite;
-      } else if ([file hasPrefix:kTemplateImagePrefix]) {
+      } else if ([fileExtension isEqualToString:kTemplateImageExtension]) {
           fileType = ImageJpeg;
       } else if ([fileExtension isEqualToString:kTemplateIndexExtension]) {
           fileType = IndexHtml;

@@ -31,4 +31,26 @@
   return NO;
 }
 
+- (BOOL)setFieldText:(NSString *)text forName:(NSString *)name {
+  InputField *field = self.fields[name];
+  if (field) {
+    field.text = text.length > 0 ? text : nil;
+    return YES;
+  }
+  return NO;
+}
+
+- (NSDictionary *)createJson {
+  NSMutableDictionary *jsonCategoryDictionary = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary *jsonFieldsDictionary = [[NSMutableDictionary alloc] init];
+  
+  jsonCategoryDictionary[@"name"] = self.name;
+  for (InputField *field in self.fields.allValues) {
+    jsonFieldsDictionary[field.name] = field.text;
+  }
+  jsonCategoryDictionary[@"fields"] = jsonFieldsDictionary;
+  
+  return jsonCategoryDictionary;
+}
+
 @end

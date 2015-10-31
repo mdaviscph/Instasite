@@ -18,5 +18,6 @@
 @property (nonatomic) NSInteger tag;
 
 - (instancetype)initFromTemplateField:(TemplateField *)templateField;
+- (NSDictionary *)createJson;
 
 @end

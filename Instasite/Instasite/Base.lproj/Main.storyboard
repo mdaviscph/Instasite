@@ -29,30 +29,79 @@
             <point key="canvasLocation" x="1336" y="424"/>
         </scene>
         <!--Images-->
-        <scene sceneID="b18-Ic-6bi">
+        <scene sceneID="8bI-M8-VVb">
             <objects>
-                <collectionViewController id="5qJ-X2-bnl" customClass="ImagesViewController" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="nZb-MG-hTd">
-                        <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                <viewController id="f5x-1K-ubz" customClass="ImagesViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="yoA-BW-PVK"/>
+                        <viewControllerLayoutGuide type="bottom" id="yr1-p7-one"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="gQQ-pt-ARv">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="M8E-VV-gWS">
-                            <size key="itemSize" width="150" height="150"/>
-                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                        </collectionViewFlowLayout>
-                        <cells/>
-                        <connections>
-                            <outlet property="dataSource" destination="5qJ-X2-bnl" id="UO8-Jv-a3h"/>
-                            <outlet property="delegate" destination="5qJ-X2-bnl" id="VUm-Mt-4O6"/>
-                        </connections>
-                    </collectionView>
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Images" id="t2U-iZ-n1D"/>
-                </collectionViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="XFc-GG-KKx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ZnB-jc-ORz">
+                                <rect key="frame" x="20" y="72" width="560" height="471"/>
+                                <subviews>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="U2T-e4-Mcc" customClass="SegmentedControl">
+                                        <rect key="frame" x="0.0" y="0.0" width="560" height="29"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="28" id="tqE-WE-KT0"/>
+                                        </constraints>
+                                        <segments>
+                                            <segment title="First"/>
+                                            <segment title="Second"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="groupSegmentedControlChange:" destination="f5x-1K-ubz" eventType="valueChanged" id="1G5-bf-lui"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dbG-Ao-s3F" customClass="SegmentedControl">
+                                        <rect key="frame" x="0.0" y="36" width="560" height="29"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="28" id="ZNX-rj-kPb"/>
+                                        </constraints>
+                                        <segments>
+                                            <segment title="First"/>
+                                            <segment title="Second"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="categorySegmentedControlChange:" destination="f5x-1K-ubz" eventType="valueChanged" id="x2u-bV-lsg"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="l4e-6Q-hHJ">
+                                        <rect key="frame" x="0.0" y="72" width="560" height="399"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="8" minimumInteritemSpacing="8" id="HzM-tl-LrB">
+                                            <size key="itemSize" width="165" height="165"/>
+                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        </collectionViewFlowLayout>
+                                        <cells/>
+                                    </collectionView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ZnB-jc-ORz" firstAttribute="trailing" secondItem="gQQ-pt-ARv" secondAttribute="trailingMargin" id="F9a-3A-KvM"/>
+                            <constraint firstItem="ZnB-jc-ORz" firstAttribute="leading" secondItem="gQQ-pt-ARv" secondAttribute="leadingMargin" id="NSv-8N-iVP"/>
+                            <constraint firstItem="yr1-p7-one" firstAttribute="top" secondItem="ZnB-jc-ORz" secondAttribute="bottom" constant="8" symbolic="YES" id="fY3-Tx-9rK"/>
+                            <constraint firstItem="ZnB-jc-ORz" firstAttribute="top" secondItem="yoA-BW-PVK" secondAttribute="bottom" constant="8" symbolic="YES" id="yki-Hf-bBY"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Images" id="KYS-in-1kO"/>
+                    <connections>
+                        <outlet property="categorySegmentedControl" destination="dbG-Ao-s3F" id="SYE-aN-Y8G"/>
+                        <outlet property="collectionView" destination="l4e-6Q-hHJ" id="eAJ-0P-vbK"/>
+                        <outlet property="groupSegmentedControl" destination="U2T-e4-Mcc" id="NeL-az-sga"/>
+                        <outlet property="stackView" destination="ZnB-jc-ORz" id="h3V-c2-Vga"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yD0-nE-r32" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2731" y="-41"/>
+            <point key="canvasLocation" x="2731" y="-117"/>
         </scene>
         <!--Add Text-->
         <scene sceneID="9Ca-Ww-Hpo">
@@ -240,7 +289,7 @@
                     <connections>
                         <segue destination="Jrj-qB-hpH" kind="relationship" relationship="viewControllers" id="6Y9-rr-KQX"/>
                         <segue destination="SZ7-UW-qUr" kind="relationship" relationship="viewControllers" id="Vdc-uY-XXa"/>
-                        <segue destination="5qJ-X2-bnl" kind="relationship" relationship="viewControllers" id="pcS-mW-N2A"/>
+                        <segue destination="f5x-1K-ubz" kind="relationship" relationship="viewControllers" id="Bb1-b7-780"/>
                         <segue destination="Qh9-Hk-ohU" kind="relationship" relationship="viewControllers" id="E3D-rN-Mt7"/>
                     </connections>
                 </tabBarController>

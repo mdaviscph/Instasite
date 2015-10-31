@@ -18,6 +18,10 @@
 @property (nonatomic) NSInteger tag;
 
 - (instancetype)initFromTemplateField:(TemplateField *)templateField;
+
 - (BOOL)setFieldText:(NSString *)text forTag:(NSInteger)tag;
+- (BOOL)setFieldText:(NSString *)text forName:(NSString *)name;
+
+- (NSDictionary *)createJson;
 
 @end

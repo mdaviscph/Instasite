@@ -41,9 +41,6 @@
 		00D353581BDEA57900EA97E7 /* GitHubUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D353571BDEA57900EA97E7 /* GitHubUser.m */; settings = {ASSET_TAGS = (); }; };
 		00D3535C1BDEBC9500EA97E7 /* FileJsonResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D3535B1BDEBC9500EA97E7 /* FileJsonResponse.m */; settings = {ASSET_TAGS = (); }; };
 		00E928981BB1A07200383BD0 /* HtmlTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928971BB1A07200383BD0 /* HtmlTemplate.m */; settings = {ASSET_TAGS = (); }; };
-		00E9289B1BB1A8BE00383BD0 /* JsonService.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E9289A1BB1A8BE00383BD0 /* JsonService.m */; settings = {ASSET_TAGS = (); }; };
-		00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E9289D1BB1A9BA00383BD0 /* Feature.m */; settings = {ASSET_TAGS = (); }; };
-		00E928A41BB1AB0100383BD0 /* TemplateInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928A31BB1AB0100383BD0 /* TemplateInput.m */; settings = {ASSET_TAGS = (); }; };
 		00E928A71BB1AEA200383BD0 /* Sample.json in Resources */ = {isa = PBXBuildFile; fileRef = 00E928A61BB1AEA200383BD0 /* Sample.json */; settings = {ASSET_TAGS = (); }; };
 		00E928AC1BB1EC0F00383BD0 /* EditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928AB1BB1EC0F00383BD0 /* EditViewController.m */; settings = {ASSET_TAGS = (); }; };
 		00EA772E1BBC8A3600A70B8A /* RefJsonResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 00EA772D1BBC8A3600A70B8A /* RefJsonResponse.m */; settings = {ASSET_TAGS = (); }; };
@@ -166,12 +163,6 @@
 		00D3535B1BDEBC9500EA97E7 /* FileJsonResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FileJsonResponse.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		00E928961BB1A07200383BD0 /* HtmlTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HtmlTemplate.h; sourceTree = "<group>"; };
 		00E928971BB1A07200383BD0 /* HtmlTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HtmlTemplate.m; sourceTree = "<group>"; };
-		00E928991BB1A8BE00383BD0 /* JsonService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = JsonService.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		00E9289A1BB1A8BE00383BD0 /* JsonService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = JsonService.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		00E9289C1BB1A9BA00383BD0 /* Feature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Feature.h; sourceTree = "<group>"; };
-		00E9289D1BB1A9BA00383BD0 /* Feature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Feature.m; sourceTree = "<group>"; };
-		00E928A21BB1AB0100383BD0 /* TemplateInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = TemplateInput.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		00E928A31BB1AB0100383BD0 /* TemplateInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TemplateInput.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		00E928A61BB1AEA200383BD0 /* Sample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Sample.json; sourceTree = "<group>"; };
 		00E928AA1BB1EC0F00383BD0 /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EditViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		00E928AB1BB1EC0F00383BD0 /* EditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -259,10 +250,6 @@
 			children = (
 				00E928961BB1A07200383BD0 /* HtmlTemplate.h */,
 				00E928971BB1A07200383BD0 /* HtmlTemplate.m */,
-				00E9289C1BB1A9BA00383BD0 /* Feature.h */,
-				00E9289D1BB1A9BA00383BD0 /* Feature.m */,
-				00E928A21BB1AB0100383BD0 /* TemplateInput.h */,
-				00E928A31BB1AB0100383BD0 /* TemplateInput.m */,
 				0073DEA31BE16E780079E9BD /* InputGroup.h */,
 				0073DEA41BE16E780079E9BD /* InputGroup.m */,
 				0073DEA61BE16E8F0079E9BD /* InputCategory.h */,
@@ -417,8 +404,6 @@
 		227C867D1BB07B1500799CD3 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				00E928991BB1A8BE00383BD0 /* JsonService.h */,
-				00E9289A1BB1A8BE00383BD0 /* JsonService.m */,
 				6B05A02C1BB4A0B5002627BA /* FileService.h */,
 				6B05A02D1BB4A0B5002627BA /* FileService.m */,
 				221BCA1C1BB46B100057A272 /* FileEncodingService.h */,
@@ -730,12 +715,10 @@
 				0006EC091BC0BFAF00B020C5 /* ImageCell.m in Sources */,
 				6B05A0071BB32765002627BA /* DisplayTemplateViewController.m in Sources */,
 				00D353451BDBF43D00EA97E7 /* RepoJsonRequest.m in Sources */,
-				00E9289E1BB1A9BA00383BD0 /* Feature.m in Sources */,
 				00D353421BDBD63700EA97E7 /* UserReposJsonRequest.m in Sources */,
 				00EA772E1BBC8A3600A70B8A /* RefJsonResponse.m in Sources */,
 				0073C4991BD861E400760638 /* GitHubTree.m in Sources */,
 				00D3535C1BDEBC9500EA97E7 /* FileJsonResponse.m in Sources */,
-				00E9289B1BB1A8BE00383BD0 /* JsonService.m in Sources */,
 				0073C4891BD6A1F300760638 /* TreeJsonResponse.m in Sources */,
 				006CED461BC5EEBE004F484D /* UserJsonResponse.m in Sources */,
 				6B05A02E1BB4A0B5002627BA /* FileService.m in Sources */,
@@ -753,7 +736,6 @@
 				00D3534E1BDC5D9400EA97E7 /* OAuthJsonResponse.m in Sources */,
 				0073C48C1BD6A27B00760638 /* CommitTreeJsonRequest.m in Sources */,
 				0006EC061BC0B79200B020C5 /* ImagesViewController.m in Sources */,
-				00E928A41BB1AB0100383BD0 /* TemplateInput.m in Sources */,
 				0073C4A21BDB3A3800760638 /* GitHubRepoApiWrapper.m in Sources */,
 				0073C4801BD5E3A700760638 /* BlobJsonRequest.m in Sources */,
 				22B07C861BB45D5D00ADB5EF /* Keys.m in Sources */,

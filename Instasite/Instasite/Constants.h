@@ -25,7 +25,6 @@ extern NSString *const kTemplateMarkerExtension;
 extern NSString *const kTemplateJsonFilename;
 extern NSString *const kTemplateJsonExtension;
 extern NSString *const kTemplateImageDirectory;
-extern NSString *const kTemplateImagePrefix;
 extern NSString *const kTemplateImageExtension;
 
 extern NSString *const kBranchName;

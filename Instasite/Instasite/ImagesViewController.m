@@ -8,19 +8,34 @@
 
 #import "ImagesViewController.h"
 #import "ImageCell.h"
-#import "HtmlTemplate.h"
+#import "SegmentedControl.h"
 #import "TemplateTabBarController.h"
+#import "InputGroup.h"
+#import "InputCategory.h"
+#import "InputField.h"
 #import "Constants.h"
 
 static NSString *kCellId = @"ImageCell";
 
 //<UICollectionViewDelegateFlowLayout>
 
-@interface ImagesViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface ImagesViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, SegmentedControlDelegate>
+
+@property (weak, nonatomic) IBOutlet UIStackView *stackView;
+@property (weak, nonatomic) IBOutlet SegmentedControl *groupSegmentedControl;
+@property (weak, nonatomic) IBOutlet SegmentedControl *categorySegmentedControl;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+
+@property (strong, nonatomic) NSArray *sortedGroupKeys;
+@property (strong, nonatomic) NSArray *sortedCategoryKeys;
+@property (strong, nonatomic) NSArray *sortedImageKeys;
+
+@property (strong, nonatomic) NSString *selectedGroupName;
+@property (strong, nonatomic) NSString *selectedCategoryName;
+@property (strong, nonatomic) NSString *selectedImageName;
+
 
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
-@property (strong, nonatomic) NSArray *imageRefMarkers;
-@property (strong, nonatomic) NSString *selectedImageFileName;
 
 @end
 
@@ -32,9 +47,20 @@ static NSString *kCellId = @"ImageCell";
   [super viewDidLoad];
 
   //self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+  self.collectionView.dataSource = self;
+  self.collectionView.delegate = self;
   [self.collectionView registerClass:[ImageCell class] forCellWithReuseIdentifier:kCellId];
   
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
+  
+  self.groupSegmentedControl.delegate = self;
+  self.categorySegmentedControl.delegate = self;
+  
+  self.sortedGroupKeys = [self sortGroupKeys:self.tabBarVC.inputGroups];
+  self.selectedGroupName = self.sortedGroupKeys[0];
+  [self.groupSegmentedControl resetWithTitles:self.sortedGroupKeys];
+  
+  [self reloadGroup];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -53,17 +79,78 @@ static NSString *kCellId = @"ImageCell";
 //  [(ImageCollectionViewLayout *)self.collectionView.collectionViewLayout setItemSize:CGSizeMake(CGRectGetWidth(self.view.bounds), kCellHeight)];
 //}
 
-#pragma mark - Selector Methods
+#pragma mark - IBActions, Selector Methods
 
-- (void)importImageFor:(NSString *)name {
+- (IBAction)groupSegmentedControlChange:(SegmentedControl *)sender {
+  [self switchToGroup:sender.selectedSegmentIndex];
+}
+- (IBAction)categorySegmentedControlChange:(SegmentedControl *)sender {
+  [self switchToCategory:sender.selectedSegmentIndex];
+}
+
+- (void)importImageForImageName:(NSString *)name {
   [self actionSheetForImageSelection:name];
 }
 
 #pragma mark - Helper Methods
 
+- (NSArray *)sortGroupKeys:(InputGroupDictionary *)groups {
+  return [groups keysSortedByValueUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    return [(InputGroup *)obj1 tag] > [(InputGroup *)obj2 tag] ? NSOrderedDescending : NSOrderedAscending;
+  }];
+}
+- (NSArray *)sortCategoryKeys:(InputCategoryDictionary *)groups {
+  return [groups keysSortedByValueUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    return [(InputCategory *)obj1 tag] > [(InputCategory *)obj2 tag] ? NSOrderedDescending : NSOrderedAscending;
+  }];
+}
+
+- (void)reloadGroup {
+  [self switchToGroup:-1];
+}
+- (void)reloadCategory {
+  [self switchToCategory:-1];
+}
+
+- (void)switchToGroup:(NSInteger)index {
+  self.selectedGroupName = index >= 0 ? self.sortedGroupKeys[index] : self.selectedGroupName;
+  InputGroup *group = self.tabBarVC.inputGroups[self.selectedGroupName];
+  self.sortedCategoryKeys = [self sortCategoryKeys:group.categories];
+  self.selectedCategoryName = self.sortedCategoryKeys[0];
+  [self.categorySegmentedControl resetWithTitles:self.sortedCategoryKeys];
+  [self switchToCategory:0];
+}
+- (void)switchToCategory:(NSInteger)index {
+  self.selectedCategoryName = index >= 0 ? self.sortedCategoryKeys[index] : self.selectedCategoryName;
+  self.sortedImageKeys = [self sortImageFieldsInGroup:self.selectedGroupName andCategory:self.selectedCategoryName];
+  [self.collectionView reloadData];
+}
+
+- (NSArray *)sortImageFieldsInGroup:(NSString *)groupName andCategory:(NSString *)categoryName {
+  
+  NSMutableArray *imageFields = [[NSMutableArray alloc] init];
+  
+  InputGroup *group = self.tabBarVC.inputGroups[groupName];
+  InputCategoryDictionary *categories = group.categories;
+  InputCategory *category = categories[categoryName];
+  InputFieldDictionary *fields = category.fields;
+
+  NSArray *sortedFieldKeys = [fields keysSortedByValueUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    return [(InputField *)obj1 tag] > [(InputField *)obj2 tag] ? NSOrderedDescending : NSOrderedAscending;
+  }];
+  
+  for (NSString *fieldName in sortedFieldKeys) {
+    
+    InputField *field = fields[fieldName];
+    if (field.type == FieldIMG) {
+      [imageFields addObject:field.name];
+    }
+  }
+  return imageFields;
+}
+
 - (void)actionSheetForImageSelection:(NSString *)name {
-  NSString *title = [@"photo for " stringByAppendingString:name];
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
   alert.modalPresentationStyle = UIModalPresentationPopover;
   alert.popoverPresentationController.barButtonItem = self.tabBarVC.navigationItem.rightBarButtonItem;
 
@@ -105,8 +192,16 @@ static NSString *kCellId = @"ImageCell";
   
   UIImage *image = info[UIImagePickerControllerEditedImage];
   NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+  self.tabBarVC.images[self.selectedImageName] = imageData;
+  
+  NSString *filepath = [kTemplateImageDirectory stringByAppendingPathComponent:self.selectedImageName];
+  NSString *pathWithExtension = [filepath stringByAppendingPathExtension:kTemplateImageExtension];
+  
+  InputGroup *group = self.tabBarVC.inputGroups[self.selectedGroupName];
+  InputCategoryDictionary *categories = group.categories;
+  InputCategory *category = categories[self.selectedCategoryName];
 
-  [self.tabBarVC.images setObject:imageData forKey:self.selectedImageFileName];
+  [category setFieldText:pathWithExtension forName:self.selectedImageName];
   
   [self.collectionView reloadData];
 }
@@ -122,14 +217,14 @@ static NSString *kCellId = @"ImageCell";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-  NSUInteger count = self.imageRefMarkers.count;
+  NSUInteger count = self.sortedImageKeys.count;
   return count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
   ImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
   
-  NSString *imageName = [NSString stringWithFormat:@"image%02lu", indexPath.item+1];
+  NSString *imageName = self.sortedImageKeys[indexPath.item];
   NSData *imageData = self.tabBarVC.images[imageName];
   if (imageData) {
     cell.placeholder = nil;
@@ -145,8 +240,16 @@ static NSString *kCellId = @"ImageCell";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
   
-  self.selectedImageFileName = [NSString stringWithFormat:@"image%02lu", indexPath.item+1];
-  [self importImageFor:self.selectedImageFileName];
+  self.selectedImageName = self.sortedImageKeys[indexPath.item];
+  [self importImageForImageName:self.selectedImageName];
+}
+
+#pragma mark - SegmentedControlDelegate
+
+// this protocol is defined in SegmentedControl.h and used so we can force editing to
+// end, prior to the segnmentedControl index changing, for any textViews since there is
+// no textViewShouldReturn delegate method
+- (void)segmentedControlIndexWillChange:(UISegmentedControl *)sender {
 }
 
 @end

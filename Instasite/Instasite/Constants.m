@@ -25,7 +25,6 @@ NSString *const kTemplateMarkerExtension = @"html";
 NSString *const kTemplateJsonFilename = @"instasite";
 NSString *const kTemplateJsonExtension = @"json";
 NSString *const kTemplateImageDirectory = @"img";
-NSString *const kTemplateImagePrefix = @"image";
 NSString *const kTemplateImageExtension = @"jpeg";
 
 NSString *const kBranchName = @"gh-pages";

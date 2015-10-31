@@ -7,6 +7,7 @@
 //
 
 #import "InputGroup.h"
+#import "InputCategory.h"
 #import "TemplateField.h"
 
 @implementation InputGroup
@@ -18,6 +19,19 @@
     _categories = [[InputCategoryDictionary alloc] init];
   }
   return self;
+}
+
+- (NSDictionary *)createJson {
+  NSMutableDictionary *jsonGroupDictionary = [[NSMutableDictionary alloc] init];
+  NSMutableArray *jsonCategoryArray = [[NSMutableArray alloc] init];
+  
+  jsonGroupDictionary[@"name"] = self.name;
+  for (InputCategory *category in self.categories.allValues) {
+    [jsonCategoryArray addObject:[category createJson]];
+  }
+  jsonGroupDictionary[@"categories"] = jsonCategoryArray;
+  
+  return jsonGroupDictionary;
 }
 
 @end

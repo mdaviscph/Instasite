@@ -8,16 +8,16 @@
 
 #import "EditViewController.h"
 #import "SegmentedControl.h"
+#import "TemplateTabBarController.h"
 #import "Extensions.h"
 #import "HtmlTemplate.h"
 #import "InputGroup.h"
 #import "InputCategory.h"
 #import "InputField.h"
 #import "Constants.h"
-#import "TemplateTabBarController.h"
 #import "FileService.h"
 
-@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, SegmentedControlDelegate, UITabBarControllerDelegate>
+@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, SegmentedControlDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIStackView *stackView;
@@ -52,7 +52,6 @@
   [self.temporaryFillerView removeFromSuperview];
   
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
-  self.tabBarVC.delegate = self;
 
   self.groupSegmentedControl.delegate = self;
   self.categorySegmentedControl.delegate = self;
@@ -62,14 +61,6 @@
   [self.groupSegmentedControl resetWithTitles:self.sortedGroupKeys];
 
   [self reloadGroup];
-  
-//  NSData *jsonData = [JsonService readJsonFile:self.tabBarVC.userJsonURL];
-//  if (jsonData) {
-//    self.userInput = [JsonService templateInputFrom:jsonData];
-//    [self insertUserInputIntoTemplateCopy];
-//  } else {
-//    self.userInput = [[TemplateInput alloc] initWithFeatureCount:self.featureMarkers.count];
-//  }
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -80,9 +71,6 @@
   self.tabBarVC.navigationItem.rightBarButtonItem = nil;
   self.tabBarVC.navigationItem.leftBarButtonItem = nil;
   
-  [self assignImageRefsToUserInput];
-  //[self insertUserInputIntoTemplateCopy];
-  
   [self startObservingKeyboardEvents];
 }
 
@@ -92,16 +80,12 @@
 }
 
 #pragma mark - IBActions, Selector Methods
+
 - (IBAction)groupSegmentedControlChange:(SegmentedControl *)sender {
   [self switchToGroup:sender.selectedSegmentIndex];
 }
 - (IBAction)categorySegmentedControlChange:(SegmentedControl *)sender {
   [self switchToCategory:sender.selectedSegmentIndex];
-}
-
-- (void)saveButtonTapped {
-  
-  [self saveUserInput];
 }
 
 - (void)doneButtonTapped {
@@ -189,73 +173,6 @@
   }
 }
 
-- (void)assignImageRefsToUserInput {
-  
-  NSMutableDictionary *imageRefs = [[NSMutableDictionary alloc] init];
-  for (NSString *fileName in self.tabBarVC.images.allKeys) {
-    
-    NSString *relativeFilepath = [kTemplateImageDirectory stringByAppendingPathComponent:fileName];
-    NSString *relativePathWithExtension = [relativeFilepath stringByAppendingPathExtension:kTemplateImageExtension];
-    
-    // marker name is the file name
-    [imageRefs setObject:relativePathWithExtension forKey:fileName];
-  }
-//  self.userInput.imageRefs = imageRefs;
-}
-
-- (void)saveUserInput {
-  self.lastTextEditingView = nil;
-  
-  NSLog(@"saveUserInput");
-//  NSData *jsonData = [JsonService fromTemplateInput:self.userInput];
-//  [JsonService writeJsonFile:jsonData fileURL:self.tabBarVC.userJsonURL];
-  
-  [self writeIndexHtmlFile];
-  [self writeImageFiles];
-}
-
-- (BOOL)writeIndexHtmlFile {
-  
-  if ([self.tabBarVC.templateCopy writeToURL:self.tabBarVC.indexHtmlURL withInputGroups:self.tabBarVC.inputGroups]) {
-    return YES;
-  }
-  return NO;
-}
-
-- (void)writeImageFiles {
-  
-  NSFileManager *fileManager = [NSFileManager defaultManager];
-  NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-  NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImageDirectory];
-
-  if (self.tabBarVC.images.count > 0) {
-    if (![fileManager fileExistsAtPath:imagesDirectory isDirectory:nil]) {
-      NSError *error;
-      [fileManager createDirectoryAtPath:imagesDirectory withIntermediateDirectories:NO attributes:nil error:&error];
-      if (error) {
-        NSLog(@"Error! Cannot create directory: [%@] error: %@", imagesDirectory, error.localizedDescription);
-        return;
-      }
-    }
-  }
-
-  for (NSString *fileName in self.tabBarVC.images.allKeys) {
-    
-    NSData *data = self.tabBarVC.images[fileName];
-    
-    NSString *filepath = [imagesDirectory stringByAppendingPathComponent:fileName];
-    NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateImageExtension];
-    
-    //NSLog(@"Writing image file: %@", pathWithType);
-    NSError *error;
-    [data writeToFile:pathWithType options:NSDataWritingAtomic error:&error];
-    if (error) {
-      NSLog(@"Error! Cannot write image file: [%@] error: %@", pathWithType, error.localizedDescription);
-      return;
-    }
-  }
-}
-
 - (void)advanceNextResponder:(UIView *)textEditingView {
 
   NSInteger tag = textEditingView.tag;
@@ -278,15 +195,6 @@
 - (void)stopObservingKeyboardEvents {
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-}
-
-#pragma mark - UITabBarControllerDelegate
-
-- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
-  if (![viewController isKindOfClass:[EditViewController class]]) {
-    [self saveUserInput];    
-  }
-  return YES;
 }
 
 #pragma mark - UITextFieldDelegate
