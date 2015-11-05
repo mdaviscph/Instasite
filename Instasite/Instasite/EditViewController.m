@@ -7,52 +7,40 @@
 //
 
 #import "EditViewController.h"
+#import "SegmentedControl.h"
+#import "TemplateTabBarController.h"
 #import "Extensions.h"
 #import "HtmlTemplate.h"
-#import "TemplateInput.h"
-#import "Feature.h"
-#import "JsonService.h"
+#import "UserInput.h"
+#import "InputGroup.h"
+#import "InputCategory.h"
+#import "InputField.h"
 #import "Constants.h"
-#import "TemplateTabBarController.h"
-#import "PublishViewController.h"
-#import <SSKeychain/SSKeychain.h>
-#import "FileManager.h"
-#import "SegmentedControl.h"
+#import "FileService.h"
 
-@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, SegmentedControlDelegate, UITabBarControllerDelegate>
+@interface EditViewController () <UITextFieldDelegate, UITextViewDelegate, SegmentedControlDelegate>
 
-@property (weak, nonatomic) IBOutlet UIStackView *topStackView;
-@property (weak, nonatomic) IBOutlet UIStackView *bottomStackView;
-@property (weak, nonatomic) IBOutlet SegmentedControl *featureSegmentedControl;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topStackViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet UIStackView *stackView;
+@property (weak, nonatomic) IBOutlet SegmentedControl *groupSegmentedControl;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *groupSegmentedControlConstraint;
+@property (weak, nonatomic) IBOutlet SegmentedControl *categorySegmentedControl;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *categorySegmentedControlConstraint;
+@property (weak, nonatomic) IBOutlet UIView *temporaryFillerView;
 
-@property (strong, nonatomic) NSArray *featureMarkers;
-@property (strong, nonatomic) NSArray *imageRefMarkers;
+@property (strong, nonatomic) UIView *lastTextEditingView;
+@property (nonatomic) NSInteger maxFieldTag;
 
-@property (nonatomic) NSUInteger topStackSpacing;
-@property (nonatomic) NSUInteger bottomStackSpacing;
-@property (nonatomic) NSUInteger topTextViewHeight;
-@property (nonatomic) NSUInteger bottomTextViewHeight;
-@property (nonatomic) NSUInteger imageButtonHeight;
-@property (nonatomic) UIView *lastTextEditingView;
+@property (strong, nonatomic) NSArray *sortedGroupKeys;
+@property (strong, nonatomic) NSArray *sortedCategoryKeys;
+@property (strong, nonatomic) NSString *selectedGroupName;
+@property (strong, nonatomic) NSString *selectedCategoryName;
+
+@property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 
 @end
 
 @implementation EditViewController
-
-- (NSArray *)featureMarkers {
-  if (!_featureMarkers) {
-    _featureMarkers = self.tabBarVC.templateMarkers[kFeatureArray];
-  }
-  return _featureMarkers;
-}
-- (NSArray *)imageRefMarkers {
-  if (!_imageRefMarkers) {
-    _imageRefMarkers = self.tabBarVC.templateMarkers[kImageRefArray];
-  }
-  return _imageRefMarkers;
-}
 
 - (void)setLastTextEditingView:(UIView *)lastTextEditingView {
   [_lastTextEditingView endEditing:YES];
@@ -64,82 +52,25 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   
+  [self.temporaryFillerView removeFromSuperview];
+  
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
-  self.tabBarVC.delegate = self;
 
-  [self.featureSegmentedControl removeAllSegments];
-  for (NSUInteger index = 0; index < self.featureMarkers.count; index++) {
-    [self.featureSegmentedControl insertSegmentWithTitle:[NSString stringWithFormat:@"Feature %lu", index+1] atIndex:index animated:YES];
-  }
-
-  NSData *jsonData = [JsonService readJsonFile:self.tabBarVC.userJsonURL];
-  if (jsonData) {
-    self.userInput = [JsonService templateInputFrom:jsonData];
-    [self insertUserInputIntoTemplateCopy];
-  } else {
-    self.userInput = [[TemplateInput alloc] initWithFeatureCount:self.featureMarkers.count imageCount:self.imageRefMarkers.count];
-  }
-
-  self.topStackSpacing = 6;
-  self.topTextViewHeight = 60;
-  self.bottomStackSpacing = 6;
-  self.bottomTextViewHeight = 60;
-  self.imageButtonHeight = 80;
+  self.groupSegmentedControl.delegate = self;
+  self.categorySegmentedControl.delegate = self;
   
-  NSUInteger topStackHeight = 0;
-  self.topStackViewHeightConstraint.active = NO;
-  
-  self.topStackView.axis = UILayoutConstraintAxisVertical;
-  self.topStackView.spacing = self.topStackSpacing;
-  self.bottomStackView.axis = UILayoutConstraintAxisVertical;
-  self.bottomStackView.spacing = self.bottomStackSpacing;
+  self.sortedGroupKeys = [self sortGroupKeys:self.tabBarVC.userInput.groups];
+  self.selectedGroupName = self.sortedGroupKeys.firstObject;
+  [self.groupSegmentedControl resetWithTitles:self.sortedGroupKeys];
 
-  if (self.tabBarVC.templateMarkers[kMarkerTitle]) {
-    UITextField *titleField = [[UITextField alloc] initWithMarkerType:HtmlMarkerTitle text:self.userInput.title placeholder:@"Title text..." borderStyle:UITextBorderStyleRoundedRect];
-    titleField.delegate = self;
-    [self.topStackView addArrangedSubview:titleField];
-    topStackHeight += titleField.intrinsicContentSize.height + self.topStackSpacing;
-  }
-  if (self.tabBarVC.templateMarkers[kMarkerSubtitle]) {
-    UITextField *subtitleField = [[UITextField alloc] initWithMarkerType:HtmlMarkerSubtitle text:self.userInput.subtitle placeholder:@"Subtitle text..." borderStyle:UITextBorderStyleRoundedRect];
-    subtitleField.delegate = self;
-    [self.topStackView addArrangedSubview:subtitleField];
-    topStackHeight += subtitleField.intrinsicContentSize.height + self.topStackSpacing;
-  }
-  if (self.tabBarVC.templateMarkers[kMarkerSummary]) {
-    UITextView *summaryTextView = [[UITextView alloc] initWithMarkerType:HtmlMarkerSummary text:self.userInput.summary placeholder:@"Summary text..." borderStyle:UITextBorderStyleRoundedRect];
-    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:summaryTextView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.topTextViewHeight];
-    constraint.active = YES;
-    summaryTextView.delegate = self;
-    [self.topStackView addArrangedSubview:summaryTextView];
-    topStackHeight += self.topTextViewHeight + self.topStackSpacing;
-  }
-  if (self.tabBarVC.templateMarkers[kMarkerCopyright]) {
-    UITextField *copyrightField = [[UITextField alloc] initWithMarkerType:HtmlMarkerCopyright text:self.userInput.copyright placeholder:@"Copyright text..." borderStyle:UITextBorderStyleRoundedRect];
-    copyrightField.delegate = self;
-    [self.topStackView addArrangedSubview:copyrightField];
-    topStackHeight += copyrightField.intrinsicContentSize.height + self.topStackSpacing;
-  }
-  NSLayoutConstraint *topStackHeightConstraint = [NSLayoutConstraint constraintWithItem:self.topStackView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:topStackHeight];
-  topStackHeightConstraint.active = YES;
-
-  self.featureSegmentedControl.delegate = self;
-  self.selectedFeature = 0;
-  self.featureSegmentedControl.selectedSegmentIndex = self.selectedFeature;
-  [self addFeatureControlsForFeature:self.selectedFeature];
+  [self reloadGroup];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
 
-  self.navigationController.navigationBarHidden = NO;
   self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
-  self.tabBarVC.navigationItem.rightBarButtonItem = nil;
-  self.tabBarVC.navigationItem.leftBarButtonItem = nil;
-  
-  [self.tabBarVC.templateCopy resetToOriginal];
-  [self assignImageRefsToUserInput];
-  [self insertUserInputIntoTemplateCopy];
+  self.tabBarVC.navigationItem.rightBarButtonItems = nil;
   
   [self startObservingKeyboardEvents];
 }
@@ -149,176 +80,13 @@
   [self stopObservingKeyboardEvents];
 }
 
-#pragma mark - Helper Methods
-
-- (void)reloadFeature {
-  [self switchToFeature:-1];
-}
-
-- (void)switchToFeature:(NSInteger)index {
-  for (UIView *subview in self.bottomStackView.arrangedSubviews) {
-    [self.bottomStackView removeArrangedSubview:subview];
-    [subview removeFromSuperview];
-  }
-  self.selectedFeature = index >= 0 ? index : self.selectedFeature;
-  [self addFeatureControlsForFeature:self.selectedFeature];
-}
-
-- (void)addFeatureControlsForFeature:(NSInteger)index {
-
-  NSUInteger bottomStackHeight = 0;
-
-  NSArray *features = self.tabBarVC.templateMarkers[kFeatureArray];
-  if (index < 0 || index >= features.count) {
-    return;
-  }
-  Feature *feature = self.userInput.features[index];
-  
-  NSDictionary *featureDict = features[index];
-  if (featureDict[kMarkerHead]) {
-    UITextField *headlineField = [[UITextField alloc] initWithMarkerType:HtmlMarkerHeadline text:feature.headline placeholder:@"Headline text..." borderStyle:UITextBorderStyleRoundedRect];
-    headlineField.delegate = self;
-    [self.bottomStackView addArrangedSubview:headlineField];
-    bottomStackHeight += headlineField.intrinsicContentSize.height + self.bottomStackSpacing;
-  }
-  if (featureDict[kMarkerSub]) {
-    UITextField *subheadlineField = [[UITextField alloc] initWithMarkerType:HtmlMarkerSubheadline text:feature.subheadline placeholder:@"Subheadline text..." borderStyle:UITextBorderStyleRoundedRect];
-    subheadlineField.delegate = self;
-    [self.bottomStackView addArrangedSubview:subheadlineField];
-    bottomStackHeight += subheadlineField.intrinsicContentSize.height + self.bottomStackSpacing;
-  }
-  if (featureDict[kMarkerBody]) {
-    UITextView *bodyTextView = [[UITextView alloc] initWithMarkerType:HtmlMarkerBody text:feature.body placeholder:@"Body text..." borderStyle:UITextBorderStyleRoundedRect];
-    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:bodyTextView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.bottomTextViewHeight];
-    constraint.active = YES;
-    bodyTextView.delegate = self;
-    [self.bottomStackView addArrangedSubview:bodyTextView];
-    bottomStackHeight += self.bottomTextViewHeight + self.bottomStackSpacing;
-  }
-}
-
-- (void)assignImageRefsToUserInput {
-  
-  NSMutableArray *imageRefs = [[NSMutableArray alloc] init];
-  for (NSUInteger index = 0; index < self.tabBarVC.images.count; index++) {
-    
-    NSString *imageFile = [NSString stringWithFormat:@"%@%02lu", kTemplateImagePrefix, index + 1];
-    NSString *relativeFilepath = [kTemplateImageDirectory stringByAppendingPathComponent:imageFile];
-    NSString *relativePathWithType = [relativeFilepath stringByAppendingPathExtension:kTemplateImageExtension];
-    
-    [imageRefs addObject:relativePathWithType];
-  }
-  self.userInput.imageRefs = imageRefs;
-}
-
-- (void)insertUserInputIntoTemplateCopy {
-  
-  [self.tabBarVC.templateCopy insertTitle:self.userInput.title];
-  [self.tabBarVC.templateCopy insertSubtitle:self.userInput.subtitle];
-  [self.tabBarVC.templateCopy insertSummary:self.userInput.summary];
-  [self.tabBarVC.templateCopy insertCopyright:self.userInput.copyright];
-  for (NSUInteger index = 0; index < self.userInput.features.count; index++) {
-    Feature *feature = self.userInput.features[index];
-    [self.tabBarVC.templateCopy insertFeature:index headline:feature.headline];
-    [self.tabBarVC.templateCopy insertFeature:index subheadline:feature.subheadline];
-    [self.tabBarVC.templateCopy insertFeature:index body:feature.body];
-  }
-  for (NSUInteger index = 0; index < self.userInput.imageRefs.count; index++) {
-    [self.tabBarVC.templateCopy insertImageReference:index imageSource:self.userInput.imageRefs[index]];
-  }
-}
-
-- (void)saveUserInput {
-  self.lastTextEditingView = nil;
-  
-  NSLog(@"saveUserInput");
-  NSData *jsonData = [JsonService fromTemplateInput:self.userInput];
-  [JsonService writeJsonFile:jsonData fileURL:self.tabBarVC.userJsonURL];
-  
-  [self writeIndexHtmlFile];
-  [self writeImageFiles];
-}
-
-- (BOOL)writeIndexHtmlFile {
-  
-  if ([self.tabBarVC.templateCopy writeToURL:self.tabBarVC.indexHtmlURL]) {
-    return YES;
-  }
-  return NO;
-}
-
-- (void)writeImageFiles {
-  
-  NSFileManager *fileManager = [NSFileManager defaultManager];
-  NSString *workingDirectory = [self.tabBarVC.documentsDirectory stringByAppendingPathComponent:self.tabBarVC.templateDirectory];
-  NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImageDirectory];
-
-  if (self.tabBarVC.images.count > 0) {
-    if (![fileManager fileExistsAtPath:imagesDirectory isDirectory:nil]) {
-      NSError *error;
-      [fileManager createDirectoryAtPath:imagesDirectory withIntermediateDirectories:NO attributes:nil error:&error];
-      if (error) {
-        NSLog(@"Error! Cannot create directory: [%@] error: %@", imagesDirectory, error.localizedDescription);
-        return;
-      }
-    }
-  }
-
-  for (NSUInteger index = 0; index < self.tabBarVC.images.count; index++) {
-    
-    UIImage *image = self.tabBarVC.images[index];
-    NSData *data = UIImageJPEGRepresentation(image, 1.0);
-    
-    NSString *imageFile = [NSString stringWithFormat:@"%@%02lu", kTemplateImagePrefix, index + 1];
-    NSString *filepath = [imagesDirectory stringByAppendingPathComponent:imageFile];
-    NSString *pathWithType = [filepath stringByAppendingPathExtension:kTemplateImageExtension];
-    
-    //NSLog(@"Writing image file: %@", pathWithType);
-    NSError *error;
-    [data writeToFile:pathWithType options:NSDataWritingAtomic error:&error];
-    if (error) {
-      NSLog(@"Error! Cannot write image file: [%@] error: %@", pathWithType, error.localizedDescription);
-      return;
-    }
-  }
-}
-
-- (void)advanceNextResponder:(UIView *)textEditingView {
-
-  NSInteger tag = textEditingView.tag;
-  UIView *parentView = self.topStackView;
-  UIResponder* nextResponder;
-  do {
-    if (tag >= HtmlMarkerTextEditStartOfFeature) {
-      parentView = self.bottomStackView;
-    }
-    nextResponder = [parentView viewWithTag:++tag];
-  } while (!nextResponder && tag < HtmlMarkerTextEditEndOfFeature);
-  if (nextResponder) {
-    [nextResponder becomeFirstResponder];
-  } else {
-    [textEditingView resignFirstResponder];
-  }
-}
-
-- (void)startObservingKeyboardEvents {
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-}
-- (void)stopObservingKeyboardEvents {
-  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-}
-
 #pragma mark - IBActions, Selector Methods
 
-- (IBAction)featureSegmentedControlChange:(UISegmentedControl *)sender {
-  [self switchToFeature:sender.selectedSegmentIndex];
+- (IBAction)groupSegmentedControlChange:(SegmentedControl *)sender {
+  [self switchToGroup:sender.selectedSegmentIndex];
 }
-
-- (void)saveButtonTapped {
-  
-  [self saveUserInput];
+- (IBAction)categorySegmentedControlChange:(SegmentedControl *)sender {
+  [self switchToCategory:sender.selectedSegmentIndex];
 }
 
 - (void)doneButtonTapped {
@@ -336,13 +104,108 @@
   self.scrollView.contentInset = UIEdgeInsetsZero;
 }
 
-#pragma mark - UITabBarControllerDelegate
+#pragma mark - Helper Methods
 
-- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
-  if (![viewController isKindOfClass:[EditViewController class]]) {
-    [self saveUserInput];    
+- (NSArray *)sortGroupKeys:(InputGroupDictionary *)groups {
+  return [groups keysSortedByValueUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    return [(InputGroup *)obj1 tag] > [(InputGroup *)obj2 tag] ? NSOrderedDescending : NSOrderedAscending;
+  }];
+}
+- (NSArray *)sortCategoryKeys:(InputCategoryDictionary *)groups {
+  return [groups keysSortedByValueUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    return [(InputCategory *)obj1 tag] > [(InputCategory *)obj2 tag] ? NSOrderedDescending : NSOrderedAscending;
+  }];
+}
+
+- (void)reloadGroup {
+  [self switchToGroup:-1];
+}
+- (void)reloadCategory {
+  [self switchToCategory:-1];
+}
+
+- (void)switchToGroup:(NSInteger)index {
+  self.selectedGroupName = index >= 0 ? self.sortedGroupKeys[index] : self.selectedGroupName;
+  BOOL hideGroupSegmentedControl = self.sortedGroupKeys.count <= 1;
+  self.groupSegmentedControl.hidden = hideGroupSegmentedControl;
+  self.groupSegmentedControlConstraint.active = !hideGroupSegmentedControl;
+  
+  InputGroup *group = self.tabBarVC.userInput.groups[self.selectedGroupName];
+  self.sortedCategoryKeys = [self sortCategoryKeys:group.categories];
+  self.selectedCategoryName = self.sortedCategoryKeys.firstObject;
+  [self.categorySegmentedControl resetWithTitles:self.sortedCategoryKeys];
+  [self switchToCategory:0];
+}
+- (void)switchToCategory:(NSInteger)index {
+  for (UIView *subview in self.stackView.arrangedSubviews) {
+    if (![subview isKindOfClass:[SegmentedControl class]]) {
+      [self.stackView removeArrangedSubview:subview];
+      [subview removeFromSuperview];
+    }
   }
-  return YES;
+  self.selectedCategoryName = index >= 0 ? self.sortedCategoryKeys[index] : self.selectedCategoryName;
+  BOOL hideCategorySegmentedControl = self.sortedCategoryKeys.count <= 1;
+  self.categorySegmentedControl.hidden = hideCategorySegmentedControl;
+  self.categorySegmentedControlConstraint.active = !hideCategorySegmentedControl;
+  
+  [self addControlsForFieldsInGroup:self.selectedGroupName andCategory:self.selectedCategoryName];
+}
+
+- (void)addControlsForFieldsInGroup:(NSString *)groupName andCategory:(NSString *)categoryName {
+
+  InputGroup *group = self.tabBarVC.userInput.groups[groupName];
+  InputCategoryDictionary *categories = group.categories;
+  InputCategory *category = categories[categoryName];
+  InputFieldDictionary *fields = category.fields;
+  NSArray *sortedFieldKeys = [fields keysSortedByValueUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    return [(InputField *)obj1 tag] > [(InputField *)obj2 tag] ? NSOrderedDescending : NSOrderedAscending;
+  }];
+  
+  self.maxFieldTag = 0;
+  for (NSString *fieldName in sortedFieldKeys) {
+    
+    InputField *field = fields[fieldName];
+    self.maxFieldTag = MAX(self.maxFieldTag, field.tag);
+
+    if (field.type == FieldTXF) {
+      NSString *placeholder = field.placeholder ? [NSString stringWithFormat:@"%@: %@", fieldName, field.placeholder] : fieldName;
+      UITextField *textField = [[UITextField alloc] initWithTag:field.tag text:field.text placeholder:placeholder borderStyle:UITextBorderStyleRoundedRect];
+      textField.delegate = self;
+      [self.stackView addArrangedSubview:textField];
+      
+    } else if (field.type == FieldTXV) {
+      NSString *placeholder = field.placeholder ? [NSString stringWithFormat:@"%@: %@", fieldName, field.placeholder] : fieldName;
+      UITextView *textView = [[UITextView alloc] initWithTag:field.tag text:field.text placeholder:placeholder borderStyle:UITextBorderStyleRoundedRect];
+      textView.delegate = self;
+      NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:textView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:120];
+      constraint.active = YES;
+      [self.stackView addArrangedSubview:textView];
+    }
+  }
+}
+
+- (void)advanceNextResponder:(UIView *)textEditingView {
+
+  NSInteger tag = textEditingView.tag;
+  UIView *parentView = self.stackView;
+  UIResponder* nextResponder;
+  do {
+    nextResponder = [parentView viewWithTag:++tag];
+  } while (!nextResponder && tag <= self.maxFieldTag);
+  if (nextResponder) {
+    [nextResponder becomeFirstResponder];
+  } else {
+    [textEditingView resignFirstResponder];
+  }
+}
+
+- (void)startObservingKeyboardEvents {
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+- (void)stopObservingKeyboardEvents {
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
 #pragma mark - UITextFieldDelegate
@@ -357,62 +220,29 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
+  InputGroup *group = self.tabBarVC.userInput.groups[self.selectedGroupName];
+  InputCategoryDictionary *categories = group.categories;
+  InputCategory *category = categories[self.selectedCategoryName];
   
-  switch (textField.tag) {
-    case HtmlMarkerTitle:
-      [self.tabBarVC.templateCopy insertTitle:textField.text];
-      self.userInput.title = textField.text;
-      break;
-    case HtmlMarkerSubtitle:
-      [self.tabBarVC.templateCopy insertSubtitle:textField.text];
-      self.userInput.subtitle = textField.text;
-      break;
-    case HtmlMarkerHeadline:
-    {
-      [self.tabBarVC.templateCopy insertFeature: self.selectedFeature headline:textField.text];
-      Feature *feature = self.userInput.features[self.selectedFeature];
-      feature.headline = textField.text;
-      break;
-    }
-    case HtmlMarkerSubheadline:
-    {
-      [self.tabBarVC.templateCopy insertFeature: self.selectedFeature subheadline:textField.text];
-      Feature *feature = self.userInput.features[self.selectedFeature];
-      feature.subheadline = textField.text;
-      break;
-    }
-    case HtmlMarkerCopyright:
-      [self.tabBarVC.templateCopy insertCopyright:textField.text];
-      self.userInput.copyright = textField.text;
-      break;
-  }
+  [category setFieldText:textField.text forTag:textField.tag];
 }
-
 
 #pragma mark - UITextViewDelegate
 
 -(void)textViewDidBeginEditing:(UITextView *)textView {
-
   [textView clearPlaceholder];
   self.lastTextEditingView = textView;
   self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneButtonTapped)];
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
-
   self.tabBarVC.navigationItem.rightBarButtonItem = nil;
-  switch (textView.tag) {
-    case HtmlMarkerSummary:
-      [self.tabBarVC.templateCopy insertSummary:textView.text];
-      break;
-    case HtmlMarkerBody:
-    {
-      [self.tabBarVC.templateCopy insertFeature: self.selectedFeature body:textView.text];
-      Feature *feature = self.userInput.features[self.selectedFeature];
-      feature.body = textView.text;
-      break;
-    }
-  }
+  
+  InputGroup *group = self.tabBarVC.userInput.groups[self.selectedGroupName];
+  InputCategoryDictionary *categories = group.categories;
+  InputCategory *category = categories[self.selectedCategoryName];
+  
+  [category setFieldText:textView.text forTag:textView.tag];
 }
 
 #pragma mark - SegmentedControlDelegate

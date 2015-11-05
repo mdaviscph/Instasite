@@ -1,33 +1,47 @@
 {
-templates:
+groups:
   [
      {
-     title: "sample title",
-     subtitle: "sample subtitle",
-     summary: "sample summary",
-     copyright: "sample copyright",
-     features:
-         [
-          {
-              headline: "sample headline",
-              subheadline: "sample subheadline",
-              body: "sample body"
-          },
-          {
-              headline: "sample headline",
-              subheadline: "sample subheadline",
-              body: "sample body"
-          }
-          ],
-     images:
+     name: "Header",
+     categories:
         [
           {
-            imageSrc: "img/image01.jpeg"
+          name: Header,
+          fields:
+             {
+             Navigation: "Sample Navigation",
+             Title: "Sample Title",
+             Subtitle: "Sample Subtitle",
+             HeaderImage: "img/header image.jpg"
+             }
+          }
+        ]
+     },
+     {
+     name: "Section",
+     categories:
+        [
+          {
+          name: About,
+          fields:
+              {
+              Headline1: "Sample Sbout headline",
+              Headline2: "Sample About subheadline",
+              Lead: "Sample About Lead",
+              Image1: "img/Image1.jpeg"
+              }
           },
           {
-            imageSrc: "img/image02.jpeg"
+          name: Services,
+          fields:
+             {
+             Headline1: "Sample Services headline",
+             Headline2: "Sample Services subheadline",
+             Lead: "Sample Services lead",
+             Image2: "img/Image2.jpeg"
+             }
           }
-        ],
+        ]
      }
   ]
 }

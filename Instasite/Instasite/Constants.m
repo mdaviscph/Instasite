@@ -18,14 +18,13 @@ NSString *const kUserDefaultsNameKey = @"userName";
 NSString *const kUserDefaultsFullNameKey = @"fullName";
 NSString *const kUserDefaultsEmailKey = @"userEmail";
 
-NSString *const kTemplateIndexFilename = @"index";
-NSString *const kTemplateIndexExtension = @"html";
-NSString *const kTemplateMarkerFilename = @"instasite";
-NSString *const kTemplateMarkerExtension = @"html";
-NSString *const kTemplateJsonFilename = @"instasite";
-NSString *const kTemplateJsonExtension = @"json";
-NSString *const kTemplateImageDirectory = @"img";
-NSString *const kTemplateImagePrefix = @"image";
-NSString *const kTemplateImageExtension = @"jpeg";
+NSString *const kFileIndexName = @"index";
+NSString *const kFileHtmlExtension = @"html";
+NSString *const kFileTemplateExtension = @"instasite";
+NSString *const kFileJsonName = @"instasite";
+NSString *const kFileJsonExtension = @"json";
+NSString *const kFileImageDirectory = @"img";
+NSString *const kFileImageExtension = @"jpeg";
 
 NSString *const kBranchName = @"gh-pages";
+NSString *const kUnpublishedName = @"unpublished";

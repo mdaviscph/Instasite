@@ -16,4 +16,12 @@
   [super touchesBegan:touches withEvent:event];
 }
 
+- (void)resetWithTitles:(NSArray<NSString *> *)titles {
+  [self removeAllSegments];
+  for (NSUInteger index = 0; index < titles.count; index++) {
+    [self insertSegmentWithTitle:titles[index] atIndex:index animated:YES];
+  }
+  [self setSelectedSegmentIndex:0];
+}
+
 @end

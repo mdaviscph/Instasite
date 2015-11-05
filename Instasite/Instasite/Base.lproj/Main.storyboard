@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="uqi-dE-Odg">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="uqi-dE-Odg">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -29,30 +29,86 @@
             <point key="canvasLocation" x="1336" y="424"/>
         </scene>
         <!--Images-->
-        <scene sceneID="b18-Ic-6bi">
+        <scene sceneID="8bI-M8-VVb">
             <objects>
-                <collectionViewController id="5qJ-X2-bnl" customClass="ImagesViewController" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="nZb-MG-hTd">
-                        <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                <viewController id="f5x-1K-ubz" customClass="ImagesViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="yoA-BW-PVK"/>
+                        <viewControllerLayoutGuide type="bottom" id="yr1-p7-one"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="gQQ-pt-ARv">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="M8E-VV-gWS">
-                            <size key="itemSize" width="150" height="150"/>
-                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                        </collectionViewFlowLayout>
-                        <cells/>
-                        <connections>
-                            <outlet property="dataSource" destination="5qJ-X2-bnl" id="UO8-Jv-a3h"/>
-                            <outlet property="delegate" destination="5qJ-X2-bnl" id="VUm-Mt-4O6"/>
-                        </connections>
-                    </collectionView>
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Images" id="t2U-iZ-n1D"/>
-                </collectionViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="XFc-GG-KKx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ZnB-jc-ORz">
+                                <rect key="frame" x="20" y="72" width="560" height="471"/>
+                                <subviews>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="U2T-e4-Mcc" customClass="SegmentedControl">
+                                        <rect key="frame" x="0.0" y="0.0" width="560" height="29"/>
+                                        <animations/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="28" id="tqE-WE-KT0"/>
+                                        </constraints>
+                                        <segments>
+                                            <segment title="First"/>
+                                            <segment title="Second"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="groupSegmentedControlChange:" destination="f5x-1K-ubz" eventType="valueChanged" id="1G5-bf-lui"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dbG-Ao-s3F" customClass="SegmentedControl">
+                                        <rect key="frame" x="0.0" y="36" width="560" height="29"/>
+                                        <animations/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="28" id="ZNX-rj-kPb"/>
+                                        </constraints>
+                                        <segments>
+                                            <segment title="First"/>
+                                            <segment title="Second"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="categorySegmentedControlChange:" destination="f5x-1K-ubz" eventType="valueChanged" id="x2u-bV-lsg"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="l4e-6Q-hHJ">
+                                        <rect key="frame" x="0.0" y="72" width="560" height="399"/>
+                                        <animations/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="8" minimumInteritemSpacing="8" id="HzM-tl-LrB">
+                                            <size key="itemSize" width="165" height="165"/>
+                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        </collectionViewFlowLayout>
+                                        <cells/>
+                                    </collectionView>
+                                </subviews>
+                                <animations/>
+                            </stackView>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ZnB-jc-ORz" firstAttribute="trailing" secondItem="gQQ-pt-ARv" secondAttribute="trailingMargin" id="F9a-3A-KvM"/>
+                            <constraint firstItem="ZnB-jc-ORz" firstAttribute="leading" secondItem="gQQ-pt-ARv" secondAttribute="leadingMargin" id="NSv-8N-iVP"/>
+                            <constraint firstItem="yr1-p7-one" firstAttribute="top" secondItem="ZnB-jc-ORz" secondAttribute="bottom" constant="8" symbolic="YES" id="fY3-Tx-9rK"/>
+                            <constraint firstItem="ZnB-jc-ORz" firstAttribute="top" secondItem="yoA-BW-PVK" secondAttribute="bottom" constant="8" symbolic="YES" id="yki-Hf-bBY"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Images" id="KYS-in-1kO"/>
+                    <connections>
+                        <outlet property="categorySegmentedControl" destination="dbG-Ao-s3F" id="SYE-aN-Y8G"/>
+                        <outlet property="categorySegmentedControlConstraint" destination="ZNX-rj-kPb" id="B1Y-aC-dRZ"/>
+                        <outlet property="collectionView" destination="l4e-6Q-hHJ" id="eAJ-0P-vbK"/>
+                        <outlet property="groupSegmentedControl" destination="U2T-e4-Mcc" id="NeL-az-sga"/>
+                        <outlet property="groupSegmentedControlConstraint" destination="tqE-WE-KT0" id="FNQ-0E-Qkq"/>
+                        <outlet property="stackView" destination="ZnB-jc-ORz" id="h3V-c2-Vga"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yD0-nE-r32" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2731" y="-41"/>
+            <point key="canvasLocation" x="2731" y="-117"/>
         </scene>
         <!--Add Text-->
         <scene sceneID="9Ca-Ww-Hpo">
@@ -66,65 +122,81 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iqw-Yl-eQ5">
-                                <rect key="frame" x="10" y="72" width="580" height="471"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7IO-Mo-a1o">
+                                <rect key="frame" x="20" y="72" width="560" height="471"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="GWe-sO-Qfx">
-                                        <rect key="frame" x="0.0" y="0.0" width="580" height="471"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="j25-iT-HQM">
+                                        <rect key="frame" x="0.0" y="0.0" width="560" height="471"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="LoP-vg-X4q">
-                                                <rect key="frame" x="0.0" y="0.0" width="580" height="200"/>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="5ba-jc-3v3" customClass="SegmentedControl">
+                                                <rect key="frame" x="0.0" y="0.0" width="560" height="29"/>
+                                                <animations/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="200" id="tWb-o5-Ngf"/>
-                                                </constraints>
-                                            </stackView>
-                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Vei-hf-UBf" customClass="SegmentedControl">
-                                                <rect key="frame" x="0.0" y="208" width="580" height="31"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="30" id="E5G-jd-JBp"/>
+                                                    <constraint firstAttribute="height" constant="28" id="UU1-2D-jZj"/>
                                                 </constraints>
                                                 <segments>
                                                     <segment title="First"/>
                                                     <segment title="Second"/>
-                                                    <segment title=""/>
-                                                    <segment title=""/>
-                                                    <segment title=""/>
                                                 </segments>
                                                 <connections>
-                                                    <action selector="featureSegmentedControlChange:" destination="SZ7-UW-qUr" eventType="valueChanged" id="ia1-NL-avR"/>
+                                                    <action selector="groupSegmentedControlChange:" destination="SZ7-UW-qUr" eventType="valueChanged" id="N1C-AS-Zzx"/>
                                                 </connections>
                                             </segmentedControl>
-                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="5Mb-y8-j5f">
-                                                <rect key="frame" x="0.0" y="246" width="580" height="225"/>
-                                            </stackView>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="75f-eY-A0W" customClass="SegmentedControl">
+                                                <rect key="frame" x="0.0" y="36" width="560" height="29"/>
+                                                <animations/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="28" id="jmN-BT-mHy"/>
+                                                </constraints>
+                                                <segments>
+                                                    <segment title="First"/>
+                                                    <segment title="Second"/>
+                                                </segments>
+                                                <connections>
+                                                    <action selector="categorySegmentedControlChange:" destination="SZ7-UW-qUr" eventType="valueChanged" id="uTj-U9-KWS"/>
+                                                </connections>
+                                            </segmentedControl>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d52-6W-eJL">
+                                                <rect key="frame" x="0.0" y="72" width="560" height="399"/>
+                                                <animations/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="560" id="Se2-8M-Obs"/>
+                                                    <constraint firstAttribute="height" constant="399" id="qIs-l9-Wxd"/>
+                                                </constraints>
+                                            </view>
                                         </subviews>
+                                        <animations/>
                                     </stackView>
                                 </subviews>
+                                <animations/>
                                 <constraints>
-                                    <constraint firstItem="GWe-sO-Qfx" firstAttribute="width" secondItem="iqw-Yl-eQ5" secondAttribute="width" id="5ad-Qe-Zzr"/>
-                                    <constraint firstAttribute="bottom" secondItem="GWe-sO-Qfx" secondAttribute="bottom" id="LRl-Kl-6wR"/>
-                                    <constraint firstItem="GWe-sO-Qfx" firstAttribute="leading" secondItem="iqw-Yl-eQ5" secondAttribute="leadingMargin" constant="-8" id="P4a-Qm-qlz"/>
-                                    <constraint firstItem="GWe-sO-Qfx" firstAttribute="trailing" secondItem="iqw-Yl-eQ5" secondAttribute="trailingMargin" constant="8" id="V4R-HX-4GQ"/>
-                                    <constraint firstItem="GWe-sO-Qfx" firstAttribute="top" secondItem="iqw-Yl-eQ5" secondAttribute="top" id="gk9-OY-LwD"/>
-                                    <constraint firstItem="GWe-sO-Qfx" firstAttribute="height" secondItem="iqw-Yl-eQ5" secondAttribute="height" id="jXg-L4-2NB"/>
+                                    <constraint firstItem="j25-iT-HQM" firstAttribute="centerX" secondItem="7IO-Mo-a1o" secondAttribute="centerX" id="Bfo-vX-XjY"/>
+                                    <constraint firstItem="j25-iT-HQM" firstAttribute="top" secondItem="7IO-Mo-a1o" secondAttribute="top" id="J2K-Mf-5bv"/>
+                                    <constraint firstItem="j25-iT-HQM" firstAttribute="leading" secondItem="7IO-Mo-a1o" secondAttribute="leading" id="fXx-Xf-Ny4"/>
+                                    <constraint firstAttribute="bottom" secondItem="j25-iT-HQM" secondAttribute="bottom" id="p1k-UG-AVh"/>
+                                    <constraint firstAttribute="trailing" secondItem="j25-iT-HQM" secondAttribute="trailing" id="u8a-UX-Nh7"/>
                                 </constraints>
                             </scrollView>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="iqw-Yl-eQ5" firstAttribute="top" secondItem="xws-vy-ar3" secondAttribute="bottom" constant="8" symbolic="YES" id="42e-0N-PgH"/>
-                            <constraint firstAttribute="trailing" secondItem="iqw-Yl-eQ5" secondAttribute="trailing" constant="10" id="79g-W8-dmf"/>
-                            <constraint firstItem="IqI-OG-ugl" firstAttribute="top" secondItem="iqw-Yl-eQ5" secondAttribute="bottom" constant="8" id="TB9-iG-0lm"/>
-                            <constraint firstItem="iqw-Yl-eQ5" firstAttribute="leading" secondItem="GC1-Qo-Uut" secondAttribute="leading" constant="10" id="VzB-tw-uNG"/>
+                            <constraint firstItem="7IO-Mo-a1o" firstAttribute="top" secondItem="xws-vy-ar3" secondAttribute="bottom" constant="8" symbolic="YES" id="cTD-LH-Xse"/>
+                            <constraint firstItem="7IO-Mo-a1o" firstAttribute="leading" secondItem="GC1-Qo-Uut" secondAttribute="leadingMargin" id="fOF-i8-kRH"/>
+                            <constraint firstItem="IqI-OG-ugl" firstAttribute="top" secondItem="7IO-Mo-a1o" secondAttribute="bottom" constant="8" symbolic="YES" id="fRP-dF-vfM"/>
+                            <constraint firstItem="7IO-Mo-a1o" firstAttribute="trailing" secondItem="GC1-Qo-Uut" secondAttribute="trailingMargin" id="oEu-EG-j6m"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Add Text" id="DSz-Lk-E90"/>
                     <connections>
-                        <outlet property="bottomStackView" destination="5Mb-y8-j5f" id="YMO-LD-g0x"/>
-                        <outlet property="featureSegmentedControl" destination="Vei-hf-UBf" id="jWZ-Hu-Eij"/>
-                        <outlet property="scrollView" destination="iqw-Yl-eQ5" id="hQu-C3-J1E"/>
-                        <outlet property="topStackView" destination="LoP-vg-X4q" id="VgW-54-RSb"/>
-                        <outlet property="topStackViewHeightConstraint" destination="tWb-o5-Ngf" id="A22-r5-5CM"/>
+                        <outlet property="categorySegmentedControl" destination="75f-eY-A0W" id="edY-LU-pSz"/>
+                        <outlet property="categorySegmentedControlConstraint" destination="jmN-BT-mHy" id="y2m-A0-jMI"/>
+                        <outlet property="groupSegmentedControl" destination="5ba-jc-3v3" id="A8V-Ab-xw3"/>
+                        <outlet property="groupSegmentedControlConstraint" destination="UU1-2D-jZj" id="uV8-fT-7Nz"/>
+                        <outlet property="scrollView" destination="7IO-Mo-a1o" id="YXv-5k-dBB"/>
+                        <outlet property="stackView" destination="j25-iT-HQM" id="hIw-bt-mLm"/>
+                        <outlet property="temporaryFillerView" destination="d52-6W-eJL" id="9IH-23-5Af"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pUb-4v-eaj" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -168,16 +240,20 @@
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="254" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name of Project (repository) to publish..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xH4-Hl-SFD">
                                         <rect key="frame" x="0.0" y="0.0" width="560" height="471"/>
+                                        <animations/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                 </subviews>
+                                <animations/>
                             </stackView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="LlU-oi-n2p">
                                 <rect key="frame" x="282" y="225" width="37" height="37"/>
+                                <animations/>
                                 <color key="color" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </activityIndicatorView>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Dds-J8-14g" firstAttribute="leading" secondItem="bNV-nD-2OP" secondAttribute="leadingMargin" id="Hop-Y2-t64"/>
@@ -232,7 +308,7 @@
                     <connections>
                         <segue destination="Jrj-qB-hpH" kind="relationship" relationship="viewControllers" id="6Y9-rr-KQX"/>
                         <segue destination="SZ7-UW-qUr" kind="relationship" relationship="viewControllers" id="Vdc-uY-XXa"/>
-                        <segue destination="5qJ-X2-bnl" kind="relationship" relationship="viewControllers" id="pcS-mW-N2A"/>
+                        <segue destination="f5x-1K-ubz" kind="relationship" relationship="viewControllers" id="Bb1-b7-780"/>
                         <segue destination="Qh9-Hk-ohU" kind="relationship" relationship="viewControllers" id="E3D-rN-Mt7"/>
                     </connections>
                 </tabBarController>

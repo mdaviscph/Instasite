@@ -12,6 +12,8 @@
 
 @property (weak, nonatomic) id delegate;
 
+- (void)resetWithTitles:(NSArray<NSString *> *)titles;
+
 @end
 
 @protocol SegmentedControlDelegate <NSObject>

@@ -18,15 +18,14 @@ extern NSString *const kUserDefaultsNameKey;
 extern NSString *const kUserDefaultsFullNameKey;
 extern NSString *const kUserDefaultsEmailKey;
 
-extern NSString *const kTemplateIndexFilename;
-extern NSString *const kTemplateIndexExtension;
-extern NSString *const kTemplateMarkerFilename;
-extern NSString *const kTemplateMarkerExtension;
-extern NSString *const kTemplateJsonFilename;
-extern NSString *const kTemplateJsonExtension;
-extern NSString *const kTemplateImageDirectory;
-extern NSString *const kTemplateImagePrefix;
-extern NSString *const kTemplateImageExtension;
+extern NSString *const kFileIndexName;
+extern NSString *const kFileHtmlExtension;
+extern NSString *const kFileTemplateExtension;
+extern NSString *const kFileJsonName;
+extern NSString *const kFileJsonExtension;
+extern NSString *const kFileImageDirectory;
+extern NSString *const kFileImageExtension;
 
 extern NSString *const kBranchName;
+extern NSString *const kUnpublishedName;
 

@@ -8,29 +8,41 @@
 
 #import "ImagesViewController.h"
 #import "ImageCell.h"
-#import "HtmlTemplate.h"
+#import "SegmentedControl.h"
 #import "TemplateTabBarController.h"
+#import "UserInput.h"
+#import "InputGroup.h"
+#import "InputCategory.h"
+#import "InputField.h"
 #import "Constants.h"
 
 static NSString *kCellId = @"ImageCell";
 
 //<UICollectionViewDelegateFlowLayout>
 
-@interface ImagesViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface ImagesViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, SegmentedControlDelegate>
+
+@property (weak, nonatomic) IBOutlet UIStackView *stackView;
+@property (weak, nonatomic) IBOutlet SegmentedControl *groupSegmentedControl;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *groupSegmentedControlConstraint;
+@property (weak, nonatomic) IBOutlet SegmentedControl *categorySegmentedControl;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *categorySegmentedControlConstraint;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+
+@property (strong, nonatomic) NSArray *sortedGroupKeys;
+@property (strong, nonatomic) NSArray *sortedCategoryKeys;
+@property (strong, nonatomic) NSArray *sortedImageKeys;
+
+@property (strong, nonatomic) NSString *selectedGroupName;
+@property (strong, nonatomic) NSString *selectedCategoryName;
+@property (strong, nonatomic) NSString *selectedImageName;
+
 
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
-@property (strong, nonatomic) NSArray *imageRefMarkers;
 
 @end
 
 @implementation ImagesViewController
-
-- (NSArray *)imageRefMarkers {
-  if (!_imageRefMarkers) {
-    _imageRefMarkers = self.tabBarVC.templateMarkers[kImageRefArray];
-  }
-  return _imageRefMarkers;
-}
 
 #pragma mark - Lifecycle Methods
 
@@ -38,20 +50,27 @@ static NSString *kCellId = @"ImageCell";
   [super viewDidLoad];
 
   //self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+  self.collectionView.dataSource = self;
+  self.collectionView.delegate = self;
   [self.collectionView registerClass:[ImageCell class] forCellWithReuseIdentifier:kCellId];
   
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
+  
+  self.groupSegmentedControl.delegate = self;
+  self.categorySegmentedControl.delegate = self;
+  
+  self.sortedGroupKeys = [self sortGroupKeys:self.tabBarVC.userInput.groups];
+  self.selectedGroupName = self.sortedGroupKeys.firstObject;
+  [self.groupSegmentedControl resetWithTitles:self.sortedGroupKeys];
+  
+  [self reloadGroup];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:YES];
 
-  self.navigationController.navigationBarHidden = NO;
-  self.navigationController.navigationBar.translucent = NO;
-  self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
   self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
-  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonTapped)];
-  self.tabBarVC.navigationItem.leftBarButtonItem = nil;
+  self.tabBarVC.navigationItem.rightBarButtonItems = nil;
 }
 
 //- (void)viewDidLayoutSubviews {
@@ -59,33 +78,102 @@ static NSString *kCellId = @"ImageCell";
 //  [(ImageCollectionViewLayout *)self.collectionView.collectionViewLayout setItemSize:CGSizeMake(CGRectGetWidth(self.view.bounds), kCellHeight)];
 //}
 
-#pragma mark - Selector Methods
+#pragma mark - IBActions, Selector Methods
 
-- (void)addButtonTapped {
-  [self actionSheetForImageSelection];
+- (IBAction)groupSegmentedControlChange:(SegmentedControl *)sender {
+  [self switchToGroup:sender.selectedSegmentIndex];
+}
+- (IBAction)categorySegmentedControlChange:(SegmentedControl *)sender {
+  [self switchToCategory:sender.selectedSegmentIndex];
+}
+
+- (void)importImageForImageName:(NSString *)name {
+  [self actionSheetForImageSelection:name];
 }
 
 #pragma mark - Helper Methods
 
-- (void)actionSheetForImageSelection {
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Select an Image" message:@"from" preferredStyle:UIAlertControllerStyleActionSheet];
+- (NSArray *)sortGroupKeys:(InputGroupDictionary *)groups {
+  return [groups keysSortedByValueUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    return [(InputGroup *)obj1 tag] > [(InputGroup *)obj2 tag] ? NSOrderedDescending : NSOrderedAscending;
+  }];
+}
+- (NSArray *)sortCategoryKeys:(InputCategoryDictionary *)groups {
+  return [groups keysSortedByValueUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    return [(InputCategory *)obj1 tag] > [(InputCategory *)obj2 tag] ? NSOrderedDescending : NSOrderedAscending;
+  }];
+}
+
+- (void)reloadGroup {
+  [self switchToGroup:-1];
+}
+- (void)reloadCategory {
+  [self switchToCategory:-1];
+}
+
+- (void)switchToGroup:(NSInteger)index {
+  self.selectedGroupName = index >= 0 ? self.sortedGroupKeys[index] : self.selectedGroupName;
+  BOOL hideGroupSegmentedControl = self.sortedGroupKeys.count <= 1;
+  self.groupSegmentedControl.hidden = hideGroupSegmentedControl;
+  self.groupSegmentedControlConstraint.active = !hideGroupSegmentedControl;
+
+  InputGroup *group = self.tabBarVC.userInput.groups[self.selectedGroupName];
+  self.sortedCategoryKeys = [self sortCategoryKeys:group.categories];
+  self.selectedCategoryName = self.sortedCategoryKeys.firstObject;
+  [self.categorySegmentedControl resetWithTitles:self.sortedCategoryKeys];
+  [self switchToCategory:0];
+}
+- (void)switchToCategory:(NSInteger)index {
+  self.selectedCategoryName = index >= 0 ? self.sortedCategoryKeys[index] : self.selectedCategoryName;
+  BOOL hideCategorySegmentedControl = self.sortedCategoryKeys.count <= 1;
+  self.categorySegmentedControl.hidden = hideCategorySegmentedControl;
+  self.categorySegmentedControlConstraint.active = !hideCategorySegmentedControl;
+  
+  self.sortedImageKeys = [self sortImageFieldsInGroup:self.selectedGroupName andCategory:self.selectedCategoryName];
+  [self.collectionView reloadData];
+}
+
+- (NSArray *)sortImageFieldsInGroup:(NSString *)groupName andCategory:(NSString *)categoryName {
+  
+  NSMutableArray *imageFields = [[NSMutableArray alloc] init];
+  
+  InputGroup *group = self.tabBarVC.userInput.groups[groupName];
+  InputCategoryDictionary *categories = group.categories;
+  InputCategory *category = categories[categoryName];
+  InputFieldDictionary *fields = category.fields;
+
+  NSArray *sortedFieldKeys = [fields keysSortedByValueUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    return [(InputField *)obj1 tag] > [(InputField *)obj2 tag] ? NSOrderedDescending : NSOrderedAscending;
+  }];
+  
+  for (NSString *fieldName in sortedFieldKeys) {
+    
+    InputField *field = fields[fieldName];
+    if (field.type == FieldIMG) {
+      [imageFields addObject:field.name];
+    }
+  }
+  return imageFields;
+}
+
+- (void)actionSheetForImageSelection:(NSString *)name {
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
   alert.modalPresentationStyle = UIModalPresentationPopover;
   alert.popoverPresentationController.barButtonItem = self.tabBarVC.navigationItem.rightBarButtonItem;
 
   if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
       [self startImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
     }];
     [alert addAction:action];
   }
   if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
       [self startImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     }];
     [alert addAction:action];
-  }
-  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]) {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Saved Photos Album" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+  } else if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]) {
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
       [self startImagePickerForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
     }];
     [alert addAction:action];
@@ -110,7 +198,19 @@ static NSString *kCellId = @"ImageCell";
   [picker dismissViewControllerAnimated:YES completion:nil];
   
   UIImage *image = info[UIImagePickerControllerEditedImage];
-  [self.tabBarVC.images addObject:image];
+  NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+  ImagesMutableDictionary *images = [[ImagesMutableDictionary alloc] initWithDictionary:self.tabBarVC.images];
+  images[self.selectedImageName] = imageData;
+  self.tabBarVC.images = images;
+  
+  NSString *filepath = [kFileImageDirectory stringByAppendingPathComponent:self.selectedImageName];
+  NSString *pathWithExtension = [filepath stringByAppendingPathExtension:kFileImageExtension];
+  
+  InputGroup *group = self.tabBarVC.userInput.groups[self.selectedGroupName];
+  InputCategoryDictionary *categories = group.categories;
+  InputCategory *category = categories[self.selectedCategoryName];
+
+  [category setFieldText:pathWithExtension forName:self.selectedImageName];
   
   [self.collectionView reloadData];
 }
@@ -126,19 +226,21 @@ static NSString *kCellId = @"ImageCell";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-  NSUInteger count = MAX(self.tabBarVC.images.count, self.imageRefMarkers.count);
+  NSUInteger count = self.sortedImageKeys.count;
   return count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
   ImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellId forIndexPath:indexPath];
   
-  if (indexPath.item < self.tabBarVC.images.count) {
+  NSString *imageName = self.sortedImageKeys[indexPath.item];
+  NSData *imageData = self.tabBarVC.images[imageName];
+  if (imageData) {
     cell.placeholder = nil;
-    cell.image = self.tabBarVC.images[indexPath.item];
+    cell.image = [UIImage imageWithData:imageData];
   } else {
     cell.image = nil;
-    cell.placeholder = [NSString stringWithFormat:@"%02lu", indexPath.item+1];
+    cell.placeholder = imageName;
   }
   return cell;
 }
@@ -147,8 +249,16 @@ static NSString *kCellId = @"ImageCell";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
   
-  // TODO - currently the image is added as the lowest numbered "empty" cell
-  [self addButtonTapped];
+  self.selectedImageName = self.sortedImageKeys[indexPath.item];
+  [self importImageForImageName:self.selectedImageName];
+}
+
+#pragma mark - SegmentedControlDelegate
+
+// this protocol is defined in SegmentedControl.h and used so we can force editing to
+// end, prior to the segnmentedControl index changing, for any textViews since there is
+// no textViewShouldReturn delegate method
+- (void)segmentedControlIndexWillChange:(UISegmentedControl *)sender {
 }
 
 @end

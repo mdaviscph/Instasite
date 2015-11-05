@@ -10,14 +10,14 @@
 
 @implementation UITextField (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type text:(NSString *)text placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
+- (instancetype)initWithTag:(NSInteger)tag text:(NSString *)text placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
   self = [self init];
   if (self) {
     self.text = text;
     self.placeholder = placeholder;
     self.borderStyle = style;
     self.returnKeyType = UIReturnKeyDone;
-    self.tag = type;
+    self.tag = tag;
     [self setContentHuggingPriority:800 forAxis:UILayoutConstraintAxisVertical];
     [self setContentCompressionResistancePriority:200 forAxis:UILayoutConstraintAxisVertical];
   }
@@ -28,7 +28,7 @@
 
 @implementation UITextView (Extensions)
 
-- (instancetype)initWithMarkerType:(HtmlMarkerTextEdit)type text:(NSString *)text placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
+- (instancetype)initWithTag:(NSInteger)tag text:(NSString *)text placeholder:(NSString *)placeholder borderStyle:(UITextBorderStyle)style {
   self = [self init];
   if (self) {
     [self setText:text orPlaceholder:placeholder];
@@ -39,7 +39,7 @@
       self.layer.cornerRadius = 5.0;
     }
     self.returnKeyType = UIReturnKeyDefault;
-    self.tag = type;
+    self.tag = tag;
     [self setContentHuggingPriority:200 forAxis:UILayoutConstraintAxisVertical];
     [self setContentCompressionResistancePriority:800 forAxis:UILayoutConstraintAxisVertical];
   }

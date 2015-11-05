@@ -13,6 +13,6 @@
 - (instancetype)initWithAccessToken:(NSString *)accessToken;
 
 - (void)retrieveNameWithCompletion:(void(^)(NSError *, NSString *))finalCompletion;
-- (void)retrieveReposWithBranch:(NSString *)branch completion:(void (^)(NSError *, NSArray *))finalCompletion;
+- (void)retrieveReposWithCompletion:(void (^)(NSError *, NSArray *))finalCompletion;
 
 @end

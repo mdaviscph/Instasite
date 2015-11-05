@@ -7,25 +7,27 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TypeDefsEnums.h"
 
 @class HtmlTemplate;
+@class UserInput;
 
 @interface TemplateTabBarController : UITabBarController
 
 @property (strong, nonatomic) NSString *documentsDirectory;
 @property (strong, nonatomic) NSString *templateDirectory;
+
 @property (strong, nonatomic) NSString *repoName;
 
-@property (strong, nonatomic) HtmlTemplate *templateCopy;
-@property (strong, nonatomic) NSDictionary *templateMarkers;
-@property (strong, nonatomic) NSMutableArray *images;
-
-@property (strong, nonatomic) NSURL *indexHtmlURL;
-@property (strong, nonatomic) NSURL *indexHtmlDirectoryURL;
-@property (strong, nonatomic) NSURL *templateHtmlURL;
-@property (strong, nonatomic) NSURL *userJsonURL;
+@property (strong, nonatomic) UserInput *userInput;
+@property (strong, nonatomic) ImagesDictionary *images;
+@property (strong, nonatomic) NSSet *repoNames;
 
 @property (strong, readonly, nonatomic) NSString *accessToken;      // retrieved from Keychain
 @property (strong, readonly, nonatomic) NSString *userName;         // retrieved from UserDefaults
 
+- (NSURL *)htmlFileURL:(NSString *)fileName;
+- (NSURL *)indexDirectoryURL;
+- (NSURL *)jsonFileURL:(NSString *)fileName;
+   
 @end
