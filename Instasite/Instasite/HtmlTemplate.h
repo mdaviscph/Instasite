@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "TypeDefsEnums.h"
 
+@class UserInput;
+
 @interface HtmlTemplate : NSObject
 
 @property (strong, readonly, nonatomic) NSString *html;
@@ -17,6 +19,6 @@
 
 - (BOOL)writeToURL:(NSURL *)htmlURL withInputGroups:(InputGroupDictionary *)groups;
 
-- (InputGroupDictionary *)createInputGroups;
+- (void)addInputGroupsToUserInput:(UserInput *)userInput;
 
 @end

@@ -37,7 +37,7 @@
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
 
   self.repoNameTextField.delegate = self;
-  self.repoNameTextField.text = self.tabBarVC.repoName;
+  self.repoNameTextField.text = [self.tabBarVC.repoName isEqualToString:kUnpublishedName] ? nil : self.tabBarVC.repoName;
   
   self.webView = [[WKWebView alloc] init];
   self.webView.navigationDelegate = self;
@@ -47,7 +47,7 @@
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
 
-  self.navigationController.navigationBarHidden = NO;
+  self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
 
   if (self.tabBarVC.userName) {
     [self enableNavigationItemButtons];
@@ -67,20 +67,26 @@
   }
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+  [super viewWillDisappear:animated];
+  
+}
+
 #pragma mark - Selector Methods
 
 - (void)publishButtonTapped {
   
+  NSString *repoName = self.repoNameTextField.text;
+  if (!repoName.length > 0 || [repoName isEqualToString:kUnpublishedName]) {
+    return;
+  }
   [self.busyIndicator startAnimating];
   
-  // publish if new name or rename of repo, else re-publish
-  // TODO - check if user types in name of existing repo
-  NSString *repoName = self.repoNameTextField.text;
-  if (![self.tabBarVC.repoName isEqualToString:repoName]) {
+  if ([self.tabBarVC.repoNames containsObject:repoName]) {
+    [self republishRepo:repoName];
+  } else {
     [self publishAllFilesForRepo:repoName];
     self.tabBarVC.repoName = repoName;
-  } else {
-    [self republishRepo:repoName];
   }
 }
 
@@ -91,16 +97,15 @@
 #pragma mark - Helper Methods
 
 - (void)enableNavigationItemButtons {
-  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)];
-  self.tabBarVC.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)];
+  self.tabBarVC.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)], [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)]];
 }
 
 - (NSURL *)ghPagesIndexHtmlFileURLforRepo:(NSString *)repoName {
 
   NSURL *ghPagesURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@.github.io", self.tabBarVC.userName]];
   ghPagesURL = [ghPagesURL URLByAppendingPathComponent:repoName];
-  ghPagesURL = [ghPagesURL URLByAppendingPathComponent:kTemplateIndexFilename];
-  ghPagesURL = [ghPagesURL URLByAppendingPathExtension:kTemplateIndexExtension];
+  ghPagesURL = [ghPagesURL URLByAppendingPathComponent:kFileIndexName];
+  ghPagesURL = [ghPagesURL URLByAppendingPathExtension:kFileHtmlExtension];
 
   if (!ghPagesURL) {
     NSLog(@"Error! NSURL for: [%@]", ghPagesURL.absoluteString);
@@ -143,23 +148,11 @@
 
 - (FileInfoArray *)initialFileListForDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
   FileService *fileService = [[FileService alloc] init];
-  return [fileService enumerateFilesInDirectory:directory rootDirectory:rootDirectory];
+  return [fileService enumerateFilesInDirectory:directory type:FileTypeHtml | FileTypeJpeg | FileTypeOther rootDirectory:rootDirectory];
 }
 - (FileInfoArray *)changedFileListForDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
-  FileInfoArray *allFiles = [self initialFileListForDirectory:directory rootDirectory:rootDirectory];
-  FileInfoMutableArray *changedFiles = [[FileInfoMutableArray alloc] init];
-  for (FileInfo *file in allFiles) {
-    switch (file.type) {
-      case IndexHtml:
-      case UserInputJson:
-      case ImageJpeg:
-        [changedFiles addObject:file];
-        break;
-      default:
-        break;
-    }
-  }
-  return changedFiles;
+  FileService *fileService = [[FileService alloc] init];
+  return [fileService enumerateFilesInDirectory:directory type:FileTypeHtml | FileTypeJpeg rootDirectory:rootDirectory];
 }
 
 - (void)createRepoWithFiles:(FileInfoArray *)files user:(NSString *)userName repo:(NSString *)repoName branch:(NSString *)branch comment:(NSString *)comment accessToken:(NSString *)accessToken {

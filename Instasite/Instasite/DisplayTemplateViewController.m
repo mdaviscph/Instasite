@@ -32,12 +32,15 @@
   self.webView.navigationDelegate = self;
   [self.view addSubview: self.webView];
   
-  [self.webView loadFileURL:self.tabBarVC.indexHtmlURL allowingReadAccessToURL:self.tabBarVC.indexHtmlDirectoryURL];
+  [self.webView loadFileURL:[self.tabBarVC htmlFileURL:kFileIndexName ] allowingReadAccessToURL:[self.tabBarVC indexDirectoryURL]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
-  self.navigationController.navigationBarHidden = YES;
+  
+  self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
+  self.tabBarVC.navigationItem.rightBarButtonItems = nil;
+  
   [self.webView reloadFromOrigin];
 }
 

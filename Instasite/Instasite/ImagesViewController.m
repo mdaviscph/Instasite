@@ -10,6 +10,7 @@
 #import "ImageCell.h"
 #import "SegmentedControl.h"
 #import "TemplateTabBarController.h"
+#import "UserInput.h"
 #import "InputGroup.h"
 #import "InputCategory.h"
 #import "InputField.h"
@@ -23,7 +24,9 @@ static NSString *kCellId = @"ImageCell";
 
 @property (weak, nonatomic) IBOutlet UIStackView *stackView;
 @property (weak, nonatomic) IBOutlet SegmentedControl *groupSegmentedControl;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *groupSegmentedControlConstraint;
 @property (weak, nonatomic) IBOutlet SegmentedControl *categorySegmentedControl;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *categorySegmentedControlConstraint;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 
 @property (strong, nonatomic) NSArray *sortedGroupKeys;
@@ -56,8 +59,8 @@ static NSString *kCellId = @"ImageCell";
   self.groupSegmentedControl.delegate = self;
   self.categorySegmentedControl.delegate = self;
   
-  self.sortedGroupKeys = [self sortGroupKeys:self.tabBarVC.inputGroups];
-  self.selectedGroupName = self.sortedGroupKeys[0];
+  self.sortedGroupKeys = [self sortGroupKeys:self.tabBarVC.userInput.groups];
+  self.selectedGroupName = self.sortedGroupKeys.firstObject;
   [self.groupSegmentedControl resetWithTitles:self.sortedGroupKeys];
   
   [self reloadGroup];
@@ -66,12 +69,8 @@ static NSString *kCellId = @"ImageCell";
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:YES];
 
-  self.navigationController.navigationBarHidden = NO;
-  self.navigationController.navigationBar.translucent = NO;
-  self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
   self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
-  self.tabBarVC.navigationItem.rightBarButtonItem = nil;
-  self.tabBarVC.navigationItem.leftBarButtonItem = nil;
+  self.tabBarVC.navigationItem.rightBarButtonItems = nil;
 }
 
 //- (void)viewDidLayoutSubviews {
@@ -114,14 +113,22 @@ static NSString *kCellId = @"ImageCell";
 
 - (void)switchToGroup:(NSInteger)index {
   self.selectedGroupName = index >= 0 ? self.sortedGroupKeys[index] : self.selectedGroupName;
-  InputGroup *group = self.tabBarVC.inputGroups[self.selectedGroupName];
+  BOOL hideGroupSegmentedControl = self.sortedGroupKeys.count <= 1;
+  self.groupSegmentedControl.hidden = hideGroupSegmentedControl;
+  self.groupSegmentedControlConstraint.active = !hideGroupSegmentedControl;
+
+  InputGroup *group = self.tabBarVC.userInput.groups[self.selectedGroupName];
   self.sortedCategoryKeys = [self sortCategoryKeys:group.categories];
-  self.selectedCategoryName = self.sortedCategoryKeys[0];
+  self.selectedCategoryName = self.sortedCategoryKeys.firstObject;
   [self.categorySegmentedControl resetWithTitles:self.sortedCategoryKeys];
   [self switchToCategory:0];
 }
 - (void)switchToCategory:(NSInteger)index {
   self.selectedCategoryName = index >= 0 ? self.sortedCategoryKeys[index] : self.selectedCategoryName;
+  BOOL hideCategorySegmentedControl = self.sortedCategoryKeys.count <= 1;
+  self.categorySegmentedControl.hidden = hideCategorySegmentedControl;
+  self.categorySegmentedControlConstraint.active = !hideCategorySegmentedControl;
+  
   self.sortedImageKeys = [self sortImageFieldsInGroup:self.selectedGroupName andCategory:self.selectedCategoryName];
   [self.collectionView reloadData];
 }
@@ -130,7 +137,7 @@ static NSString *kCellId = @"ImageCell";
   
   NSMutableArray *imageFields = [[NSMutableArray alloc] init];
   
-  InputGroup *group = self.tabBarVC.inputGroups[groupName];
+  InputGroup *group = self.tabBarVC.userInput.groups[groupName];
   InputCategoryDictionary *categories = group.categories;
   InputCategory *category = categories[categoryName];
   InputFieldDictionary *fields = category.fields;
@@ -192,12 +199,14 @@ static NSString *kCellId = @"ImageCell";
   
   UIImage *image = info[UIImagePickerControllerEditedImage];
   NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
-  self.tabBarVC.images[self.selectedImageName] = imageData;
+  ImagesMutableDictionary *images = [[ImagesMutableDictionary alloc] initWithDictionary:self.tabBarVC.images];
+  images[self.selectedImageName] = imageData;
+  self.tabBarVC.images = images;
   
-  NSString *filepath = [kTemplateImageDirectory stringByAppendingPathComponent:self.selectedImageName];
-  NSString *pathWithExtension = [filepath stringByAppendingPathExtension:kTemplateImageExtension];
+  NSString *filepath = [kFileImageDirectory stringByAppendingPathComponent:self.selectedImageName];
+  NSString *pathWithExtension = [filepath stringByAppendingPathExtension:kFileImageExtension];
   
-  InputGroup *group = self.tabBarVC.inputGroups[self.selectedGroupName];
+  InputGroup *group = self.tabBarVC.userInput.groups[self.selectedGroupName];
   InputCategoryDictionary *categories = group.categories;
   InputCategory *category = categories[self.selectedCategoryName];
 

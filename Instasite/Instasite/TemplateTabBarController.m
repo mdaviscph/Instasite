@@ -8,52 +8,23 @@
 
 #import "TemplateTabBarController.h"
 #import "HtmlTemplate.h"
-#import "InputGroup.h"
-#import "InputCategory.h"
+#import "UserInput.h"
 #import "Constants.h"
 #import "FileInfo.h"
 #import "FileService.h"
 #import <SSKeychain/SSKeychain.h>
 
-@interface TemplateTabBarController () <UITabBarControllerDelegate>
+@interface TemplateTabBarController () <UITabBarControllerDelegate, NSFileManagerDelegate>
 
-// public readonly properties
-@property (strong, readwrite, nonatomic) NSURL *indexHtmlURL;
-@property (strong, readwrite, nonatomic) NSURL *indexHtmlDirectoryURL;
-@property (strong, readwrite, nonatomic) NSURL *templateHtmlURL;
-@property (strong, readwrite, nonatomic) NSURL *userJsonURL;
 // public readonly properties
 @property (strong, readwrite, nonatomic) NSString *accessToken;      // retrieved from Keychain
 @property (strong, readwrite, nonatomic) NSString *userName;         // retrieved from UserDefaults
 
+@property (strong, nonatomic) HtmlTemplateDictionary *htmlTemplates;
+
 @end
 
 @implementation TemplateTabBarController
-
-- (NSURL *)indexHtmlURL {
-  if (!_indexHtmlURL) {
-    _indexHtmlURL = [self indexFileURL];
-  }
-  return _indexHtmlURL;
-}
-- (NSURL *)indexHtmlDirectoryURL {
-  if (!_indexHtmlDirectoryURL) {
-    _indexHtmlDirectoryURL = [self indexDirectoryURL];
-  }
-  return _indexHtmlDirectoryURL;
-}
-- (NSURL *)templateHtmlURL {
-  if (!_templateHtmlURL) {
-    _templateHtmlURL = [self templateFileURL];
-  }
-  return _templateHtmlURL;
-}
-- (NSURL *)userJsonURL {
-  if (!_userJsonURL) {
-    _userJsonURL = [self jsonFileURL];
-  }
-  return _userJsonURL;
-}
 
 - (NSString *)accessToken {
   if (!_accessToken) {
@@ -68,10 +39,16 @@
   return _userName;
 }
 
-- (NSMutableDictionary *)images {
+- (UserInput *)userInput {
+  if (!_userInput) {
+    _userInput = [[UserInput alloc] init];
+  }
+  return _userInput;
+}
+
+- (ImagesDictionary *)images {
   if (!_images) {
-    _images = [[NSMutableDictionary alloc] init];
-    [self loadImageDataFromFiles];
+    _images = [self loadImageDataFromFiles];
   }
   return _images;
 }
@@ -91,21 +68,21 @@
   NSLog(@"Documents directory: %@", self.documentsDirectory);
   [self copyBundleTemplateDirectory];
   
-  self.templateCopy = [[HtmlTemplate alloc] initWithURL:[self templateHtmlURL]];
-  self.inputGroups = [self.templateCopy createInputGroups];
-  NSData *jsonData = [self readJsonFile:[self jsonFileURL]];
+  self.htmlTemplates = [self loadHtmlTemplatesAndCreateUserInput];
+
+  NSData *jsonData = [self readJsonFile:[self jsonFileURL:kFileJsonName]];
   if (jsonData) {
-    [self updateGroupsFromJsonData:jsonData inputGroups:self.inputGroups];
+    [self.userInput updateUsingJsonData:jsonData];
   }
 }
 
 #pragma mark - Helper Methods
 
-- (NSURL *)indexFileURL {
+- (NSURL *)htmlFileURL:(NSString *)fileName {
   
   NSString *workingDirectory = [self.documentsDirectory stringByAppendingPathComponent:self.templateDirectory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:kTemplateIndexFilename];
-  NSString *pathWithExtension = [filepath stringByAppendingPathExtension:kTemplateIndexExtension];
+  NSString *filepath = [workingDirectory stringByAppendingPathComponent:fileName];
+  NSString *pathWithExtension = [filepath stringByAppendingPathExtension:kFileHtmlExtension];
   
   NSURL *fileURL = [NSURL fileURLWithPath:pathWithExtension];
   if (!fileURL) {
@@ -124,24 +101,11 @@
   return fileURL;
 }
 
-- (NSURL *)templateFileURL {
+- (NSURL *)jsonFileURL:(NSString *)fileName {
   
   NSString *workingDirectory = [self.documentsDirectory stringByAppendingPathComponent:self.templateDirectory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:kTemplateMarkerFilename];
-  NSString *pathWithExtension = [filepath stringByAppendingPathExtension:kTemplateMarkerExtension];
-  
-  NSURL *fileURL = [NSURL fileURLWithPath:pathWithExtension];
-  if (!fileURL) {
-    NSLog(@"Error! NSURL:fileURLWithPath: [%@]", pathWithExtension);
-  }
-  return fileURL;
-}
-
-- (NSURL *)jsonFileURL {
-  
-  NSString *workingDirectory = [self.documentsDirectory stringByAppendingPathComponent:self.templateDirectory];
-  NSString *filepath = [workingDirectory stringByAppendingPathComponent:kTemplateJsonFilename];
-  NSString *pathWithExtension = [filepath stringByAppendingPathExtension:kTemplateJsonExtension];
+  NSString *filepath = [workingDirectory stringByAppendingPathComponent:fileName];
+  NSString *pathWithExtension = [filepath stringByAppendingPathExtension:kFileJsonExtension];
   
   NSURL *fileURL = [NSURL fileURLWithPath:pathWithExtension];
   if (!fileURL) {
@@ -157,12 +121,31 @@
   [fileService copyDirectory:self.templateDirectory overwrite:NO toDirectory:self.documentsDirectory];
 }
 
-- (void)loadImageDataFromFiles {
+-(HtmlTemplateDictionary *)loadHtmlTemplatesAndCreateUserInput {
   
-  NSString *imageDirectory = [self.templateDirectory stringByAppendingPathComponent:kTemplateImageDirectory];
+  HtmlTemplateMutableDictionary *htmlTemplates = [[HtmlTemplateMutableDictionary alloc] init];
+  FileService *fileService = [[FileService alloc] init];
+  FileInfoArray *htmlTemplateFiles = [fileService enumerateFilesInDirectory:self.templateDirectory type:FileTypeTemplate rootDirectory:self.documentsDirectory];
+  for (FileInfo *file in htmlTemplateFiles) {
+    NSURL *fileURL = [NSURL fileURLWithPath:[file filepathIncludingLocalDirectory]];
+    if (fileURL) {
+      HtmlTemplate *template = [[HtmlTemplate alloc] initWithURL:fileURL];
+      [template addInputGroupsToUserInput:self.userInput];
+      htmlTemplates[file.name] = template;
+    } else {
+      NSLog(@"Error! NSURL:fileURLWithPath: [%@]", [file filepathIncludingLocalDirectory]);
+    }
+  }
+  return htmlTemplates;
+}
+
+- (ImagesDictionary *)loadImageDataFromFiles {
+  
+  ImagesMutableDictionary *images = [[ImagesMutableDictionary alloc] init];
+  NSString *imageDirectory = [self.templateDirectory stringByAppendingPathComponent:kFileImageDirectory];
   
   FileService *fileService = [[FileService alloc] init];
-  FileInfoArray *imageFiles = [fileService enumerateFilesInDirectory:imageDirectory rootDirectory:self.documentsDirectory];
+  FileInfoArray *imageFiles = [fileService enumerateFilesInDirectory:imageDirectory type:FileTypeJpeg rootDirectory:self.documentsDirectory];
   
   for (FileInfo *file in imageFiles) {
     
@@ -170,38 +153,18 @@
     NSData *imageData = [NSData dataWithContentsOfFile:[file filepathIncludingLocalDirectory]];
     
     if (imageData) {
-      [self.images setObject:imageData forKey:file.name];
+      images[file.name] = imageData;
     }
   }
+  return images;
 }
 
-- (BOOL)writeHtmlFile:(NSURL *)fileURL usingGroups:(InputGroupDictionary *)groups {
+- (BOOL)writeHtmlFile:(NSURL *)fileURL fromTemplate:(HtmlTemplate *)template usingGroups:(InputGroupDictionary *)groups {
   
-  if ([self.templateCopy writeToURL:fileURL withInputGroups:groups]) {
+  if ([template writeToURL:fileURL withInputGroups:groups]) {
     return YES;
   }
   return NO;
-}
-
-- (NSData *)jsonDataFromGroups:(InputGroupDictionary *)groups {
- 
-  // TODO - class to encapsulate self.inputGroups and this code as a method
-  NSMutableDictionary *jsonDictionary = [[NSMutableDictionary alloc] init];
-  NSMutableArray *jsonGroupArray = [[NSMutableArray alloc] init];
-  
-  for (InputGroup *group in groups.allValues) {
-    [jsonGroupArray addObject:[group createJson]];
-  }
-  jsonDictionary[@"groups"] = jsonGroupArray;
-  
-  NSError *error;
-  NSData* jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:NSJSONWritingPrettyPrinted error:&error];
-  if (error) {
-    NSLog(@"NSJSONSerialization:dataWithJSONObject: error: %@", error.localizedDescription);
-    //[AlertPopover alert: kErrorJSONSerialization withNSError: error controller: nil completion: nil];
-  }
-
-  return jsonData;
 }
 
 - (BOOL)writeJsonData:(NSData *)data fileURL:(NSURL *)fileURL {
@@ -232,59 +195,31 @@
   return jsonData;
 }
 
-- (void)updateGroupsFromJsonData:(NSData *)data inputGroups:(InputGroupDictionary *)groups {
-  
-  NSError *error;
-  NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-  if (error) {
-    NSLog(@"NSJSONSerialization:JSONObjectWithData: error: %@", error.localizedDescription);
-    //[AlertPopover alert: kErrorJSONSerialization withNSError: error controller: nil completion: nil];
-  }
-
-  // TODO - class to encapsulate self.inputGroups and this code
-  NSArray *jsonGroupArray = jsonDictionary[@"groups"];
-  for (NSDictionary *jsonGroupDictionary in jsonGroupArray) {
-    
-    NSString *groupName = jsonGroupDictionary[@"name"];
-    NSArray *jsonCategoryArray = jsonGroupDictionary[@"categories"];
-    for (NSDictionary *jsonCategoryDictionary in jsonCategoryArray) {
-      
-      NSString *categoryName = jsonCategoryDictionary[@"name"];
-      NSDictionary *fieldDictionary = jsonCategoryDictionary[@"fields"];
-      for (NSString *fieldName in fieldDictionary.allKeys) {
-        NSString *text = fieldDictionary[fieldName];
-        
-        InputGroup *group = self.inputGroups[groupName];
-        InputCategoryDictionary *categories = group.categories;
-        InputCategory *category = categories[categoryName];
-        
-        [category setFieldText:text forName:fieldName];
-      }
-    }
-  }
-}
-
-- (void)writeImageFiles {
+- (void)writeImageFiles:(ImagesDictionary *)images {
   
   NSFileManager *fileManager = [NSFileManager defaultManager];
+  fileManager.delegate = self;    // prevent EXC_BAD_ACCESS when using removeItemAtPath
   NSString *workingDirectory = [self.documentsDirectory stringByAppendingPathComponent:self.templateDirectory];
-  NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kTemplateImageDirectory];
+  NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kFileImageDirectory];
   
-  [fileManager removeItemAtPath:imagesDirectory error:nil];
-  //if (![fileManager fileExistsAtPath:imagesDirectory isDirectory:nil]) {
-  NSError *error;
-  [fileManager createDirectoryAtPath:imagesDirectory withIntermediateDirectories:NO attributes:nil error:&error];
-  if (error) {
-    NSLog(@"Error! Cannot create directory: [%@] error: %@", imagesDirectory, error.localizedDescription);
-    return;
+  // some templates have sample images in this directory
+  //[fileManager removeItemAtPath:imagesDirectory error:nil];
+  
+  if (![fileManager fileExistsAtPath:imagesDirectory]) {
+    NSError *error;
+    [fileManager createDirectoryAtPath:imagesDirectory withIntermediateDirectories:NO attributes:nil error:&error];
+    if (error) {
+      NSLog(@"Error! Cannot create directory: [%@] error: %@", imagesDirectory, error.localizedDescription);
+      return;
+    }
   }
   
-  for (NSString *fileName in self.images.allKeys) {
+  for (NSString *fileName in images.allKeys) {
     
-    NSData *data = self.images[fileName];
+    NSData *data = images[fileName];
     
     NSString *filepath = [imagesDirectory stringByAppendingPathComponent:fileName];
-    NSString *pathWithExtension = [filepath stringByAppendingPathExtension:kTemplateImageExtension];
+    NSString *pathWithExtension = [filepath stringByAppendingPathExtension:kFileImageExtension];
     
     //NSLog(@"Writing image file: %@", pathWithExtension);
     NSError *error;
@@ -300,11 +235,25 @@
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
   
-  [self writeHtmlFile:self.indexHtmlURL usingGroups:self.inputGroups];
-  [self writeJsonData:[self jsonDataFromGroups:self.inputGroups] fileURL:self.userJsonURL];
-  [self writeImageFiles];
+  for (NSString *fileName in self.htmlTemplates.allKeys) {
+    HtmlTemplate *template = self.htmlTemplates[fileName];
+    [self writeHtmlFile:[self htmlFileURL:fileName] fromTemplate:template usingGroups:self.userInput.groups];
+  }
+  [self writeJsonData:[self.userInput createJsonData] fileURL:[self jsonFileURL:kFileJsonName]];
+  [self writeImageFiles:self.images];
 
   return YES;
+}
+
+#pragma mark - NSFileManagerDelegate
+
+// used if we need to overwrite a directory and files
+-(BOOL)fileManager:(NSFileManager *)fileManager shouldProceedAfterError:(NSError *)error copyingItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath {
+  NSLog(@"NSFileManager error: %lu", error.code);
+  if (error.code == NSFileWriteFileExistsError) {
+    return YES;
+  }
+  return NO;
 }
 
 @end

@@ -11,6 +11,7 @@
 #import "UserJsonResponse.h"
 #import "UserReposJsonRequest.h"
 #import "RepoJsonResponse.h"
+#import "Repo.h"
 #import <AFNetworking/AFNetworking.h>
 
 @interface GitHubUser ()
@@ -49,26 +50,23 @@
   }];
 }
 
-- (void)retrieveReposWithBranch:(NSString *)branch completion:(void (^)(NSError *, NSArray *))finalCompletion {
+- (void)retrieveReposWithCompletion:(void (^)(NSError *, NSArray *))finalCompletion {
   
   UserReposJsonRequest *userRequest = [[UserReposJsonRequest alloc] initWithType:@"owner"];
   [self.userApiWrapper getRepos:userRequest usingManager:self.manager completion:^(NSError *error, RepoJsonResponseArray *repoResponses) {
     
     // TODO - alert popover?
     if (error) {
-      NSLog(@"Error! GitHubUser:retrieveReposWithBranch:");
+      NSLog(@"Error! GitHubUser:retrieveReposWithCompletion:");
     }
-    NSMutableArray *repoNames = [[NSMutableArray alloc] init];
-    for (RepoJsonResponse *repo in repoResponses) {
-      if (branch && [repo.defaultBranch isEqualToString:branch]) {
-        [repoNames addObject:repo.name];
-      } else {
-        [repoNames addObject:repo.name];
-      }
+    NSMutableArray *repos = [[NSMutableArray alloc] init];
+    for (RepoJsonResponse *repoResponse in repoResponses) {
+      Repo *repo = [[Repo alloc] initWithName:repoResponse.name description:repoResponse.aDescription owner:repoResponse.owner];
+      [repos addObject:repo];
     }
 
     if (finalCompletion) {
-      finalCompletion(error, repoNames);
+      finalCompletion(error, repos);
     }
   }];
 }

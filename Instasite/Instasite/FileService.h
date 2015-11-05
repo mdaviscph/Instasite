@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TypeDefsEnums.h"
 
 @interface FileService : NSObject <NSFileManagerDelegate>
 
-- (NSArray *)enumerateFilesInDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory;
+- (NSArray *)enumerateFilesInDirectory:(NSString *)directory type:(FileType)type rootDirectory:(NSString *)rootDirectory;
 - (BOOL)copyDirectory:(NSString *)fromDirectory overwrite:(BOOL)overwrite toDirectory:(NSString *)toDirectory;
 
 @end

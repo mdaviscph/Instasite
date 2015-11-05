@@ -11,13 +11,14 @@
 #import "RepoCell.h"
 #import "Constants.h"
 #import "GitHubUser.h"
+#import "Repo.h"
 
 static NSString *kCellId = @"RepoCell";
 
 @interface ReposViewController ()
 
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
-@property (strong, nonatomic) NSArray *repoNames;
+@property (strong, nonatomic) NSArray *repos;
 
 @end
 
@@ -38,11 +39,7 @@ static NSString *kCellId = @"RepoCell";
   
   [self getExistingRepos];
   
-  self.navigationController.navigationBarHidden = NO;
-  self.navigationController.navigationBar.translucent = NO;
-  self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1.0];
-  self.tabBarVC.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonTapped)];
-  self.tabBarVC.navigationItem.leftBarButtonItem = nil;
+  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonTapped)];
 }
 
 #pragma mark - Selector Methods
@@ -56,13 +53,13 @@ static NSString *kCellId = @"RepoCell";
 - (void)getExistingRepos {
   
   GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:self.tabBarVC.accessToken];
-  [gitHubUser retrieveReposWithBranch:kBranchName completion:^(NSError *error, NSArray *repoNames) {
+  [gitHubUser retrieveReposWithCompletion:^(NSError *error, NSArray *repos) {
     
     if (error) {
       // TODO - alert popover
       NSLog(@"Error in GitHubUser:retrieveReposWithBranch: error: %@", error.localizedDescription);
     }
-    self.repoNames = repoNames;
+    self.repos = repos;
     [self.tableView reloadData];
   }];
 }
@@ -74,19 +71,21 @@ static NSString *kCellId = @"RepoCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  return self.repoNames.count;
+  return self.repos.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   RepoCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellId forIndexPath:indexPath];
     
-  cell.repo = self.repoNames[indexPath.row];
+  cell.repo = self.repos[indexPath.row];
   return cell;
 }
 
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+  RepoCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+  NSLog(@"Existing repo selected: %@", cell.repo.name);
   // TODO - use this existing repo
 }
 

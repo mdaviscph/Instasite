@@ -7,7 +7,7 @@
 //
 
 #import "RepoCell.h"
-#import "RepoJsonResponse.h"
+#import "Repo.h"
 
 @interface RepoCell ()
 
@@ -21,7 +21,7 @@
 
 @implementation RepoCell
 
-- (void)setRepo:(RepoJsonResponse *)repo {
+- (void)setRepo:(Repo *)repo {
   _repo = repo;
   self.nameLabel.text = repo.name;
   self.descriptionLabel.text = repo.aDescription;

@@ -11,6 +11,7 @@
 #import "TemplateTabBarController.h"
 #import "Extensions.h"
 #import "HtmlTemplate.h"
+#import "UserInput.h"
 #import "InputGroup.h"
 #import "InputCategory.h"
 #import "InputField.h"
@@ -22,7 +23,9 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIStackView *stackView;
 @property (weak, nonatomic) IBOutlet SegmentedControl *groupSegmentedControl;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *groupSegmentedControlConstraint;
 @property (weak, nonatomic) IBOutlet SegmentedControl *categorySegmentedControl;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *categorySegmentedControlConstraint;
 @property (weak, nonatomic) IBOutlet UIView *temporaryFillerView;
 
 @property (strong, nonatomic) UIView *lastTextEditingView;
@@ -56,8 +59,8 @@
   self.groupSegmentedControl.delegate = self;
   self.categorySegmentedControl.delegate = self;
   
-  self.sortedGroupKeys = [self sortGroupKeys:self.tabBarVC.inputGroups];
-  self.selectedGroupName = self.sortedGroupKeys[0];
+  self.sortedGroupKeys = [self sortGroupKeys:self.tabBarVC.userInput.groups];
+  self.selectedGroupName = self.sortedGroupKeys.firstObject;
   [self.groupSegmentedControl resetWithTitles:self.sortedGroupKeys];
 
   [self reloadGroup];
@@ -66,10 +69,8 @@
 -(void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
 
-  self.navigationController.navigationBarHidden = NO;
   self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
-  self.tabBarVC.navigationItem.rightBarButtonItem = nil;
-  self.tabBarVC.navigationItem.leftBarButtonItem = nil;
+  self.tabBarVC.navigationItem.rightBarButtonItems = nil;
   
   [self startObservingKeyboardEvents];
 }
@@ -125,9 +126,13 @@
 
 - (void)switchToGroup:(NSInteger)index {
   self.selectedGroupName = index >= 0 ? self.sortedGroupKeys[index] : self.selectedGroupName;
-  InputGroup *group = self.tabBarVC.inputGroups[self.selectedGroupName];
+  BOOL hideGroupSegmentedControl = self.sortedGroupKeys.count <= 1;
+  self.groupSegmentedControl.hidden = hideGroupSegmentedControl;
+  self.groupSegmentedControlConstraint.active = !hideGroupSegmentedControl;
+  
+  InputGroup *group = self.tabBarVC.userInput.groups[self.selectedGroupName];
   self.sortedCategoryKeys = [self sortCategoryKeys:group.categories];
-  self.selectedCategoryName = self.sortedCategoryKeys[0];
+  self.selectedCategoryName = self.sortedCategoryKeys.firstObject;
   [self.categorySegmentedControl resetWithTitles:self.sortedCategoryKeys];
   [self switchToCategory:0];
 }
@@ -139,12 +144,16 @@
     }
   }
   self.selectedCategoryName = index >= 0 ? self.sortedCategoryKeys[index] : self.selectedCategoryName;
+  BOOL hideCategorySegmentedControl = self.sortedCategoryKeys.count <= 1;
+  self.categorySegmentedControl.hidden = hideCategorySegmentedControl;
+  self.categorySegmentedControlConstraint.active = !hideCategorySegmentedControl;
+  
   [self addControlsForFieldsInGroup:self.selectedGroupName andCategory:self.selectedCategoryName];
 }
 
 - (void)addControlsForFieldsInGroup:(NSString *)groupName andCategory:(NSString *)categoryName {
 
-  InputGroup *group = self.tabBarVC.inputGroups[groupName];
+  InputGroup *group = self.tabBarVC.userInput.groups[groupName];
   InputCategoryDictionary *categories = group.categories;
   InputCategory *category = categories[categoryName];
   InputFieldDictionary *fields = category.fields;
@@ -159,12 +168,14 @@
     self.maxFieldTag = MAX(self.maxFieldTag, field.tag);
 
     if (field.type == FieldTXF) {
-      UITextField *textField = [[UITextField alloc] initWithTag:field.tag text:field.text placeholder:field.placeholder borderStyle:UITextBorderStyleRoundedRect];
+      NSString *placeholder = field.placeholder ? [NSString stringWithFormat:@"%@: %@", fieldName, field.placeholder] : fieldName;
+      UITextField *textField = [[UITextField alloc] initWithTag:field.tag text:field.text placeholder:placeholder borderStyle:UITextBorderStyleRoundedRect];
       textField.delegate = self;
       [self.stackView addArrangedSubview:textField];
       
     } else if (field.type == FieldTXV) {
-      UITextView *textView = [[UITextView alloc] initWithTag:field.tag text:field.text placeholder:field.placeholder borderStyle:UITextBorderStyleRoundedRect];
+      NSString *placeholder = field.placeholder ? [NSString stringWithFormat:@"%@: %@", fieldName, field.placeholder] : fieldName;
+      UITextView *textView = [[UITextView alloc] initWithTag:field.tag text:field.text placeholder:placeholder borderStyle:UITextBorderStyleRoundedRect];
       textView.delegate = self;
       NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:textView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:120];
       constraint.active = YES;
@@ -209,7 +220,7 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-  InputGroup *group = self.tabBarVC.inputGroups[self.selectedGroupName];
+  InputGroup *group = self.tabBarVC.userInput.groups[self.selectedGroupName];
   InputCategoryDictionary *categories = group.categories;
   InputCategory *category = categories[self.selectedCategoryName];
   
@@ -227,7 +238,7 @@
 - (void)textViewDidEndEditing:(UITextView *)textView {
   self.tabBarVC.navigationItem.rightBarButtonItem = nil;
   
-  InputGroup *group = self.tabBarVC.inputGroups[self.selectedGroupName];
+  InputGroup *group = self.tabBarVC.userInput.groups[self.selectedGroupName];
   InputCategoryDictionary *categories = group.categories;
   InputCategory *category = categories[self.selectedCategoryName];
   

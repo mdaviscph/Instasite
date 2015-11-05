@@ -12,15 +12,15 @@
 
 @implementation FileService
 
-- (NSArray *)enumerateFilesInDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
+- (NSArray *)enumerateFilesInDirectory:(NSString *)directory type:(FileType) type rootDirectory:(NSString *)rootDirectory {
   
   NSLog(@"Enumerate directory at: %@/%@", rootDirectory, directory);
-  return [self filesInDirectory:nil relativePath:nil startingDirectory:directory rootDirectory:rootDirectory];
+  return [self filesInDirectory:nil type:type relativePath:nil startingDirectory:directory rootDirectory:rootDirectory];
 }
 
-- (NSArray *)filesInDirectory:(NSString *)directory relativePath:(NSString *)relativePath startingDirectory:(NSString *)startingDirectory rootDirectory:(NSString *)rootDirectory {
+- (NSArray *)filesInDirectory:(NSString *)directory type:(FileType)type relativePath:(NSString *)relativePath startingDirectory:(NSString *)startingDirectory rootDirectory:(NSString *)rootDirectory {
 
-  NSFileManager *manager = [NSFileManager defaultManager];
+  NSFileManager *fileManager = [NSFileManager defaultManager];
   FileInfoMutableArray *fileList = [[NSMutableArray alloc] init];
   
   NSString *directoryPath = [rootDirectory stringByAppendingPathComponent:startingDirectory];
@@ -33,18 +33,18 @@
   }
   
   NSError *error;
-  NSArray *files = [manager contentsOfDirectoryAtPath:directoryPath error:&error];
+  NSArray *files = [fileManager contentsOfDirectoryAtPath:directoryPath error:&error];
   // TODO - handle error
   
   for (NSString *file in files) {
     
     BOOL isDirectory;
     NSString *filepath = [directoryPath stringByAppendingPathComponent:file];
-    [manager fileExistsAtPath:filepath isDirectory:&isDirectory];
+    [fileManager fileExistsAtPath:filepath isDirectory:&isDirectory];
     if (isDirectory) {
       //NSLog(@"Directory at: %@", file);
       
-      [fileList addObjectsFromArray:[self filesInDirectory:file relativePath:newRelativePath startingDirectory:startingDirectory rootDirectory:rootDirectory]];
+      [fileList addObjectsFromArray:[self filesInDirectory:file type:type relativePath:newRelativePath startingDirectory:startingDirectory rootDirectory:rootDirectory]];
       
     } else {
       //NSLog(@"File at: %@", file);
@@ -53,19 +53,18 @@
       NSString* fileExtension = [file pathExtension];
       FileType fileType;
       
-
-      if ([fileExtension isEqualToString:kTemplateJsonExtension]) {
-        fileType = UserInputJson;
-      } else if ([file hasPrefix:kTemplateMarkerFilename]) {
-        fileType = InstaSite;
-      } else if ([fileExtension isEqualToString:kTemplateImageExtension]) {
-          fileType = ImageJpeg;
-      } else if ([fileExtension isEqualToString:kTemplateIndexExtension]) {
-          fileType = IndexHtml;
+      if ([fileExtension isEqualToString:kFileJsonExtension]) {
+        fileType = FileTypeJson;
+      } else if ([fileExtension isEqualToString:kFileTemplateExtension]) {
+        fileType = FileTypeTemplate;
+      } else if ([fileExtension isEqualToString:kFileImageExtension]) {
+        fileType = FileTypeJpeg;
+      } else if ([fileExtension isEqualToString:kFileHtmlExtension]) {
+        fileType = FileTypeHtml;
       } else {
-        fileType = Other;
+        fileType = FileTypeOther;
       }
-      if (fileType != InstaSite && fileType != UserInputJson) {
+      if (fileType & type) {
         [fileList addObject:[[FileInfo alloc] initWithFileName:fileName extension:fileExtension type:fileType relativePath:newRelativePath remoteDirectory:startingDirectory localDirectory:rootDirectory]];
       }
     }
@@ -102,7 +101,7 @@
 
 // used if we need to overwrite a directory and files
 -(BOOL)fileManager:(NSFileManager *)fileManager shouldProceedAfterError:(NSError *)error copyingItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath {
-  if ([error code] == NSFileWriteFileExistsError) {
+  if (error.code == NSFileWriteFileExistsError) {
     return YES;
   }
   return NO;

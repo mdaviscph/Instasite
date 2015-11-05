@@ -14,7 +14,7 @@
 + (NSString *)encodeFile:(NSString *)filePath withType:(FileType)type {
   
   NSData *data;
-  if (type == ImageJpeg) {
+  if (type & FileTypeJpeg) {
     // must read as NSData since write is as NSData
     NSError *error;
     NSData *imageData = [NSData dataWithContentsOfFile:filePath options:NSDataReadingUncached error:&error];

@@ -8,6 +8,7 @@
 
 #import "HtmlTemplate.h"
 #import "TemplateField.h"
+#import "UserInput.h"
 #import "InputGroup.h"
 #import "InputCategory.h"
 #import "InputField.h"
@@ -72,6 +73,60 @@ static NSString *const kMarkerField = @"INSTASITE-FIELD";
   return modifiedHtml;
 }
 
+- (void)addInputGroupsToUserInput:(UserInput *)userInput {
+  
+  InputGroupMutableDictionary *groups = [[InputGroupMutableDictionary alloc] initWithDictionary:userInput.groups];
+  NSInteger groupTag = userInput.maxGroupTag;
+  NSInteger categoryTag = userInput.maxCategoryTag;
+  NSInteger fieldTag = userInput.maxFieldTag;
+  
+  NSArray *components = [self.html componentsSeparatedByString:kMarkerField];
+  
+  for (NSInteger index = 1; index < components.count; index++) {    // skip the first component which is the start of the html
+    
+    NSString *component = components[index];
+    NSArray *inParens = [component componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"()"]];
+    
+    if (inParens.count < 2) {
+      NSLog(@"Error! Invalid Template Field: %@", [component abbreviate:20]);
+      continue;
+    }
+    // parse INSTASITE-FIELD tuple
+    TemplateField *templateField = [[TemplateField alloc] initFromCsv:inParens[1]];
+    
+    InputGroup *group = groups[templateField.groupName];
+    if (!group) {
+      group = [[InputGroup alloc] initFromTemplateField:templateField];
+      group.tag = ++groupTag;
+    }
+    InputCategoryMutableDictionary *categories = [[InputCategoryMutableDictionary alloc] initWithDictionary:group.categories];
+    InputCategory *category = categories[templateField.categoryName];
+    if (!category) {
+      category = [[InputCategory alloc] initFromTemplateField:templateField];
+      category.tag = ++categoryTag;
+    }
+    InputFieldMutableDictionary *fields = [[InputFieldMutableDictionary alloc] initWithDictionary:category.fields];
+    InputField *field = fields[templateField.fieldName];
+    if (field) {
+      NSLog(@"Error! Duplicate Template Field: (%@)", inParens[1]);
+      continue;
+    }
+    field = [[InputField alloc] initFromTemplateField:templateField];
+    field.tag = ++fieldTag;
+    
+    fields[templateField.fieldName] = field;
+    category.fields = fields;
+    categories[templateField.categoryName] = category;
+    group.categories = categories;
+    groups[templateField.groupName] = group;
+  }
+
+  userInput.groups = groups;
+  userInput.maxGroupTag = groupTag;
+  userInput.maxCategoryTag = categoryTag;
+  userInput.maxFieldTag = fieldTag;
+}
+
 - (BOOL)writeToURL:(NSURL *)htmlURL withInputGroups:(InputGroupDictionary *)groups {
 
   NSString *modifiedHtml = groups ? [self replaceFieldMarkers:self.html usingInputGroups:groups] : self.html;
@@ -90,55 +145,6 @@ static NSString *const kMarkerField = @"INSTASITE-FIELD";
     return NO;
   }
   return YES;
-}
-
-
-- (InputGroupDictionary *)createInputGroups {
-  
-  InputGroupMutableDictionary *groups = [[InputGroupMutableDictionary alloc] init];
-  NSInteger tag = 0;
-  
-  NSArray *components = [self.html componentsSeparatedByString:kMarkerField];
-
-  for (NSInteger index = 1; index < components.count; index++) {    // skip the first component which is the start of the html
-    
-    NSString *component = components[index];
-    NSArray *inParens = [component componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"()"]];
-
-    if (inParens.count < 2) {
-      NSLog(@"Error! Invalid Template Field: %@", [component abbreviate:20]);
-      continue;
-    }
-    // parse INSTASITE-FIELD tuple
-    TemplateField *templateField = [[TemplateField alloc] initFromCsv:inParens[1]];
-    
-    InputGroup *group = groups[templateField.groupName];
-    if (!group) {
-      group = [[InputGroup alloc] initFromTemplateField:templateField];
-      group.tag = tag++;
-    }
-    InputCategoryMutableDictionary *categories = [[InputCategoryMutableDictionary alloc] initWithDictionary:group.categories];
-    InputCategory *category = categories[templateField.categoryName];
-    if (!category) {
-      category = [[InputCategory alloc] initFromTemplateField:templateField];
-      category.tag = tag++;
-    }
-    InputFieldMutableDictionary *fields = [[InputFieldMutableDictionary alloc] initWithDictionary:category.fields];
-    InputField *field = fields[templateField.fieldName];
-    if (field) {
-      NSLog(@"Error! Duplicate Template Field: (%@)", inParens[1]);
-      continue;
-    }
-    field = [[InputField alloc] initFromTemplateField:templateField];
-    field.tag = tag++;
-    
-    fields[templateField.fieldName] = field;
-    category.fields = fields;
-    categories[templateField.categoryName] = category;
-    group.categories = categories;
-    groups[templateField.groupName] = group;
-  }
-  return groups;
 }
 
 @end
