@@ -13,7 +13,8 @@
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *aDescription;
 @property (strong, nonatomic) NSString *owner;
+@property (strong, nonatomic) NSDate *updatedAt;
 
-- (instancetype)initWithName:(NSString *)name description:(NSString *)description owner:(NSString *)owner;
+- (instancetype)initWithName:(NSString *)name description:(NSString *)description owner:(NSString *)owner updatedAt:(NSDate *)updatedAt;
 
 @end

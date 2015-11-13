@@ -28,7 +28,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *categorySegmentedControlConstraint;
 @property (weak, nonatomic) IBOutlet UIView *temporaryFillerView;
 
-@property (strong, nonatomic) UIView *lastTextEditingView;
+@property (strong, readwrite, nonatomic) UIView *lastTextEditingView;
 @property (nonatomic) NSInteger maxFieldTag;
 
 @property (strong, nonatomic) NSArray *sortedGroupKeys;
@@ -69,7 +69,6 @@
 -(void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
 
-  self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
   self.tabBarVC.navigationItem.rightBarButtonItems = nil;
   
   [self startObservingKeyboardEvents];

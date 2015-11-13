@@ -14,9 +14,10 @@ extern NSString *const kOpenURLdictionaryKey;
 extern NSString *const kSSKeychainAccount;
 extern NSString *const kSSKeychainService;
 
-extern NSString *const kUserDefaultsNameKey;
-extern NSString *const kUserDefaultsFullNameKey;
-extern NSString *const kUserDefaultsEmailKey;
+extern NSString *const kUserDefaultsUserNameKey;
+extern NSString *const kUserDefaultsRepoNameKey;
+extern NSString *const kUserDefaultsTemplateNameKey;
+
 
 extern NSString *const kFileIndexName;
 extern NSString *const kFileHtmlExtension;
@@ -27,5 +28,6 @@ extern NSString *const kFileImageDirectory;
 extern NSString *const kFileImageExtension;
 
 extern NSString *const kBranchName;
-extern NSString *const kUnpublishedName;
-
+extern NSString *const kUnpublishedRepoName;
+extern NSString *const kDefaultTemplateName;
+extern NSString *const kWebPageNotPublished;

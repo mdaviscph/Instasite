@@ -49,9 +49,9 @@ static NSString *kCellId = @"ImageCell";
 - (void)viewDidLoad {
   [super viewDidLoad];
 
-  //self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
+  self.collectionView.backgroundColor = [UIColor whiteColor];
   [self.collectionView registerClass:[ImageCell class] forCellWithReuseIdentifier:kCellId];
   
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
@@ -69,7 +69,6 @@ static NSString *kCellId = @"ImageCell";
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:YES];
 
-  self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
   self.tabBarVC.navigationItem.rightBarButtonItems = nil;
 }
 

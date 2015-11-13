@@ -6,18 +6,14 @@
 //  Copyright © 2015 Instasite. All rights reserved.
 //
 
+#import "SegmentedControlDelegate.h"
 #import <UIKit/UIKit.h>
 
 @interface SegmentedControl : UISegmentedControl
 
-@property (weak, nonatomic) id delegate;
+@property (weak, nonatomic) id<SegmentedControlDelegate> delegate;
 
 - (void)resetWithTitles:(NSArray<NSString *> *)titles;
 
 @end
 
-@protocol SegmentedControlDelegate <NSObject>
-
-- (void)segmentedControlIndexWillChange:(UISegmentedControl *)sender;
-
-@end

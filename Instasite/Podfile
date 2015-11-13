@@ -4,7 +4,6 @@
 target 'Instasite' do
 	pod "AFNetworking", "~> 2.0"
 	pod "SSKeychain"
-	pod "MPSkewed"
 end
 
 target 'InstasiteTests' do

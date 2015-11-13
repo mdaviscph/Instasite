@@ -7,6 +7,7 @@
 //
 
 #import "TemplateTabBarController.h"
+#import "EditViewController.h"
 #import "HtmlTemplate.h"
 #import "UserInput.h"
 #import "Constants.h"
@@ -34,7 +35,7 @@
 }
 - (NSString *)userName {
   if (!_userName) {
-    _userName = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDefaultsNameKey];
+    _userName = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDefaultsUserNameKey];
   }
   return _userName;
 }
@@ -74,6 +75,8 @@
   if (jsonData) {
     [self.userInput updateUsingJsonData:jsonData];
   }
+  
+  self.navigationItem.title = self.repoName;
 }
 
 #pragma mark - Helper Methods
@@ -235,6 +238,10 @@
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
   
+  if ([tabBarController.selectedViewController isKindOfClass:[EditViewController class]]) {
+    EditViewController *editVC = tabBarController.selectedViewController;
+    [editVC.lastTextEditingView endEditing:YES];
+  }
   for (NSString *fileName in self.htmlTemplates.allKeys) {
     HtmlTemplate *template = self.htmlTemplates[fileName];
     [self writeHtmlFile:[self htmlFileURL:fileName] fromTemplate:template usingGroups:self.userInput.groups];

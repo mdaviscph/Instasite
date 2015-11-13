@@ -14,6 +14,8 @@
 
 @interface DisplayTemplateViewController () <WKNavigationDelegate>
 
+@property (weak, nonatomic) IBOutlet UIStackView *stackView;
+
 @property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 @property (strong, nonatomic) WKWebView *webView;
 
@@ -28,9 +30,9 @@
   
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
   
-  self.webView = [[WKWebView alloc]initWithFrame: self.view.frame];
+  self.webView = [[WKWebView alloc]init];
   self.webView.navigationDelegate = self;
-  [self.view addSubview: self.webView];
+  [self.stackView addArrangedSubview:self.webView];
   
   [self.webView loadFileURL:[self.tabBarVC htmlFileURL:kFileIndexName ] allowingReadAccessToURL:[self.tabBarVC indexDirectoryURL]];
 }
@@ -38,7 +40,6 @@
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
   
-  self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
   self.tabBarVC.navigationItem.rightBarButtonItems = nil;
   
   [self.webView reloadFromOrigin];

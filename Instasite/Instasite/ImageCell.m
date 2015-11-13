@@ -67,7 +67,7 @@
   return _borderView;
 }
 
-- (void) addViewWithConstraints:(UIView *)view toSuperview:(UIView *)superview {
+- (void)addViewWithConstraints:(UIView *)view toSuperview:(UIView *)superview {
   
   [superview addSubview:view];
   [view setTranslatesAutoresizingMaskIntoConstraints:NO];
