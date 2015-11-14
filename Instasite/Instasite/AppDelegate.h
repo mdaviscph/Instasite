@@ -12,5 +12,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+@property (strong, nonatomic) NSString *accessToken;      // retrieved from Keychain
+@property (strong, nonatomic) NSString *userName;         // retrieved from UserDefaults
 
 @end

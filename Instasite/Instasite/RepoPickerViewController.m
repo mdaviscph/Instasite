@@ -96,7 +96,6 @@ static NSString *kCellId = @"RepoCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   RepoCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-  NSLog(@"Existing repo selected: %@", cell.repo.name);
   
   if ([self.delegate respondsToSelector:@selector(repoPicker:didFinishPickingWithName:)]) {
     [self.delegate repoPicker:self didFinishPickingWithName:cell.repo.name];

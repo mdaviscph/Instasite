@@ -13,32 +13,15 @@
 #import "Constants.h"
 #import "FileInfo.h"
 #import "FileService.h"
-#import <SSKeychain/SSKeychain.h>
+#import "AppDelegate.h"
 
 @interface TemplateTabBarController () <UITabBarControllerDelegate, NSFileManagerDelegate>
-
-// public readonly properties
-@property (strong, readwrite, nonatomic) NSString *accessToken;      // retrieved from Keychain
-@property (strong, readwrite, nonatomic) NSString *userName;         // retrieved from UserDefaults
 
 @property (strong, nonatomic) HtmlTemplateDictionary *htmlTemplates;
 
 @end
 
 @implementation TemplateTabBarController
-
-- (NSString *)accessToken {
-  if (!_accessToken) {
-    _accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
-  }
-  return _accessToken;
-}
-- (NSString *)userName {
-  if (!_userName) {
-    _userName = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDefaultsUserNameKey];
-  }
-  return _userName;
-}
 
 - (UserInput *)userInput {
   if (!_userInput) {
@@ -60,11 +43,6 @@
   [super viewDidLoad];
   
   self.delegate = self;
-
-  if (!self.accessToken) {
-    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
-    [self.navigationController pushViewController:[oauthStoryboard instantiateInitialViewController] animated:YES];
-  }
   
   NSLog(@"Documents directory: %@", self.documentsDirectory);
   [self copyBundleTemplateDirectory];
@@ -255,6 +233,7 @@
 #pragma mark - NSFileManagerDelegate
 
 // used if we need to overwrite a directory and files
+// TODO - determine if we need this delegate method
 -(BOOL)fileManager:(NSFileManager *)fileManager shouldProceedAfterError:(NSError *)error copyingItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath {
   NSLog(@"NSFileManager error: %lu", error.code);
   if (error.code == NSFileWriteFileExistsError) {

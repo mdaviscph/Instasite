@@ -15,6 +15,7 @@
 #import "GitHubTree.h"
 #import "GitHubRepo.h"
 #import "GitHubUser.h"
+#import "AppDelegate.h"
 #import <WebKit/WebKit.h>
 
 @interface PublishViewController () <LabelDelegate, WKNavigationDelegate>
@@ -35,6 +36,11 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   
+  if (![(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]) {
+    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
+    [self.navigationController pushViewController:[oauthStoryboard instantiateInitialViewController] animated:YES];
+  }
+  
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
   
   self.ghPagesUrlLabel.delegate = self;
@@ -51,20 +57,21 @@
 
   self.ghPagesUrlLabel.backgroundColor = [UIColor whiteColor];
   
-  if (self.tabBarVC.userName) {
-    [self enableNavigationItemButtons];
-    
-  } else {
-    GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:self.tabBarVC.accessToken];
+  self.tabBarVC.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)], [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)]];
+
+  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+  NSString *accessToken = appDelegate.accessToken;
+  NSString *userName = appDelegate.userName;
+
+  if (accessToken && !userName) {
+    GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:[(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]];
     [gitHubUser retrieveNameWithCompletion:^(NSError *error, NSString *name) {
       if (error) {
         // TODO - alert popover
         return;
       }
       
-      [[NSUserDefaults standardUserDefaults] setObject:name forKey:kUserDefaultsUserNameKey];
-      NSLog(@"User name saved to user defaults.");
-      [self enableNavigationItemButtons];
+      [(AppDelegate *)[UIApplication sharedApplication].delegate setUserName:name];
     }];
   }
 }
@@ -102,11 +109,15 @@
 - (void)publishToGitHub {
   
   [self.busyIndicator startAnimating];
-  
+
+  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+  NSString *accessToken = appDelegate.accessToken;
+  NSString *userName = appDelegate.userName;
+
   if ([self.tabBarVC.repoNames containsObject:self.tabBarVC.repoName]) {
-    [self republishRepo:self.tabBarVC.repoName];
+    [self republishRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
   } else {
-    [self publishAllFilesForRepo:self.tabBarVC.repoName];
+    [self publishAllFilesForRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
   }
 }
 
@@ -116,13 +127,9 @@
 
 #pragma mark - Helper Methods
 
-- (void)enableNavigationItemButtons {
-  self.tabBarVC.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)], [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)]];
-}
+- (NSURL *)ghPagesIndexHtmlFileURLforRepo:(NSString *)repoName withUserName:(NSString *)userName {
 
-- (NSURL *)ghPagesIndexHtmlFileURLforRepo:(NSString *)repoName {
-
-  NSURL *ghPagesURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@.github.io", self.tabBarVC.userName]];
+  NSURL *ghPagesURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@.github.io", userName]];
   ghPagesURL = [ghPagesURL URLByAppendingPathComponent:repoName];
   ghPagesURL = [ghPagesURL URLByAppendingPathComponent:kFileIndexName];
   ghPagesURL = [ghPagesURL URLByAppendingPathExtension:kFileHtmlExtension];
@@ -133,9 +140,9 @@
   return ghPagesURL;
 }
 
-- (NSURL *)ghPagesURLforRepo:(NSString *)repoName {
+- (NSURL *)ghPagesURLforRepo:(NSString *)repoName withUserName:(NSString *)userName {
 
-  NSURL *ghPagesURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@.github.io", self.tabBarVC.userName]];
+  NSURL *ghPagesURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@.github.io", userName]];
   ghPagesURL = [ghPagesURL URLByAppendingPathComponent:repoName isDirectory:YES];
   
   if (!ghPagesURL) {
@@ -146,21 +153,23 @@
 
 - (void)loadWebView {
   [self.busyIndicator stopAnimating];
-  NSURL *repoURL = [self ghPagesURLforRepo:self.tabBarVC.repoName];
+  
+  NSString *userName = [(AppDelegate *)[UIApplication sharedApplication].delegate userName];
+  NSURL *repoURL = [self ghPagesURLforRepo:self.tabBarVC.repoName withUserName:userName];
   NSLog(@"WKWebView:loadRequest: [%@]", repoURL.absoluteString);
   [self.webView loadRequest:[NSURLRequest requestWithURL:repoURL]];
 }
 
-- (void)publishAllFilesForRepo:(NSString *)repoName {
+- (void)publishAllFilesForRepo:(NSString *)repoName withUserName:(NSString *)userName usingAccessToken:(NSString *)accessToken {
   
-  NSString *description = [NSString stringWithFormat:@"This repository created with a GitHub Pages branch for %@ (with HTML template %@ from Start Bootstrap) by iOS app InstaSite v1.0.", self.tabBarVC.userName, self.tabBarVC.templateDirectory];
+  NSString *description = [NSString stringWithFormat:@"This repository created with a GitHub Pages branch for %@ (with HTML template %@ from Start Bootstrap) by iOS app InstaSite v1.0.", userName, self.tabBarVC.templateDirectory];
  
   FileInfoMutableArray *initialFiles = [[FileInfoMutableArray alloc] initWithArray:[self initialFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
   
-  [self createRepoWithFiles:initialFiles user:self.tabBarVC.userName repo:repoName branch:kBranchName comment:description accessToken:self.tabBarVC.accessToken];
+  [self createRepoWithFiles:initialFiles user:userName repo:repoName branch:kBranchName comment:description accessToken:accessToken];
 }
 
-- (void)republishRepo:(NSString *)repoName {
+- (void)republishRepo:(NSString *)repoName withUserName:(NSString *)userName usingAccessToken:(NSString *)accessToken{
   
   FileInfoMutableArray *changedFiles = [[FileInfoMutableArray alloc] initWithArray:[self changedFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
   // TODO - rest of this method
@@ -193,7 +202,7 @@
         return;
       }
       NSLog(@"GitHub tree created for %@.", branch);
-      self.ghPagesUrlLabel.text = !self.tabBarVC.repoName || [self.tabBarVC.repoName isEqualToString:kUnpublishedRepoName] ? nil : [[self ghPagesURLforRepo:self.tabBarVC.repoName] absoluteString];
+      self.ghPagesUrlLabel.text = !self.tabBarVC.repoName || [self.tabBarVC.repoName isEqualToString:kUnpublishedRepoName] ? nil : [[self ghPagesURLforRepo:self.tabBarVC.repoName withUserName:userName] absoluteString];
       self.ghPagesUrlLabel.alpha = 1.0;
       
       double delay = 3.0;     // give GitHub pages some time to finish build

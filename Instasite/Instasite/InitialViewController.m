@@ -11,15 +11,13 @@
 #import "TemplateTabBarController.h"
 #import "RepoPickerViewController.h"
 #import "Constants.h"
-#import <SSKeychain/SSKeychain.h>
+#import "AppDelegate.h"
 
 @interface InitialViewController () <TemplatePickerDelegate, RepoPickerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *webPageButton;
 @property (weak, nonatomic) IBOutlet UIButton *templateButton;
 
-@property (strong, nonatomic) NSString *accessToken;
-@property (strong, nonatomic) NSString *userName;
 @property (strong, nonatomic) NSString *repoName;
 @property (strong, nonatomic) NSString *templateName;       // note: currently templateName is same as template directory
 
@@ -27,18 +25,6 @@
 
 @implementation InitialViewController
 
-- (NSString *)accessToken {
-  if (!_accessToken) {
-    _accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
-  }
-  return _accessToken;
-}
-- (NSString *)userName {
-  if (!_userName) {
-    _userName = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDefaultsUserNameKey];
-  }
-  return _userName;
-}
 @synthesize repoName = _repoName;
 - (NSString *)repoName {
   if (!_repoName) {
@@ -56,6 +42,7 @@
     [self.webPageButton setTitle:kUnpublishedRepoName forState:UIControlStateNormal];
   }
 }
+
 @synthesize templateName = _templateName;
 - (NSString *)templateName {
   if (!_templateName) {
@@ -91,7 +78,7 @@
 #pragma mark - IBActions, Selector Methods
 
 - (IBAction)webPageButtonTapped:(UIButton *)sender {
-  [self actionSheetForWebPage:self.accessToken];
+  [self actionSheetForWebPage];
 }
 - (IBAction)templateButtonTapped:(UIButton *)sender {
   [self actionSheetForTemplate];
@@ -99,7 +86,7 @@
 
 #pragma mark - Helper Methods
 
-- (void)actionSheetForWebPage:(NSString *)accessToken {
+- (void)actionSheetForWebPage {
   UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
   alert.modalPresentationStyle = UIModalPresentationPopover;
   alert.popoverPresentationController.sourceView = self.webPageButton;
@@ -113,8 +100,8 @@
     [self renameWebPage];
   }];
   [alert addAction:action2];
-  UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"Choose a Repository" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-    [self pickRepositoryUsingAccessToken:accessToken];
+  UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"Choose a GitHub Repository" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    [self pickRepository];
   }];
   [alert addAction:action3];
   UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"New" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -181,13 +168,19 @@
   [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)pickRepositoryUsingAccessToken:(NSString *)token {
+- (void)pickRepository {
   RepoPickerViewController *repoPickerVC = [self.storyboard instantiateViewControllerWithIdentifier:@"RepoPickerVC"];
   
-  repoPickerVC.delegate = self;
-  repoPickerVC.accessToken = token;
+  NSString *accessToken = [(AppDelegate *)[UIApplication sharedApplication].delegate accessToken];
   
-  [self.navigationController pushViewController:repoPickerVC animated:YES];
+  if (accessToken) {
+    repoPickerVC.delegate = self;
+    repoPickerVC.accessToken = accessToken;
+    [self.navigationController pushViewController:repoPickerVC animated:YES];
+  } else {
+    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
+    [self.navigationController pushViewController:[oauthStoryboard instantiateInitialViewController] animated:YES];
+  }
 }
 
 - (void)newWebPage {
