@@ -84,7 +84,7 @@
   if (self.templateName) {
     [self.templateButton setTitle:self.templateName forState:UIControlStateNormal];
   } else {
-    [self.templateButton setTitle:kDefaultTemplateName forState:UIControlStateNormal];
+    [self setTemplateName:kDefaultTemplateName];
   }
 }
 

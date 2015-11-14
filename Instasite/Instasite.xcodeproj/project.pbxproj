@@ -11,7 +11,6 @@
 		0006EC061BC0B79200B020C5 /* ImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0006EC051BC0B79200B020C5 /* ImagesViewController.m */; };
 		0006EC091BC0BFAF00B020C5 /* ImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0006EC081BC0BFAF00B020C5 /* ImageCell.m */; };
 		000B02751BB36A2D00737578 /* TemplateTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 000B02741BB36A2D00737578 /* TemplateTabBarController.m */; };
-		00190D001BE8364000939E13 /* startbootstrap-1-col-portfolio-1.0.3 in Resources */ = {isa = PBXBuildFile; fileRef = 00190CFF1BE8364000939E13 /* startbootstrap-1-col-portfolio-1.0.3 */; };
 		00190D021BE8367300939E13 /* startbootstrap-landing-page-1.0.4 in Resources */ = {isa = PBXBuildFile; fileRef = 00190D011BE8367300939E13 /* startbootstrap-landing-page-1.0.4 */; };
 		002B9D9F1BE5CA9F0097B33A /* UserInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 002B9D9E1BE5CA9F0097B33A /* UserInput.m */; };
 		006CED461BC5EEBE004F484D /* UserJsonResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 006CED451BC5EEBE004F484D /* UserJsonResponse.m */; };
@@ -35,9 +34,10 @@
 		007D48061BC2FAA30057B5D1 /* RepoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D48051BC2FAA30057B5D1 /* RepoCell.m */; };
 		008035021BB7141C00EB91C6 /* SegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 008035011BB7141C00EB91C6 /* SegmentedControl.m */; };
 		00A45B301BF676A800F0367B /* Label.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A45B2F1BF676A800F0367B /* Label.m */; };
-		00BFD3FB1BED832F009DE6DA /* 1-col-portfolio.png in Resources */ = {isa = PBXBuildFile; fileRef = 00BFD3F81BED832F009DE6DA /* 1-col-portfolio.png */; };
-		00BFD3FC1BED832F009DE6DA /* landing-page.png in Resources */ = {isa = PBXBuildFile; fileRef = 00BFD3F91BED832F009DE6DA /* landing-page.png */; };
-		00BFD3FD1BED832F009DE6DA /* one-page-wonder.png in Resources */ = {isa = PBXBuildFile; fileRef = 00BFD3FA1BED832F009DE6DA /* one-page-wonder.png */; };
+		00A45B341BF71E0000F0367B /* startbootstrap-1-col-portfolio-1.0.3 in Resources */ = {isa = PBXBuildFile; fileRef = 00A45B331BF71E0000F0367B /* startbootstrap-1-col-portfolio-1.0.3 */; };
+		00A45B381BF71EA900F0367B /* 1-col-portfolio.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A45B351BF71EA900F0367B /* 1-col-portfolio.png */; };
+		00A45B391BF71EA900F0367B /* landing-page.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A45B361BF71EA900F0367B /* landing-page.png */; };
+		00A45B3A1BF71EA900F0367B /* one-page-wonder.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A45B371BF71EA900F0367B /* one-page-wonder.png */; };
 		00BFD4001BF004CC009DE6DA /* TemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BFD3FF1BF004CC009DE6DA /* TemplateCell.m */; };
 		00BFD4031BF00703009DE6DA /* TemplateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BFD4021BF00703009DE6DA /* TemplateView.m */; };
 		00CDA75D1BF3DBCB007BE84D /* InitialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CDA75C1BF3DBCB007BE84D /* InitialViewController.m */; };
@@ -112,7 +112,6 @@
 		0006EC081BC0BFAF00B020C5 /* ImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCell.m; sourceTree = "<group>"; };
 		000B02731BB36A2D00737578 /* TemplateTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = TemplateTabBarController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		000B02741BB36A2D00737578 /* TemplateTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TemplateTabBarController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		00190CFF1BE8364000939E13 /* startbootstrap-1-col-portfolio-1.0.3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-1-col-portfolio-1.0.3"; sourceTree = "<group>"; };
 		00190D011BE8367300939E13 /* startbootstrap-landing-page-1.0.4 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-landing-page-1.0.4"; sourceTree = "<group>"; };
 		002B9D9D1BE5CA9F0097B33A /* UserInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInput.h; sourceTree = "<group>"; };
 		002B9D9E1BE5CA9F0097B33A /* UserInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInput.m; sourceTree = "<group>"; };
@@ -162,9 +161,10 @@
 		00A45B2F1BF676A800F0367B /* Label.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Label.m; sourceTree = "<group>"; };
 		00A45B311BF689E200F0367B /* SegmentedControlDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SegmentedControlDelegate.h; sourceTree = "<group>"; };
 		00A45B321BF68AFE00F0367B /* LabelDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LabelDelegate.h; sourceTree = "<group>"; };
-		00BFD3F81BED832F009DE6DA /* 1-col-portfolio.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1-col-portfolio.png"; sourceTree = "<group>"; };
-		00BFD3F91BED832F009DE6DA /* landing-page.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landing-page.png"; sourceTree = "<group>"; };
-		00BFD3FA1BED832F009DE6DA /* one-page-wonder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "one-page-wonder.png"; sourceTree = "<group>"; };
+		00A45B331BF71E0000F0367B /* startbootstrap-1-col-portfolio-1.0.3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-1-col-portfolio-1.0.3"; sourceTree = "<group>"; };
+		00A45B351BF71EA900F0367B /* 1-col-portfolio.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1-col-portfolio.png"; sourceTree = "<group>"; };
+		00A45B361BF71EA900F0367B /* landing-page.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landing-page.png"; sourceTree = "<group>"; };
+		00A45B371BF71EA900F0367B /* one-page-wonder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "one-page-wonder.png"; sourceTree = "<group>"; };
 		00BFD3FE1BF004CC009DE6DA /* TemplateCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateCell.h; sourceTree = "<group>"; };
 		00BFD3FF1BF004CC009DE6DA /* TemplateCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateCell.m; sourceTree = "<group>"; };
 		00BFD4011BF00703009DE6DA /* TemplateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateView.h; sourceTree = "<group>"; };
@@ -386,22 +386,22 @@
 			children = (
 				00CDA75B1BF3DBCB007BE84D /* InitialViewController.h */,
 				00CDA75C1BF3DBCB007BE84D /* InitialViewController.m */,
-				6B05A0021BB3271A002627BA /* TemplatePickerViewController.h */,
-				6B05A0031BB3271A002627BA /* TemplatePickerViewController.m */,
-				00D864A01BF2BC6B00455891 /* TemplatePickerDelegate.h */,
 				6B05A0051BB32765002627BA /* DisplayTemplateViewController.h */,
 				6B05A0061BB32765002627BA /* DisplayTemplateViewController.m */,
-				227C867A1BB077D400799CD3 /* OauthViewController.h */,
-				227C867B1BB077D400799CD3 /* OauthViewController.m */,
-				6C0E6E311BB1F16F000C7971 /* PublishViewController.h */,
-				6C0E6E321BB1F16F000C7971 /* PublishViewController.m */,
 				00E928AA1BB1EC0F00383BD0 /* EditViewController.h */,
 				00E928AB1BB1EC0F00383BD0 /* EditViewController.m */,
 				0006EC041BC0B79200B020C5 /* ImagesViewController.h */,
 				0006EC051BC0B79200B020C5 /* ImagesViewController.m */,
+				227C867A1BB077D400799CD3 /* OauthViewController.h */,
+				227C867B1BB077D400799CD3 /* OauthViewController.m */,
+				6C0E6E311BB1F16F000C7971 /* PublishViewController.h */,
+				6C0E6E321BB1F16F000C7971 /* PublishViewController.m */,
 				007D48011BC2F90A0057B5D1 /* RepoPickerViewController.h */,
 				007D48021BC2F90A0057B5D1 /* RepoPickerViewController.m */,
 				00A45B2D1BF504F600F0367B /* RepoPickerDelegate.h */,
+				6B05A0021BB3271A002627BA /* TemplatePickerViewController.h */,
+				6B05A0031BB3271A002627BA /* TemplatePickerViewController.m */,
+				00D864A01BF2BC6B00455891 /* TemplatePickerDelegate.h */,
 				000B02731BB36A2D00737578 /* TemplateTabBarController.h */,
 				000B02741BB36A2D00737578 /* TemplateTabBarController.m */,
 			);
@@ -551,14 +551,14 @@
 		6B05A0081BB32A92002627BA /* Templates */ = {
 			isa = PBXGroup;
 			children = (
-				00BFD3F81BED832F009DE6DA /* 1-col-portfolio.png */,
-				00BFD3F91BED832F009DE6DA /* landing-page.png */,
-				00BFD3FA1BED832F009DE6DA /* one-page-wonder.png */,
+				00A45B351BF71EA900F0367B /* 1-col-portfolio.png */,
+				00A45B361BF71EA900F0367B /* landing-page.png */,
+				00A45B371BF71EA900F0367B /* one-page-wonder.png */,
 				6B05A0131BB32C70002627BA /* agency.png */,
 				6B05A0141BB32C70002627BA /* clean-blog.png */,
 				6B05A0151BB32C70002627BA /* creative.png */,
 				6B05A0161BB32C70002627BA /* freelancer.png */,
-				00190CFF1BE8364000939E13 /* startbootstrap-1-col-portfolio-1.0.3 */,
+				00A45B331BF71E0000F0367B /* startbootstrap-1-col-portfolio-1.0.3 */,
 				6B05A0091BB32AF2002627BA /* startbootstrap-agency-1.0-2.4 */,
 				6B05A00A1BB32AF2002627BA /* startbootstrap-clean-blog-1.0.3 */,
 				6B05A00B1BB32AF2002627BA /* startbootstrap-creative-1.0.1 */,
@@ -690,16 +690,16 @@
 				6B05A0191BB32C70002627BA /* clean-blog.png in Resources */,
 				6B05A00F1BB32AF2002627BA /* startbootstrap-clean-blog-1.0.3 in Resources */,
 				6B05A0181BB32C70002627BA /* agency.png in Resources */,
-				00BFD3FC1BED832F009DE6DA /* landing-page.png in Resources */,
-				00190D001BE8364000939E13 /* startbootstrap-1-col-portfolio-1.0.3 in Resources */,
+				00A45B391BF71EA900F0367B /* landing-page.png in Resources */,
 				6B05A0121BB32AF2002627BA /* startbootstrap-one-page-wonder-1.0.3 in Resources */,
 				00E928A71BB1AEA200383BD0 /* Sample.json in Resources */,
 				6B05A00E1BB32AF2002627BA /* startbootstrap-agency-1.0-2.4 in Resources */,
 				6B05A0101BB32AF2002627BA /* startbootstrap-creative-1.0.1 in Resources */,
 				00190D021BE8367300939E13 /* startbootstrap-landing-page-1.0.4 in Resources */,
-				00BFD3FB1BED832F009DE6DA /* 1-col-portfolio.png in Resources */,
 				6B05A01B1BB32C70002627BA /* freelancer.png in Resources */,
-				00BFD3FD1BED832F009DE6DA /* one-page-wonder.png in Resources */,
+				00A45B381BF71EA900F0367B /* 1-col-portfolio.png in Resources */,
+				00A45B341BF71E0000F0367B /* startbootstrap-1-col-portfolio-1.0.3 in Resources */,
+				00A45B3A1BF71EA900F0367B /* one-page-wonder.png in Resources */,
 				6B05A0111BB32AF2002627BA /* startbootstrap-freelancer-1.0.3 in Resources */,
 				22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */,
 				22EFFDEB1BADC11800E28ACB /* Assets.xcassets in Resources */,

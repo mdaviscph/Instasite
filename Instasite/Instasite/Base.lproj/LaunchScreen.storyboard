@@ -24,18 +24,9 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UV1-iv-Q8s">
-                                <rect key="frame" x="20" y="119" width="560" height="28"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copyright © 2015. Mike Davis, Sam Wilskey, Cathy Oun, Joao Paulo Galvao Alves. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sJt-R3-9VW">
+                                <rect key="frame" x="20" y="507" width="560" height="41"/>
                                 <animations/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="28" id="bNq-9e-qsd"/>
-                                </constraints>
-                            </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sJt-R3-9VW">
-                                <rect key="frame" x="20" y="147" width="560" height="62"/>
-                                <animations/>
-                                <string key="text">Create a simple web page, providing text and images, using an HTML template from Start Bootstrap. Save to a new or existing GitHub repository. Publish as a personal GitHub Pages website.</string>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
@@ -44,15 +35,14 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="sJt-R3-9VW" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="FDV-8l-x1B"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="sJt-R3-9VW" secondAttribute="bottom" constant="52" id="GFe-lD-m1q"/>
+                            <constraint firstItem="sJt-R3-9VW" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailingMargin" id="MQW-I5-tx2"/>
                             <constraint firstItem="sJt-R3-9VW" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailingMargin" id="N0o-Ec-zUE"/>
                             <constraint firstItem="aTp-S9-R9i" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="52" id="UGj-eL-zIz"/>
                             <constraint firstItem="aTp-S9-R9i" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="Z4R-jS-v7F"/>
                             <constraint firstItem="aTp-S9-R9i" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailingMargin" id="eHN-4I-P0P"/>
-                            <constraint firstItem="UV1-iv-Q8s" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailingMargin" id="hSH-Vz-uE5"/>
                             <constraint firstItem="sJt-R3-9VW" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="hfz-2x-567"/>
-                            <constraint firstItem="UV1-iv-Q8s" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="mub-fV-nYp"/>
-                            <constraint firstItem="sJt-R3-9VW" firstAttribute="top" secondItem="UV1-iv-Q8s" secondAttribute="bottom" id="smh-Qd-zNa"/>
-                            <constraint firstItem="UV1-iv-Q8s" firstAttribute="top" secondItem="aTp-S9-R9i" secondAttribute="bottom" constant="8" symbolic="YES" id="tlh-EK-5Nt"/>
                         </constraints>
                     </view>
                 </viewController>

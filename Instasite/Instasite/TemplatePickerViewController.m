@@ -51,11 +51,15 @@ static NSString *kCellId = @"MainCell";
   self.templatesPerRow = 2;
 }
 
-//- (void)viewDidLayoutSubviews {
-//  [super viewDidLayoutSubviews];
-//  
-//  self.templatesPerRow = self.view.bounds.size.width / 100;
-//}
+- (void)viewDidLayoutSubviews {
+  [super viewDidLayoutSubviews];
+  
+  NSUInteger updatePerRow = self.view.bounds.size.width / 140;
+  if (self.templatesPerRow != updatePerRow) {
+    self.templatesPerRow = updatePerRow;
+    [self.tableView reloadData];
+  }
+}
 
 #pragma mark - Selector Methods
 
@@ -76,7 +80,8 @@ static NSString *kCellId = @"MainCell";
   TemplateCell* cell = [tableView dequeueReusableCellWithIdentifier:kCellId forIndexPath:indexPath];
   
   NSMutableArray<TemplateView *> *templates = [[NSMutableArray alloc] init];
-  NSUInteger start = start = indexPath.row * self.templatesPerRow;
+
+  NSUInteger start = indexPath.row * self.templatesPerRow;
   NSUInteger end = MIN(self.templateDirectories.count, (indexPath.row + 1) * self.templatesPerRow);
   for (NSUInteger index = start; index < end; index++) {
     [templates addObject:[[TemplateView alloc] initWithName:self.templateDirectories[index] title:self.titles[index] image:[UIImage imageNamed:self.imageNames[index]]]];

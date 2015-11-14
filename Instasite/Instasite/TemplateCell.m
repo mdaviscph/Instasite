@@ -25,30 +25,35 @@
 - (void)updateUI {
   
   if (self.horizontalStackView) {
-    for (UIView *subView in self.horizontalStackView.arrangedSubviews) {
-      [self.horizontalStackView removeArrangedSubview:subView];
+    for (UIView *subview in self.horizontalStackView.arrangedSubviews) {
+      [self.horizontalStackView removeArrangedSubview:subview];
+      [subview removeFromSuperview];
     }
   } else {
     self.horizontalStackView = [[UIStackView alloc] init];
     self.horizontalStackView.axis = UILayoutConstraintAxisHorizontal;
-    self.horizontalStackView.spacing = 10.0;
     self.horizontalStackView.distribution = UIStackViewDistributionFillEqually;
-    [self addViewWithConstraints:self.horizontalStackView toSuperview:self.contentView withVerticalSpacing:2.0 withHorizontalSpacing:2.0];
+    [self addViewWithConstraints:self.horizontalStackView toSuperview:self.contentView withVerticalSpacing:6.0 withHorizontalSpacing:6.0];
   }
 
   NSUInteger index = 0;
   for (TemplateView *template in self.templates) {
     UIStackView *verticalStackView = [[UIStackView alloc] init];
     verticalStackView.axis = UILayoutConstraintAxisVertical;
-    verticalStackView.spacing = 6.0;
+    verticalStackView.spacing = 8.0;
+    verticalStackView.distribution = UIStackViewDistributionEqualSpacing;
     verticalStackView.alignment = UIStackViewAlignmentCenter;
     
     UIButton *button = [[UIButton alloc] init];
     [button setBackgroundImage:template.image forState:UIControlStateNormal];
-    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:button attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:100];
-    heightConstraint.active = YES;
     NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:button attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:100];
+    widthConstraint.priority = UILayoutPriorityDefaultHigh;  // get "Unable to simultaneously satisfy constraints" without this
     widthConstraint.active = YES;
+    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:button attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:100];
+    heightConstraint.priority = UILayoutPriorityDefaultHigh;
+    heightConstraint.active = YES;
+
+
     button.tag = index;
     [button addTarget:self action:@selector(touchUpInside:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -58,6 +63,7 @@
     label.text = template.title;
     label.numberOfLines = 0;
     label.tag = index;
+
     [verticalStackView addArrangedSubview:label];
     
     [self.horizontalStackView addArrangedSubview:verticalStackView];
@@ -66,7 +72,6 @@
 }
 
 - (void)touchUpInside:(UIButton *)sender {
-  NSLog(@"Touch for item: %lu name: %@", sender.tag, self.templates[sender.tag].name);
   if ([self.delegate respondsToSelector:@selector(templateCell:didSelectItemWithName:)]) {    
     [self.delegate templateCell:self didSelectItemWithName:self.templates[sender.tag].name];
   }
