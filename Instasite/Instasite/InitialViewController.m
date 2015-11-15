@@ -75,6 +75,12 @@
   }
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  
+  self.navigationController.navigationBarHidden = NO;   // need to reset due to OauthVC hidding navigation bar
+}
+
 #pragma mark - IBActions, Selector Methods
 
 - (IBAction)webPageButtonTapped:(UIButton *)sender {
