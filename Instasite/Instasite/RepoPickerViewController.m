@@ -72,7 +72,9 @@ static NSString *kCellId = @"RepoCell";
     
     if (error) {
       // TODO - alert popover
-      NSLog(@"Error in GitHubUser:retrieveReposWithBranch: error: %@", error.localizedDescription);
+      if ([self.delegate respondsToSelector:@selector(repoPicker:didFailWithError:)]) {
+        [self.delegate repoPicker:self didFailWithError:error];
+      }
     }
     self.repos = repos;
     [self.tableView reloadData];

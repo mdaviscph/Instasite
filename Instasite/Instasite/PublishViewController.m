@@ -36,11 +36,6 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  if (![(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]) {
-    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
-    [self.navigationController pushViewController:[oauthStoryboard instantiateInitialViewController] animated:YES];
-  }
-  
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
   
   self.ghPagesUrlLabel.delegate = self;
@@ -59,6 +54,8 @@
   
   self.tabBarVC.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)], [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)]];
 
+  [self signUpOrLogInIfNeeded];
+  
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
   NSString *accessToken = appDelegate.accessToken;
   NSString *userName = appDelegate.userName;
@@ -67,7 +64,9 @@
     GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:[(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]];
     [gitHubUser retrieveNameWithCompletion:^(NSError *error, NSString *name) {
       if (error) {
-        // TODO - alert popover
+        // TODO - alert popover saying retry Log In and then
+        // TODO - only reset accessToken if error status 401
+        [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:nil];
         return;
       }
       
@@ -106,26 +105,33 @@
   [self presentViewController:alert animated:YES completion:nil];
 }
 
+- (void)refreshButtonTapped {
+  [self.webView reloadFromOrigin];
+}
+
+#pragma mark - Helper Methods
+
+- (void)signUpOrLogInIfNeeded {
+  if (![(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]) {
+    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
+    [self.navigationController pushViewController:[oauthStoryboard instantiateInitialViewController] animated:YES];
+  }
+}
+
 - (void)publishToGitHub {
   
   [self.busyIndicator startAnimating];
-
+  
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
   NSString *accessToken = appDelegate.accessToken;
   NSString *userName = appDelegate.userName;
-
+  
   if ([self.tabBarVC.repoNames containsObject:self.tabBarVC.repoName]) {
     [self republishRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
   } else {
     [self publishAllFilesForRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
   }
 }
-
-- (void)refreshButtonTapped {
-  [self.webView reloadFromOrigin];
-}
-
-#pragma mark - Helper Methods
 
 - (NSURL *)ghPagesIndexHtmlFileURLforRepo:(NSString *)repoName withUserName:(NSString *)userName {
 

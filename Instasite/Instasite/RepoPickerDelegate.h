@@ -13,6 +13,7 @@
 
 - (void)repoPicker:(RepoPickerViewController *)picker didFinishPickingWithName:(NSString *)name;
 - (void)repoPickerDidCancel:(RepoPickerViewController *)picker;
+- (void)repoPicker:(RepoPickerViewController *)picker didFailWithError:(NSError *)error;
 
 @end
 

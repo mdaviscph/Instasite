@@ -91,11 +91,11 @@
     [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
     return [NSString stringWithFormat:@"Updated on %@", [dateFormatter stringFromDate:date]];
   } else if (days > 1) {
-    return [NSString stringWithFormat:@"Updated %ld days ago", days];
+    return [NSString stringWithFormat:@"Updated %ld days ago", (long)days];
   } else if (hours > 1) {
-    return [NSString stringWithFormat:@"Updated %ld hours ago", hours];
+    return [NSString stringWithFormat:@"Updated %ld hours ago", (long)hours];
   } else {
-    return [NSString stringWithFormat:@"Updated %ld minutes ago", minutes];
+    return [NSString stringWithFormat:@"Updated %ld minutes ago", (long)minutes];
   }
 }
 

@@ -86,6 +86,13 @@
 
 #pragma mark - Helper Methods
 
+- (void)signUpOrLogInIfNeeded {
+  if (![(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]) {
+    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
+    [self.navigationController pushViewController:[oauthStoryboard instantiateInitialViewController] animated:YES];
+  }
+}
+
 - (void)actionSheetForWebPage {
   UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
   alert.modalPresentationStyle = UIModalPresentationPopover;
@@ -171,15 +178,14 @@
 - (void)pickRepository {
   RepoPickerViewController *repoPickerVC = [self.storyboard instantiateViewControllerWithIdentifier:@"RepoPickerVC"];
   
+  [self signUpOrLogInIfNeeded];
+  
   NSString *accessToken = [(AppDelegate *)[UIApplication sharedApplication].delegate accessToken];
   
   if (accessToken) {
     repoPickerVC.delegate = self;
     repoPickerVC.accessToken = accessToken;
     [self.navigationController pushViewController:repoPickerVC animated:YES];
-  } else {
-    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
-    [self.navigationController pushViewController:[oauthStoryboard instantiateInitialViewController] animated:YES];
   }
 }
 
@@ -209,6 +215,13 @@
   [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)repoPicker:(RepoPickerViewController *)picker didFailWithError:(NSError *)error {
+
+  // TODO - alert popover saying Log In and then call signUpOrLogInIfNeeded again
+  // TODO - only reset accessToken if error status is 401
+  [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:nil];
+}
+
 #pragma mark - TemplatePickerDelegate
 
 - (void)templatePicker:(TemplatePickerViewController *)picker didFinishPickingWithName:(NSString *)name {
@@ -221,6 +234,10 @@
 
 - (void)templatePickerDidCancel:(TemplatePickerViewController *)picker {
   [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)templatePicker:(TemplatePickerViewController *)picker didFailWithError:(NSError *)error {
+  
 }
 
 @end

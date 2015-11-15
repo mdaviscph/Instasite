@@ -235,7 +235,7 @@
 // used if we need to overwrite a directory and files
 // TODO - determine if we need this delegate method
 -(BOOL)fileManager:(NSFileManager *)fileManager shouldProceedAfterError:(NSError *)error copyingItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath {
-  NSLog(@"NSFileManager error: %lu", error.code);
+  NSLog(@"NSFileManager error: %lu", (long)error.code);
   if (error.code == NSFileWriteFileExistsError) {
     return YES;
   }

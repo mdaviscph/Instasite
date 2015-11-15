@@ -13,6 +13,7 @@
 
 - (void)templatePicker:(TemplatePickerViewController *)picker didFinishPickingWithName:(NSString *)name;
 - (void)templatePickerDidCancel:(TemplatePickerViewController *)picker;
+- (void)templatePicker:(TemplatePickerViewController *)picker didFailWithError:(NSError *)error;
 
 @end
 

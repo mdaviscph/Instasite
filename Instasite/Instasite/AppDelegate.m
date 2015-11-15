@@ -26,8 +26,13 @@
 }
 - (void)setAccessToken:(NSString *)accessToken {
   _accessToken = accessToken;
-  [SSKeychain setPassword:accessToken forService:kSSKeychainService account:kSSKeychainAccount];
-  NSLog(@"Access token saved to keychain.");
+  if (accessToken) {
+    [SSKeychain setPassword:accessToken forService:kSSKeychainService account:kSSKeychainAccount];
+    NSLog(@"Access token saved to keychain.");
+  } else {
+    [SSKeychain deletePasswordForService:kSSKeychainService account:kSSKeychainAccount];
+    NSLog(@"Access token deleted from keychain.");
+  }
 }
 
 @synthesize userName = _userName;
