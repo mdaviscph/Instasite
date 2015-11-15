@@ -12,7 +12,9 @@
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
   
-  [self.delegate segmentedControlIndexWillChange:self];
+  if ([self.delegate respondsToSelector:@selector(segmentedControlIndexWillChange:)]) {
+    [self.delegate segmentedControlIndexWillChange:self];
+  }
   [super touchesBegan:touches withEvent:event];
 }
 

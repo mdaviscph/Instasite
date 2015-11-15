@@ -8,17 +8,19 @@
 
 #import "PublishViewController.h"
 #import "TemplateTabBarController.h"
+#import "Label.h"
 #import "FileService.h"
 #import "FileInfo.h"
 #import "Constants.h"
 #import "GitHubTree.h"
 #import "GitHubRepo.h"
 #import "GitHubUser.h"
+#import "AppDelegate.h"
 #import <WebKit/WebKit.h>
 
-@interface PublishViewController () <UITextFieldDelegate, WKNavigationDelegate>
+@interface PublishViewController () <LabelDelegate, WKNavigationDelegate>
 
-@property (weak, nonatomic) IBOutlet UITextField *repoNameTextField;
+@property (weak, nonatomic) IBOutlet Label *ghPagesUrlLabel;
 @property (weak, nonatomic) IBOutlet UIStackView *stackView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *busyIndicator;
 
@@ -35,9 +37,10 @@
   [super viewDidLoad];
   
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
-
-  self.repoNameTextField.delegate = self;
-  self.repoNameTextField.text = [self.tabBarVC.repoName isEqualToString:kUnpublishedName] ? nil : self.tabBarVC.repoName;
+  
+  self.ghPagesUrlLabel.delegate = self;
+  self.ghPagesUrlLabel.text = kWebPageNotPublished;
+  self.ghPagesUrlLabel.alpha = 0.35;
   
   self.webView = [[WKWebView alloc] init];
   self.webView.navigationDelegate = self;
@@ -47,62 +50,92 @@
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
 
-  self.tabBarVC.navigationItem.title = self.tabBarVC.repoName;
+  self.ghPagesUrlLabel.backgroundColor = [UIColor whiteColor];
+  
+  self.tabBarVC.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)], [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)]];
 
-  if (self.tabBarVC.userName) {
-    [self enableNavigationItemButtons];
-    
-  } else {
-    GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:self.tabBarVC.accessToken];
+  [self signUpOrLogInIfNeeded];
+  
+  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+  NSString *accessToken = appDelegate.accessToken;
+  NSString *userName = appDelegate.userName;
+
+  if (accessToken && !userName) {
+    GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:[(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]];
     [gitHubUser retrieveNameWithCompletion:^(NSError *error, NSString *name) {
       if (error) {
-        // TODO - alert popover
+        // TODO - alert popover saying retry Log In and then
+        // TODO - only reset accessToken if error status 401
+        [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:nil];
         return;
       }
       
-      [[NSUserDefaults standardUserDefaults] setObject:name forKey:kUserDefaultsNameKey];
-      NSLog(@"User name saved to user defaults.");
-      [self enableNavigationItemButtons];
+      [(AppDelegate *)[UIApplication sharedApplication].delegate setUserName:name];
     }];
   }
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-  [super viewWillDisappear:animated];
-  
-}
-
-#pragma mark - Selector Methods
+#pragma mark - IBActions, Selector Methods
 
 - (void)publishButtonTapped {
   
-  NSString *repoName = self.repoNameTextField.text;
-  if (!repoName.length > 0 || [repoName isEqualToString:kUnpublishedName]) {
-    return;
-  }
-  [self.busyIndicator startAnimating];
+  BOOL renameRequired = !self.tabBarVC.repoName || [self.tabBarVC.repoName isEqualToString:kUnpublishedRepoName];
+  NSString *title = renameRequired ? @"Specify a descriptive name:" : nil;
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleAlert];
+  alert.modalPresentationStyle = UIModalPresentationPopover;
   
-  if ([self.tabBarVC.repoNames containsObject:repoName]) {
-    [self republishRepo:repoName];
-  } else {
-    [self publishAllFilesForRepo:repoName];
-    self.tabBarVC.repoName = repoName;
+  if (renameRequired) {
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+      textField.placeholder =  @"Web Page Repository";
+    }];
   }
+  
+  UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Publish to GitHub" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UITextField *textField = alert.textFields.firstObject;
+    if (textField && textField.text.length > 0) {
+      self.tabBarVC.repoName = textField.text;
+      [[NSUserDefaults standardUserDefaults] setObject:textField.text forKey:kUserDefaultsRepoNameKey];
+    }
+    [self publishToGitHub];
+  }];
+  [alert addAction:action1];
+  UIAlertAction *action2 = [UIAlertAction actionWithTitle: @"Cancel" style:UIAlertActionStyleCancel handler:nil];
+  [alert addAction:action2];
+  
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)refreshButtonTapped {
-  [self.webView reload];
+  [self.webView reloadFromOrigin];
 }
 
 #pragma mark - Helper Methods
 
-- (void)enableNavigationItemButtons {
-  self.tabBarVC.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)], [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)]];
+- (void)signUpOrLogInIfNeeded {
+  if (![(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]) {
+    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
+    [self.navigationController pushViewController:[oauthStoryboard instantiateInitialViewController] animated:YES];
+  }
 }
 
-- (NSURL *)ghPagesIndexHtmlFileURLforRepo:(NSString *)repoName {
+- (void)publishToGitHub {
+  
+  [self.busyIndicator startAnimating];
+  
+  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+  NSString *accessToken = appDelegate.accessToken;
+  NSString *userName = appDelegate.userName;
+  
+  if ([self.tabBarVC.repoNames containsObject:self.tabBarVC.repoName]) {
+    [self republishRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
+  } else {
+    [self publishAllFilesForRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
+  }
+}
 
-  NSURL *ghPagesURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@.github.io", self.tabBarVC.userName]];
+- (NSURL *)ghPagesIndexHtmlFileURLforRepo:(NSString *)repoName withUserName:(NSString *)userName {
+
+  NSURL *ghPagesURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@.github.io", userName]];
   ghPagesURL = [ghPagesURL URLByAppendingPathComponent:repoName];
   ghPagesURL = [ghPagesURL URLByAppendingPathComponent:kFileIndexName];
   ghPagesURL = [ghPagesURL URLByAppendingPathExtension:kFileHtmlExtension];
@@ -113,9 +146,9 @@
   return ghPagesURL;
 }
 
-- (NSURL *)ghPagesURLforRepo:(NSString *)repoName {
+- (NSURL *)ghPagesURLforRepo:(NSString *)repoName withUserName:(NSString *)userName {
 
-  NSURL *ghPagesURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@.github.io", self.tabBarVC.userName]];
+  NSURL *ghPagesURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@.github.io", userName]];
   ghPagesURL = [ghPagesURL URLByAppendingPathComponent:repoName isDirectory:YES];
   
   if (!ghPagesURL) {
@@ -126,21 +159,23 @@
 
 - (void)loadWebView {
   [self.busyIndicator stopAnimating];
-  NSURL *repoURL = [self ghPagesURLforRepo:self.tabBarVC.repoName];
+  
+  NSString *userName = [(AppDelegate *)[UIApplication sharedApplication].delegate userName];
+  NSURL *repoURL = [self ghPagesURLforRepo:self.tabBarVC.repoName withUserName:userName];
   NSLog(@"WKWebView:loadRequest: [%@]", repoURL.absoluteString);
   [self.webView loadRequest:[NSURLRequest requestWithURL:repoURL]];
 }
 
-- (void)publishAllFilesForRepo:(NSString *)repoName {
+- (void)publishAllFilesForRepo:(NSString *)repoName withUserName:(NSString *)userName usingAccessToken:(NSString *)accessToken {
   
-  NSString *description = [NSString stringWithFormat:@"This repository created with a GitHub Pages branch for %@ (with HTML template %@ from Start Bootstrap) by iOS app InstaSite v1.0.", self.tabBarVC.userName, self.tabBarVC.templateDirectory];
+  NSString *description = [NSString stringWithFormat:@"This repository created with a GitHub Pages branch for %@ (with HTML template %@ from Start Bootstrap) by iOS app InstaSite v1.0.", userName, self.tabBarVC.templateDirectory];
  
   FileInfoMutableArray *initialFiles = [[FileInfoMutableArray alloc] initWithArray:[self initialFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
   
-  [self createRepoWithFiles:initialFiles user:self.tabBarVC.userName repo:repoName branch:kBranchName comment:description accessToken:self.tabBarVC.accessToken];
+  [self createRepoWithFiles:initialFiles user:userName repo:repoName branch:kBranchName comment:description accessToken:accessToken];
 }
 
-- (void)republishRepo:(NSString *)repoName {
+- (void)republishRepo:(NSString *)repoName withUserName:(NSString *)userName usingAccessToken:(NSString *)accessToken{
   
   FileInfoMutableArray *changedFiles = [[FileInfoMutableArray alloc] initWithArray:[self changedFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
   // TODO - rest of this method
@@ -173,21 +208,30 @@
         return;
       }
       NSLog(@"GitHub tree created for %@.", branch);
+      self.ghPagesUrlLabel.text = !self.tabBarVC.repoName || [self.tabBarVC.repoName isEqualToString:kUnpublishedRepoName] ? nil : [[self ghPagesURLforRepo:self.tabBarVC.repoName withUserName:userName] absoluteString];
+      self.ghPagesUrlLabel.alpha = 1.0;
       
-      self.tabBarVC.repoName = repoName;
       double delay = 3.0;     // give GitHub pages some time to finish build
-      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{        
         [self loadWebView];
       });
     }];
   }];
 }
 
-#pragma mark - UITextFieldDelegate
+#pragma mark - LabelDelegate
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField {
-  [textField resignFirstResponder];
-  return YES;
+- (void)labelTouchBegin:(UILabel *)sender {
+  
+  if ([self.ghPagesUrlLabel.text isEqualToString:kWebPageNotPublished]) {
+    return;
+  }
+  if (self.ghPagesUrlLabel.backgroundColor == [UIColor whiteColor]) {
+    sender.backgroundColor = [self.view.tintColor colorWithAlphaComponent:0.25];
+  } else {
+    [UIPasteboard generalPasteboard].string = sender.text;
+    sender.backgroundColor = [UIColor whiteColor];
+  }
 }
 
 #pragma mark - WKNavigationDelegate

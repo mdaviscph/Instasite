@@ -14,7 +14,7 @@
 @property (strong, nonatomic)UIView *borderView;
 @property (strong, nonatomic)UILabel *nameLabel;
 @property (strong, nonatomic)UILabel *descriptionLabel;
-@property (strong, nonatomic)UILabel *ownerLabel;
+@property (strong, nonatomic)UILabel *updatedAtLabel;
 @property (strong, nonatomic)UIStackView *stackView;
 
 @end
@@ -25,7 +25,7 @@
   _repo = repo;
   self.nameLabel.text = repo.name;
   self.descriptionLabel.text = repo.aDescription;
-  self.ownerLabel.text = repo.owner;
+  self.updatedAtLabel.text = [self dateString:repo.updatedAt];
 }
 
 - (UILabel *)nameLabel {
@@ -33,6 +33,7 @@
     _nameLabel = [[UILabel alloc] init];
     _nameLabel.backgroundColor = [UIColor whiteColor];
     _nameLabel.numberOfLines = 0;
+    _nameLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     [self.stackView addArrangedSubview:_nameLabel];
   }
   return _nameLabel;
@@ -42,18 +43,20 @@
     _descriptionLabel = [[UILabel alloc] init];
     _descriptionLabel.backgroundColor = [UIColor whiteColor];
     _descriptionLabel.numberOfLines = 0;
+    _nameLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     [self.stackView addArrangedSubview:_descriptionLabel];
   }
   return _descriptionLabel;
 }
-- (UILabel *)ownerLabel {
-  if (!_ownerLabel) {
-    _ownerLabel = [[UILabel alloc] init];
-    _ownerLabel.backgroundColor = [UIColor whiteColor];
-    _ownerLabel.numberOfLines = 0;
-    [self.stackView addArrangedSubview:_ownerLabel];
+- (UILabel *)updatedAtLabel {
+  if (!_updatedAtLabel) {
+    _updatedAtLabel = [[UILabel alloc] init];
+    _updatedAtLabel.backgroundColor = [UIColor whiteColor];
+    _updatedAtLabel.numberOfLines = 0;
+    _updatedAtLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    [self.stackView addArrangedSubview:_updatedAtLabel];
   }
-  return _ownerLabel;
+  return _updatedAtLabel;
 }
 
 - (UIStackView *)stackView {
@@ -75,7 +78,28 @@
   return _borderView;
 }
 
-- (void) addViewWithConstraints:(UIView *)view toSuperview:(UIView *)superview {
+- (NSString *)dateString:(NSDate *)date {
+  
+  NSTimeInterval interval = -[date timeIntervalSinceNow];
+  NSInteger minutes = (NSInteger)interval/60;
+  NSInteger hours = (NSInteger)interval/3600;
+  NSInteger days = (NSInteger)interval/86400;
+  
+  if (days > 30) {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"MMM dd yyyy";
+    [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+    return [NSString stringWithFormat:@"Updated on %@", [dateFormatter stringFromDate:date]];
+  } else if (days > 1) {
+    return [NSString stringWithFormat:@"Updated %ld days ago", (long)days];
+  } else if (hours > 1) {
+    return [NSString stringWithFormat:@"Updated %ld hours ago", (long)hours];
+  } else {
+    return [NSString stringWithFormat:@"Updated %ld minutes ago", (long)minutes];
+  }
+}
+
+- (void)addViewWithConstraints:(UIView *)view toSuperview:(UIView *)superview {
   
   [superview addSubview:view];
   [view setTranslatesAutoresizingMaskIntoConstraints:NO];

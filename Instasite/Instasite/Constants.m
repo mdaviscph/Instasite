@@ -14,9 +14,9 @@ NSString *const kOpenURLdictionaryKey = @"UrlKey";
 NSString *const kSSKeychainAccount = @"github";
 NSString *const kSSKeychainService = @"githubToken";
 
-NSString *const kUserDefaultsNameKey = @"userName";
-NSString *const kUserDefaultsFullNameKey = @"fullName";
-NSString *const kUserDefaultsEmailKey = @"userEmail";
+NSString *const kUserDefaultsUserNameKey = @"userName";
+NSString *const kUserDefaultsRepoNameKey = @"repoName";
+NSString *const kUserDefaultsTemplateNameKey = @"templateName";
 
 NSString *const kFileIndexName = @"index";
 NSString *const kFileHtmlExtension = @"html";
@@ -27,4 +27,6 @@ NSString *const kFileImageDirectory = @"img";
 NSString *const kFileImageExtension = @"jpeg";
 
 NSString *const kBranchName = @"gh-pages";
-NSString *const kUnpublishedName = @"unpublished";
+NSString *const kUnpublishedRepoName = @"unpublished";
+NSString *const kDefaultTemplateName = @"startbootstrap-1-col-portfolio-1.0.3";
+NSString *const kWebPageNotPublished = @"not published";

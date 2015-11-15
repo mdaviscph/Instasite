@@ -50,8 +50,15 @@
     }
     
   } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-    
-    NSLog(@"Error! GitHubUserApiWrapper:getRepos: error: %@", error.localizedDescription);
+
+    NSString *message;
+    NSData *responseError = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+    if (responseError) {
+      NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseError options:kNilOptions error:nil];
+      message = responseDictionary[@"message"];
+    }
+    NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
+    NSLog(@"Error! GitHubUserApiWrapper:getRepos: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
     if (completion) {
       completion(error, nil);
     }

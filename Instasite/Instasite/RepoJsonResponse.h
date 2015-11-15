@@ -15,6 +15,7 @@
 @property (strong, nonatomic) NSString *aDescription;
 @property (strong, nonatomic) NSString *defaultBranch;
 @property (strong, nonatomic) NSString *owner;
+@property (strong, nonatomic) NSDate *updatedAt;
 
 - (instancetype)initFromJson:(NSDictionary *)json;
 

@@ -61,7 +61,7 @@
     }
     NSMutableArray *repos = [[NSMutableArray alloc] init];
     for (RepoJsonResponse *repoResponse in repoResponses) {
-      Repo *repo = [[Repo alloc] initWithName:repoResponse.name description:repoResponse.aDescription owner:repoResponse.owner];
+      Repo *repo = [[Repo alloc] initWithName:repoResponse.name description:repoResponse.aDescription owner:repoResponse.owner updatedAt:repoResponse.updatedAt];
       [repos addObject:repo];
     }
 

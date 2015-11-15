@@ -7,37 +7,21 @@
 //
 
 #import "TemplateTabBarController.h"
+#import "EditViewController.h"
 #import "HtmlTemplate.h"
 #import "UserInput.h"
 #import "Constants.h"
 #import "FileInfo.h"
 #import "FileService.h"
-#import <SSKeychain/SSKeychain.h>
+#import "AppDelegate.h"
 
 @interface TemplateTabBarController () <UITabBarControllerDelegate, NSFileManagerDelegate>
-
-// public readonly properties
-@property (strong, readwrite, nonatomic) NSString *accessToken;      // retrieved from Keychain
-@property (strong, readwrite, nonatomic) NSString *userName;         // retrieved from UserDefaults
 
 @property (strong, nonatomic) HtmlTemplateDictionary *htmlTemplates;
 
 @end
 
 @implementation TemplateTabBarController
-
-- (NSString *)accessToken {
-  if (!_accessToken) {
-    _accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
-  }
-  return _accessToken;
-}
-- (NSString *)userName {
-  if (!_userName) {
-    _userName = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDefaultsNameKey];
-  }
-  return _userName;
-}
 
 - (UserInput *)userInput {
   if (!_userInput) {
@@ -59,11 +43,6 @@
   [super viewDidLoad];
   
   self.delegate = self;
-
-  if (!self.accessToken) {
-    UIStoryboard *oauthStoryboard = [UIStoryboard storyboardWithName:@"Oauth" bundle:[NSBundle mainBundle]];
-    [self.navigationController pushViewController:[oauthStoryboard instantiateInitialViewController] animated:YES];
-  }
   
   NSLog(@"Documents directory: %@", self.documentsDirectory);
   [self copyBundleTemplateDirectory];
@@ -74,6 +53,8 @@
   if (jsonData) {
     [self.userInput updateUsingJsonData:jsonData];
   }
+  
+  self.navigationItem.title = self.repoName;
 }
 
 #pragma mark - Helper Methods
@@ -235,6 +216,10 @@
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
   
+  if ([tabBarController.selectedViewController isKindOfClass:[EditViewController class]]) {
+    EditViewController *editVC = tabBarController.selectedViewController;
+    [editVC.lastTextEditingView endEditing:YES];
+  }
   for (NSString *fileName in self.htmlTemplates.allKeys) {
     HtmlTemplate *template = self.htmlTemplates[fileName];
     [self writeHtmlFile:[self htmlFileURL:fileName] fromTemplate:template usingGroups:self.userInput.groups];
@@ -248,8 +233,9 @@
 #pragma mark - NSFileManagerDelegate
 
 // used if we need to overwrite a directory and files
+// TODO - determine if we need this delegate method
 -(BOOL)fileManager:(NSFileManager *)fileManager shouldProceedAfterError:(NSError *)error copyingItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath {
-  NSLog(@"NSFileManager error: %lu", error.code);
+  NSLog(@"NSFileManager error: %lu", (long)error.code);
   if (error.code == NSFileWriteFileExistsError) {
     return YES;
   }

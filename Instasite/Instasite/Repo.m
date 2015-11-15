@@ -10,7 +10,7 @@
 
 @implementation Repo
 
-- (instancetype)initWithName:(NSString *)name description:(NSString *)description owner:(NSString *)owner {
+- (instancetype)initWithName:(NSString *)name description:(NSString *)description owner:(NSString *)owner updatedAt:(NSDate *)updatedAt {
   self = [super init];
   if (self) {
     _name = name;
@@ -19,6 +19,7 @@
     }
     _aDescription  = description;
     _owner = owner;
+    _updatedAt = updatedAt;
   }
   return self;
 }

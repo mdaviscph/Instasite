@@ -10,4 +10,6 @@
 
 @interface EditViewController : UIViewController
 
+@property (strong, readonly, nonatomic) UIView *lastTextEditingView;
+
 @end

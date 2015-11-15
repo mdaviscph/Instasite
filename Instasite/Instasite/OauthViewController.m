@@ -10,10 +10,13 @@
 #import "Keys.h"
 #import "Constants.h"
 #import "GitHubAccessToken.h"
-#import <SSKeychain/SSKeychain.h>
+#import "AppDelegate.h"
 #import <SafariServices/SafariServices.h>
 
 @interface OauthViewController () <SFSafariViewControllerDelegate>
+
+@property (weak, nonatomic) IBOutlet UIButton *signUpButton;
+@property (weak, nonatomic) IBOutlet UIButton *logInButton;
 
 @property (strong,nonatomic) SFSafariViewController *safariVC;
 
@@ -50,8 +53,8 @@
           return;
         }
         
-        [SSKeychain setPassword:[@"token " stringByAppendingString:token] forService:kSSKeychainService account:kSSKeychainAccount];
-        NSLog(@"Token saved to keychain.");
+        NSString *accessToken = [@"token " stringByAppendingString:token];
+        [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:accessToken];
       }];
     }
   }
@@ -72,24 +75,59 @@
   
   [self.navigationController popToRootViewControllerAnimated:YES];
 }
-
-- (IBAction)signupAction:(UIButton *)sender {
-  NSURL *signupURL = [NSURL URLWithString:@"https://github.com/join"];
-  self.safariVC = [[SFSafariViewController alloc] initWithURL:signupURL];
-  self.safariVC.delegate = self;
-  [self.navigationController pushViewController:self.safariVC animated:YES];
+- (IBAction)signUpButtonTapped:(UIButton *)sender {
+  
+  NSString *message = @"InstaSite uses GitHub.com's project repositories and GitHub Pages free hosting of public web pages. GitHub offers free accounts for users and organizations working on open source projects, as well as paid accounts for users and organizations that need private repositories.";
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleActionSheet];
+  alert.modalPresentationStyle = UIModalPresentationPopover;
+  alert.popoverPresentationController.sourceView = self.signUpButton;
+  alert.popoverPresentationController.sourceRect = self.signUpButton.bounds;
+  
+  UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Continue" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    
+    NSURL *signupURL = [NSURL URLWithString:@"https://github.com/join"];
+    self.safariVC = [[SFSafariViewController alloc] initWithURL:signupURL];
+    self.safariVC.delegate = self;
+    [self.navigationController pushViewController:self.safariVC animated:YES];
+  }];
+  
+  [alert addAction:action1];
+  UIAlertAction *action2 = [UIAlertAction actionWithTitle: @"Cancel" style:UIAlertActionStyleCancel handler:nil];
+  [alert addAction:action2];
+  
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (IBAction)loginAction:(UIButton *)sender {
-  NSURL *authURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://github.com/login/oauth/authorize?client_id=%@&redirect_uri=instasite://oauth&scope=user,repo", kClientId]];
-  self.safariVC = [[SFSafariViewController alloc] initWithURL:authURL];
-  self.safariVC.delegate = self;
-  [self.navigationController pushViewController:self.safariVC animated:YES];
+- (IBAction)logInButtonTapped:(UIButton *)sender {
+
+  NSString *message = @"InstaSite requires \"repo scope\" in order to create and write to GitHub repositories. GitHub defines this scope as: Grants read/write access to code, commit statuses, collaborators, and deployment statuses for public and private repositories and organizations.";
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleActionSheet];
+  alert.modalPresentationStyle = UIModalPresentationPopover;
+  alert.popoverPresentationController.sourceView = self.logInButton;
+  alert.popoverPresentationController.sourceRect = self.logInButton.bounds;
+  
+  UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Continue" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    
+    NSURL *authURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://github.com/login/oauth/authorize?client_id=%@&redirect_uri=instasite://oauth&scope=repo", kClientId]];
+    self.safariVC = [[SFSafariViewController alloc] initWithURL:authURL];
+    self.safariVC.delegate = self;
+    [self.navigationController pushViewController:self.safariVC animated:YES];
+  }];
+  
+  [alert addAction:action1];
+  UIAlertAction *action2 = [UIAlertAction actionWithTitle: @"Cancel" style:UIAlertActionStyleCancel handler:nil];
+  [alert addAction:action2];
+  
+  [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (IBAction)cancelButtonTapped:(UIButton *)sender {
+  [self popBackToCallingVC];
 }
 
 #pragma mark - SFSafariViewControllerDelegate
 
-//Called on Done Pressed
+// Called on Done Pressed
 - (void)safariViewControllerDidFinish:(SFSafariViewController *)controller {
   [self popBackToCallingVC];
 }

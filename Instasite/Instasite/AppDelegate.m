@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "Constants.h"
 #import <AFNetworking/AFNetworking.h>
+#import <SSKeychain/SSKeychain.h>
 
 @interface AppDelegate ()
 
@@ -16,6 +17,36 @@
 
 @implementation AppDelegate
 
+@synthesize accessToken = _accessToken;
+- (NSString *)accessToken {
+  if (!_accessToken) {
+    _accessToken = [SSKeychain passwordForService:kSSKeychainService account:kSSKeychainAccount];
+  }
+  return _accessToken;
+}
+- (void)setAccessToken:(NSString *)accessToken {
+  _accessToken = accessToken;
+  if (accessToken) {
+    [SSKeychain setPassword:accessToken forService:kSSKeychainService account:kSSKeychainAccount];
+    NSLog(@"Access token saved to keychain.");
+  } else {
+    [SSKeychain deletePasswordForService:kSSKeychainService account:kSSKeychainAccount];
+    NSLog(@"Access token deleted from keychain.");
+  }
+}
+
+@synthesize userName = _userName;
+- (NSString *)userName {
+  if (!_userName) {
+    _userName = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDefaultsUserNameKey];
+  }
+  return _userName;
+}
+- (void)setUserName:(NSString *)userName {
+  _userName = userName;
+  [[NSUserDefaults standardUserDefaults] setObject:userName forKey:kUserDefaultsUserNameKey];
+  NSLog(@"User name saved to user defaults.");
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   

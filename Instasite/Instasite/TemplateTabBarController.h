@@ -23,9 +23,6 @@
 @property (strong, nonatomic) ImagesDictionary *images;
 @property (strong, nonatomic) NSSet *repoNames;
 
-@property (strong, readonly, nonatomic) NSString *accessToken;      // retrieved from Keychain
-@property (strong, readonly, nonatomic) NSString *userName;         // retrieved from UserDefaults
-
 - (NSURL *)htmlFileURL:(NSString *)fileName;
 - (NSURL *)indexDirectoryURL;
 - (NSURL *)jsonFileURL:(NSString *)fileName;
