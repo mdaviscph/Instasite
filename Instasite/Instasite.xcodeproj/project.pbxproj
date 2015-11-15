@@ -33,11 +33,6 @@
 		007D48061BC2FAA30057B5D1 /* RepoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D48051BC2FAA30057B5D1 /* RepoCell.m */; };
 		008035021BB7141C00EB91C6 /* SegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 008035011BB7141C00EB91C6 /* SegmentedControl.m */; };
 		00A45B301BF676A800F0367B /* Label.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A45B2F1BF676A800F0367B /* Label.m */; };
-		00A45B381BF71EA900F0367B /* 1-col-portfolio.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A45B351BF71EA900F0367B /* 1-col-portfolio.png */; };
-		00A45B391BF71EA900F0367B /* landing-page.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A45B361BF71EA900F0367B /* landing-page.png */; };
-		00A45B3A1BF71EA900F0367B /* one-page-wonder.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A45B371BF71EA900F0367B /* one-page-wonder.png */; };
-		00BB4FFE1BF7200B0041BDEA /* startbootstrap-1-col-portfolio-1.0.3 in Resources */ = {isa = PBXBuildFile; fileRef = 00BB4FFD1BF7200B0041BDEA /* startbootstrap-1-col-portfolio-1.0.3 */; };
-		00BB50041BF7214E0041BDEA /* startbootstrap-landing-page-1.0-2.4 in Resources */ = {isa = PBXBuildFile; fileRef = 00BB50031BF7214E0041BDEA /* startbootstrap-landing-page-1.0-2.4 */; };
 		00BFD4001BF004CC009DE6DA /* TemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BFD3FF1BF004CC009DE6DA /* TemplateCell.m */; };
 		00BFD4031BF00703009DE6DA /* TemplateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BFD4021BF00703009DE6DA /* TemplateView.m */; };
 		00CDA75D1BF3DBCB007BE84D /* InitialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CDA75C1BF3DBCB007BE84D /* InitialViewController.m */; };
@@ -72,15 +67,6 @@
 		22EFFE041BADC11800E28ACB /* InstasiteUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22EFFE031BADC11800E28ACB /* InstasiteUITests.m */; };
 		6B05A0041BB3271A002627BA /* TemplatePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A0031BB3271A002627BA /* TemplatePickerViewController.m */; };
 		6B05A0071BB32765002627BA /* DisplayTemplateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A0061BB32765002627BA /* DisplayTemplateViewController.m */; };
-		6B05A00E1BB32AF2002627BA /* startbootstrap-agency-1.0-2.4 in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0091BB32AF2002627BA /* startbootstrap-agency-1.0-2.4 */; };
-		6B05A00F1BB32AF2002627BA /* startbootstrap-clean-blog-1.0.3 in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A00A1BB32AF2002627BA /* startbootstrap-clean-blog-1.0.3 */; };
-		6B05A0101BB32AF2002627BA /* startbootstrap-creative-1.0.1 in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A00B1BB32AF2002627BA /* startbootstrap-creative-1.0.1 */; };
-		6B05A0111BB32AF2002627BA /* startbootstrap-freelancer-1.0.3 in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A00C1BB32AF2002627BA /* startbootstrap-freelancer-1.0.3 */; };
-		6B05A0121BB32AF2002627BA /* startbootstrap-one-page-wonder-1.0.3 in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A00D1BB32AF2002627BA /* startbootstrap-one-page-wonder-1.0.3 */; };
-		6B05A0181BB32C70002627BA /* agency.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0131BB32C70002627BA /* agency.png */; };
-		6B05A0191BB32C70002627BA /* clean-blog.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0141BB32C70002627BA /* clean-blog.png */; };
-		6B05A01A1BB32C70002627BA /* creative.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0151BB32C70002627BA /* creative.png */; };
-		6B05A01B1BB32C70002627BA /* freelancer.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B05A0161BB32C70002627BA /* freelancer.png */; };
 		6B05A02E1BB4A0B5002627BA /* FileService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B05A02D1BB4A0B5002627BA /* FileService.m */; };
 		6C0E6E331BB1F16F000C7971 /* PublishViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C0E6E321BB1F16F000C7971 /* PublishViewController.m */; };
 		A3B14F545D372A79A9897B4B /* libPods-Instasite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C094285F042763CE3DF8F210 /* libPods-Instasite.a */; };
@@ -160,11 +146,6 @@
 		00A45B2F1BF676A800F0367B /* Label.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Label.m; sourceTree = "<group>"; };
 		00A45B311BF689E200F0367B /* SegmentedControlDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SegmentedControlDelegate.h; sourceTree = "<group>"; };
 		00A45B321BF68AFE00F0367B /* LabelDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LabelDelegate.h; sourceTree = "<group>"; };
-		00A45B351BF71EA900F0367B /* 1-col-portfolio.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1-col-portfolio.png"; sourceTree = "<group>"; };
-		00A45B361BF71EA900F0367B /* landing-page.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landing-page.png"; sourceTree = "<group>"; };
-		00A45B371BF71EA900F0367B /* one-page-wonder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "one-page-wonder.png"; sourceTree = "<group>"; };
-		00BB4FFD1BF7200B0041BDEA /* startbootstrap-1-col-portfolio-1.0.3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-1-col-portfolio-1.0.3"; sourceTree = "<group>"; };
-		00BB50031BF7214E0041BDEA /* startbootstrap-landing-page-1.0-2.4 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-landing-page-1.0-2.4"; sourceTree = "<group>"; };
 		00BFD3FE1BF004CC009DE6DA /* TemplateCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateCell.h; sourceTree = "<group>"; };
 		00BFD3FF1BF004CC009DE6DA /* TemplateCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateCell.m; sourceTree = "<group>"; };
 		00BFD4011BF00703009DE6DA /* TemplateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateView.h; sourceTree = "<group>"; };
@@ -232,15 +213,6 @@
 		6B05A0031BB3271A002627BA /* TemplatePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TemplatePickerViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		6B05A0051BB32765002627BA /* DisplayTemplateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplayTemplateViewController.h; sourceTree = "<group>"; };
 		6B05A0061BB32765002627BA /* DisplayTemplateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DisplayTemplateViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		6B05A0091BB32AF2002627BA /* startbootstrap-agency-1.0-2.4 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-agency-1.0-2.4"; sourceTree = SOURCE_ROOT; };
-		6B05A00A1BB32AF2002627BA /* startbootstrap-clean-blog-1.0.3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-clean-blog-1.0.3"; sourceTree = SOURCE_ROOT; };
-		6B05A00B1BB32AF2002627BA /* startbootstrap-creative-1.0.1 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-creative-1.0.1"; sourceTree = SOURCE_ROOT; };
-		6B05A00C1BB32AF2002627BA /* startbootstrap-freelancer-1.0.3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-freelancer-1.0.3"; sourceTree = SOURCE_ROOT; };
-		6B05A00D1BB32AF2002627BA /* startbootstrap-one-page-wonder-1.0.3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "startbootstrap-one-page-wonder-1.0.3"; sourceTree = SOURCE_ROOT; };
-		6B05A0131BB32C70002627BA /* agency.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = agency.png; path = templateImg/agency.png; sourceTree = SOURCE_ROOT; };
-		6B05A0141BB32C70002627BA /* clean-blog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "clean-blog.png"; path = "templateImg/clean-blog.png"; sourceTree = SOURCE_ROOT; };
-		6B05A0151BB32C70002627BA /* creative.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = creative.png; path = templateImg/creative.png; sourceTree = SOURCE_ROOT; };
-		6B05A0161BB32C70002627BA /* freelancer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = freelancer.png; path = templateImg/freelancer.png; sourceTree = SOURCE_ROOT; };
 		6B05A02C1BB4A0B5002627BA /* FileService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FileService.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		6B05A02D1BB4A0B5002627BA /* FileService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FileService.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		6C0E6E311BB1F16F000C7971 /* PublishViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishViewController.h; sourceTree = "<group>"; };
@@ -494,7 +466,6 @@
 				22EFFE111BADC15900E28ACB /* Secrets */,
 				22EFFDDE1BADC11800E28ACB /* Supporting Files */,
 				221BCA201BB472C50057A272 /* Test Image */,
-				6B05A0081BB32A92002627BA /* Templates */,
 			);
 			path = Instasite;
 			sourceTree = "<group>";
@@ -546,27 +517,6 @@
 				C094285F042763CE3DF8F210 /* libPods-Instasite.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		6B05A0081BB32A92002627BA /* Templates */ = {
-			isa = PBXGroup;
-			children = (
-				00A45B351BF71EA900F0367B /* 1-col-portfolio.png */,
-				00A45B361BF71EA900F0367B /* landing-page.png */,
-				00A45B371BF71EA900F0367B /* one-page-wonder.png */,
-				6B05A0131BB32C70002627BA /* agency.png */,
-				6B05A0141BB32C70002627BA /* clean-blog.png */,
-				6B05A0151BB32C70002627BA /* creative.png */,
-				6B05A0161BB32C70002627BA /* freelancer.png */,
-				00BB4FFD1BF7200B0041BDEA /* startbootstrap-1-col-portfolio-1.0.3 */,
-				6B05A0091BB32AF2002627BA /* startbootstrap-agency-1.0-2.4 */,
-				6B05A00A1BB32AF2002627BA /* startbootstrap-clean-blog-1.0.3 */,
-				6B05A00B1BB32AF2002627BA /* startbootstrap-creative-1.0.1 */,
-				6B05A00C1BB32AF2002627BA /* startbootstrap-freelancer-1.0.3 */,
-				00BB50031BF7214E0041BDEA /* startbootstrap-landing-page-1.0-2.4 */,
-				6B05A00D1BB32AF2002627BA /* startbootstrap-one-page-wonder-1.0.3 */,
-			);
-			name = Templates;
 			sourceTree = "<group>";
 		};
 		893A92E35F2724D853226A78 /* Pods */ = {
@@ -687,24 +637,10 @@
 			files = (
 				227C86771BB0774800799CD3 /* Oauth.storyboard in Resources */,
 				221BCA221BB472D70057A272 /* testimage.jpg in Resources */,
-				6B05A0191BB32C70002627BA /* clean-blog.png in Resources */,
-				6B05A00F1BB32AF2002627BA /* startbootstrap-clean-blog-1.0.3 in Resources */,
-				6B05A0181BB32C70002627BA /* agency.png in Resources */,
-				00A45B391BF71EA900F0367B /* landing-page.png in Resources */,
-				6B05A0121BB32AF2002627BA /* startbootstrap-one-page-wonder-1.0.3 in Resources */,
 				00E928A71BB1AEA200383BD0 /* Sample.json in Resources */,
-				6B05A00E1BB32AF2002627BA /* startbootstrap-agency-1.0-2.4 in Resources */,
-				6B05A0101BB32AF2002627BA /* startbootstrap-creative-1.0.1 in Resources */,
-				6B05A01B1BB32C70002627BA /* freelancer.png in Resources */,
-				00A45B381BF71EA900F0367B /* 1-col-portfolio.png in Resources */,
-				00BB50041BF7214E0041BDEA /* startbootstrap-landing-page-1.0-2.4 in Resources */,
-				00BB4FFE1BF7200B0041BDEA /* startbootstrap-1-col-portfolio-1.0.3 in Resources */,
-				00A45B3A1BF71EA900F0367B /* one-page-wonder.png in Resources */,
-				6B05A0111BB32AF2002627BA /* startbootstrap-freelancer-1.0.3 in Resources */,
 				22EFFDEE1BADC11800E28ACB /* LaunchScreen.storyboard in Resources */,
 				22EFFDEB1BADC11800E28ACB /* Assets.xcassets in Resources */,
 				22EFFDE91BADC11800E28ACB /* Main.storyboard in Resources */,
-				6B05A01A1BB32C70002627BA /* creative.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
