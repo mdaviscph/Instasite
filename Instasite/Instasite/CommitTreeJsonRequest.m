@@ -10,11 +10,12 @@
 
 @implementation CommitTreeJsonRequest
 
-- (instancetype)initWithSha:(NSString *)sha message:(NSString *)message {
+- (instancetype)initWithTreeSha:(NSString *)treeSha message:(NSString *)message parentSha:(NSString *)parentSha {
   self = [super init];
   if (self) {
-    _sha = sha;
+    _treeSha = treeSha;
     _message = message;
+    _parentSha = parentSha;
   }
   return self;
 }
@@ -22,9 +23,11 @@
 - (NSDictionary *)createJson {
   
   NSMutableDictionary *jsonDict = [[NSMutableDictionary alloc] init];
-  jsonDict[@"tree"] = self.sha;
+  jsonDict[@"tree"] = self.treeSha;
   jsonDict[@"message"] = self.message;
-  
+  if (self.parentSha) {
+    jsonDict[@"parents"] = @[self.parentSha];
+  }
   return jsonDict;
 }
 

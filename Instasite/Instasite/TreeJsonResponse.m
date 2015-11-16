@@ -7,6 +7,7 @@
 //
 
 #import "TreeJsonResponse.h"
+#import "FileJsonResponse.h"
 
 @implementation TreeJsonResponse
 
@@ -17,6 +18,13 @@
     if (!_sha) {
       return nil;
     }
+    NSArray *treeArray = jsonDict[@"tree"];
+    FileJsonResponseMutableArray *jsonFiles = [[FileJsonResponseMutableArray alloc] init];
+    for (NSDictionary *fileDict in treeArray) {
+      FileJsonResponse *file = [[FileJsonResponse alloc] initFromJson:fileDict];
+      [jsonFiles addObject:file];
+    }
+    _files = [[FileJsonResponseArray alloc] initWithArray:jsonFiles];
   }
   return self;
 }

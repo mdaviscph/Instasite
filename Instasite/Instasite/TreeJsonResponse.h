@@ -7,10 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TypeDefsEnums.h"
 
 @interface TreeJsonResponse : NSObject
 
 @property (strong, nonatomic) NSString *sha;
+@property (strong, nonatomic) FileJsonResponseArray *files;
 
 - (instancetype)initFromJson:(NSDictionary *)jsonDict;
 

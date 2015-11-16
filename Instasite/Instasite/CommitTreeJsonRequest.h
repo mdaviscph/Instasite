@@ -10,10 +10,11 @@
 
 @interface CommitTreeJsonRequest : NSObject
 
-@property (strong, nonatomic) NSString *sha;
+@property (strong, nonatomic) NSString *treeSha;
 @property (strong, nonatomic) NSString *message;
+@property (strong, nonatomic) NSString *parentSha;
 
-- (instancetype)initWithSha:(NSString *)sha message:(NSString *)message;
+- (instancetype)initWithTreeSha:(NSString *)treeSha message:(NSString *)message parentSha:(NSString *)parentSha;
 - (NSDictionary *)createJson;
 
 @end

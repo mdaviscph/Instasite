@@ -7,11 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TypeDefsEnums.h"
+
+@class Repo;
 
 @interface GitHubRepo : NSObject
 
-- (instancetype)initWithName:(NSString *)name accessToken:(NSString *)accessToken;
+- (instancetype)initWithName:(NSString *)repoName userName:(NSString *)userName accessToken:(NSString *)accessToken;
 
 - (void)createWithComment:(NSString *)comment completion:(void(^)(NSError *))finalCompletion;
+- (void)retrieveWithCompletion:(void(^)(NSError *, Repo *))finalCompletion;
+- (void)retrievePagesStatusWithCompletion:(void(^)(NSError *, GitHubPagesStatus))finalCompletion;
 
 @end

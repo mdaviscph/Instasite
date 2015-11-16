@@ -18,6 +18,7 @@
 @property (strong, nonatomic) NSString *templateDirectory;
 
 @property (strong, nonatomic) NSString *repoName;
+@property (nonatomic) GitHubEntityExists repoExists;
 
 @property (strong, nonatomic) UserInput *userInput;
 @property (strong, nonatomic) ImagesDictionary *images;

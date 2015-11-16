@@ -17,6 +17,10 @@
     if (!_sha) {
       return nil;
     }
+    NSDictionary *treeDict = jsonDict[@"tree"];
+    if (treeDict) {
+      _treeSha = treeDict[@"sha"];
+    }
   }
   return self;
 }

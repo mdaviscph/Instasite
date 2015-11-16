@@ -14,11 +14,7 @@
 @property (strong, nonatomic) NSString *sha;
 @property (strong, nonatomic) NSString *mode;
 @property (strong, nonatomic) NSString *type;
-@property (strong, nonatomic) NSString *encoding;
-@property (strong, nonatomic) NSString *content;
 
-- (instancetype)initWithPath:(NSString *)path sha:(NSString *)sha mode:(NSString *)mode type:(NSString *)type encoding:(NSString *)encoding content:(NSString *)content;
-- (instancetype)initWithPath:(NSString *)path sha:(NSString *)sha base64content:(NSString *)content;
 - (instancetype)initWithPath:(NSString *)path sha:(NSString *)sha;
 
 - (NSDictionary *)createJson;

@@ -54,25 +54,9 @@
   
   self.tabBarVC.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)], [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)]];
 
-  [self signUpOrLogInIfNeeded];
+  [self signUpOrLogInIfNeeded];     // call in viewWillAppear in case previous viewWillAppear required signUp or LogIn
   
-  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-  NSString *accessToken = appDelegate.accessToken;
-  NSString *userName = appDelegate.userName;
-
-  if (accessToken && !userName) {
-    GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:[(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]];
-    [gitHubUser retrieveNameWithCompletion:^(NSError *error, NSString *name) {
-      if (error) {
-        // TODO - alert popover saying retry Log In and then
-        // TODO - only reset accessToken if error status 401
-        [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:nil];
-        return;
-      }
-      
-      [(AppDelegate *)[UIApplication sharedApplication].delegate setUserName:name];
-    }];
-  }
+  [self getUserNameIfNeeded];
 }
 
 #pragma mark - IBActions, Selector Methods
@@ -106,6 +90,7 @@
 }
 
 - (void)refreshButtonTapped {
+  [self checkPagesBuildStatus];
   [self.webView reloadFromOrigin];
 }
 
@@ -118,6 +103,60 @@
   }
 }
 
+- (void)getUserNameIfNeeded {
+  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+  NSString *accessToken = appDelegate.accessToken;
+  NSString *userName = appDelegate.userName;
+  
+  if (accessToken && !userName) {
+    GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:[(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]];
+    [gitHubUser retrieveNameWithCompletion:^(NSError *error, NSString *name) {
+      if (error) {
+        // TODO - alert popover saying retry Log In and then
+        // TODO - only reset accessToken if error status 401
+        [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:nil];
+        return;
+      }
+      
+      [(AppDelegate *)[UIApplication sharedApplication].delegate setUserName:name];
+    }];
+  }
+}
+
+- (void)checkPagesBuildStatus {
+  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+  NSString *accessToken = appDelegate.accessToken;
+  NSString *userName = appDelegate.userName;
+  
+  if (accessToken && userName && self.tabBarVC.repoExists == ExistsOnGitHub) {
+    GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:self.tabBarVC.repoName userName:userName accessToken:accessToken];
+    [gitHubRepo retrievePagesStatusWithCompletion:^(NSError *error, GitHubPagesStatus pagesStatus) {
+      if (error) {
+        // TODO - alert popover?
+        return;
+      }
+      
+      // GitHub seems to delay a return of "built 15" to 60 seconds
+      NSString *status;
+      switch (pagesStatus) {
+        case GitHubPagesNone:
+          status = @"GitHub Pages does not exist.";
+          break;
+        case GitHubPagesInProgress:
+          status = @"GitHub Pages build in progress.";
+          break;
+        case GitHubPagesBuilt:
+          status = @"GitHub Pages ready.";
+          break;
+        case GitHubPagesError:
+          status = @"GitHub Pages error.";
+          break;
+      }
+      NSLog(@"Pages Build Status: %@", status);
+    }];
+  }
+}
+
 - (void)publishToGitHub {
   
   [self.busyIndicator startAnimating];
@@ -126,10 +165,17 @@
   NSString *accessToken = appDelegate.accessToken;
   NSString *userName = appDelegate.userName;
   
-  if ([self.tabBarVC.repoNames containsObject:self.tabBarVC.repoName]) {
-    [self republishRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
-  } else {
-    [self publishAllFilesForRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
+  // TODO - use the label where we now show URL to show a status if waiting on GitHub GET repo response
+  switch (self.tabBarVC.repoExists) {
+    case DoesNotExistOnGitHub:
+      [self publishAllFilesForRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
+      break;
+    case ExistsOnGitHub:
+      [self republishRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
+      break;
+    case GitHubResponsePending:
+      [self.busyIndicator stopAnimating];
+      break;
   }
 }
 
@@ -162,23 +208,25 @@
   
   NSString *userName = [(AppDelegate *)[UIApplication sharedApplication].delegate userName];
   NSURL *repoURL = [self ghPagesURLforRepo:self.tabBarVC.repoName withUserName:userName];
-  NSLog(@"WKWebView:loadRequest: [%@]", repoURL.absoluteString);
+  //NSLog(@"WKWebView:loadRequest: [%@]", repoURL.absoluteString);
   [self.webView loadRequest:[NSURLRequest requestWithURL:repoURL]];
+  [self.webView reloadFromOrigin];
 }
 
 - (void)publishAllFilesForRepo:(NSString *)repoName withUserName:(NSString *)userName usingAccessToken:(NSString *)accessToken {
   
-  NSString *description = [NSString stringWithFormat:@"This repository created with a GitHub Pages branch for %@ (with HTML template %@ from Start Bootstrap) by iOS app InstaSite v1.0.", userName, self.tabBarVC.templateDirectory];
+  NSString *comment = [NSString stringWithFormat:@"This repository created with a GitHub Pages branch for %@ (with HTML template %@ from Start Bootstrap) by iOS app InstaSite v1.0.", userName, self.tabBarVC.templateDirectory];
  
   FileInfoMutableArray *initialFiles = [[FileInfoMutableArray alloc] initWithArray:[self initialFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
   
-  [self createRepoWithFiles:initialFiles user:userName repo:repoName branch:kBranchName comment:description accessToken:accessToken];
+  [self createRepoWithFiles:initialFiles user:userName repo:repoName branch:kBranchName comment:comment accessToken:accessToken];
 }
 
 - (void)republishRepo:(NSString *)repoName withUserName:(NSString *)userName usingAccessToken:(NSString *)accessToken{
   
   FileInfoMutableArray *changedFiles = [[FileInfoMutableArray alloc] initWithArray:[self changedFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
-  // TODO - rest of this method
+  
+  [self updateRepoWithFiles:changedFiles user:userName repo:repoName branch:kBranchName accessToken:accessToken];
 }
 
 - (FileInfoArray *)initialFileListForDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
@@ -192,7 +240,7 @@
 
 - (void)createRepoWithFiles:(FileInfoArray *)files user:(NSString *)userName repo:(NSString *)repoName branch:(NSString *)branch comment:(NSString *)comment accessToken:(NSString *)accessToken {
 
-  GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:repoName accessToken:accessToken];
+  GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:repoName userName:userName accessToken:accessToken];
   [gitHubRepo createWithComment:comment completion:^(NSError *error) {
 
     if (error) {
@@ -200,6 +248,7 @@
       return;
     }
     NSLog(@"Repo %@ created.", repoName);
+    self.tabBarVC.repoExists = ExistsOnGitHub;
 
     GitHubTree *gitHubTree = [[GitHubTree alloc] initWithFiles:files userName:userName repoName:repoName branch:branch accessToken:accessToken];
     [gitHubTree createAndCommitWithCompletion:^(NSError *error) {
@@ -212,10 +261,31 @@
       self.ghPagesUrlLabel.alpha = 1.0;
       
       double delay = 3.0;     // give GitHub pages some time to finish build
-      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{        
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self checkPagesBuildStatus];
         [self loadWebView];
       });
     }];
+  }];
+}
+
+- (void)updateRepoWithFiles:(FileInfoArray *)files user:(NSString *)userName repo:(NSString *)repoName branch:(NSString *)branch accessToken:(NSString *)accessToken {
+  
+  GitHubTree *gitHubTree = [[GitHubTree alloc] initWithFiles:files userName:userName repoName:repoName branch:branch accessToken:accessToken];
+  [gitHubTree updateAndCommitWithCompletion:^(NSError *error) {
+    if (error) {
+      // TODO - alert popover
+      return;
+    }
+    NSLog(@"GitHub tree updated for %@.", branch);
+    self.ghPagesUrlLabel.text = !self.tabBarVC.repoName || [self.tabBarVC.repoName isEqualToString:kUnpublishedRepoName] ? nil : [[self ghPagesURLforRepo:self.tabBarVC.repoName withUserName:userName] absoluteString];
+    self.ghPagesUrlLabel.alpha = 1.0;
+    
+    double delay = 3.0;     // give GitHub pages some time to finish build
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      [self checkPagesBuildStatus];
+      [self loadWebView];
+    });
   }];
 }
 

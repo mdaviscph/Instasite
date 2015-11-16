@@ -6,6 +6,16 @@
 //  Copyright © 2015 Instasite. All rights reserved.
 //
 
+enum GitHubEntityExists {
+  ExistsOnGitHub, DoesNotExistOnGitHub, GitHubResponsePending
+};
+typedef enum GitHubEntityExists GitHubEntityExists;
+
+enum GitHubPagesStatus {
+  GitHubPagesNone, GitHubPagesInProgress, GitHubPagesBuilt, GitHubPagesError
+};
+typedef enum GitHubPagesStatus GitHubPagesStatus;
+
 enum TemplateFieldType {
   FieldTXF, FieldTXV, FieldIMG
 };
@@ -28,6 +38,9 @@ typedef NSMutableDictionary HtmlTemplateMutableDictionary;
 
 typedef NSArray FileJsonRequestArray;
 typedef NSMutableArray FileJsonRequestMutableArray;
+
+typedef NSArray FileJsonResponseArray;
+typedef NSMutableArray FileJsonResponseMutableArray;
 
 typedef NSArray RepoJsonResponseArray;
 typedef NSMutableArray RepoJsonResponseMutableArray;

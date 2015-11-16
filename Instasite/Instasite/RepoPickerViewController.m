@@ -17,26 +17,11 @@ static NSString *kCellId = @"RepoCell";
 
 @interface RepoPickerViewController ()
 
-@property (strong, nonatomic) TemplateTabBarController *tabBarVC;
 @property (strong, nonatomic) NSArray *repos;
 
 @end
 
 @implementation RepoPickerViewController
-
-- (void)setRepos:(NSArray *)repos {
-  _repos = repos;
-
-  if (_repos) {
-    NSMutableSet *repoNames = [[NSMutableSet alloc] init];
-    for (Repo *repo in _repos) {
-      [repoNames addObject:repo.name];
-    }
-    self.tabBarVC.repoNames = [[NSSet alloc] initWithArray:repoNames.allObjects];
-  } else {
-    self.tabBarVC.repoNames = nil;
-  }
-}
 
 - (void)viewDidLoad {
   [super viewDidLoad];

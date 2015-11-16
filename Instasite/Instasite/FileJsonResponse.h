@@ -10,9 +10,11 @@
 
 @interface FileJsonResponse : NSObject
 
+- (instancetype)initFromJson:(NSDictionary *)json;
+
 @property (strong, nonatomic) NSString *path;
 @property (strong, nonatomic) NSString *sha;
-@property (strong, nonatomic) NSString *encoding;
-@property (strong, nonatomic) NSString *content;
+@property (strong, nonatomic) NSString *mode;
+@property (strong, nonatomic) NSString *type;
 
 @end

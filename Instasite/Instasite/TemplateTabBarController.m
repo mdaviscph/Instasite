@@ -13,6 +13,8 @@
 #import "Constants.h"
 #import "FileInfo.h"
 #import "FileService.h"
+#import "GitHubRepo.h"
+#import "Repo.h"
 #import "AppDelegate.h"
 
 @interface TemplateTabBarController () <UITabBarControllerDelegate, NSFileManagerDelegate>
@@ -55,6 +57,15 @@
   }
   
   self.navigationItem.title = self.repoName;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  
+  self.repoExists = DoesNotExistOnGitHub;
+  if (![self.repoName isEqualToString:kUnpublishedRepoName]) {
+    [self checkIfRepoExists:self.repoName];
+  }
 }
 
 #pragma mark - Helper Methods
@@ -130,7 +141,7 @@
   
   for (FileInfo *file in imageFiles) {
     
-    NSLog(@"Loading image File: %@", file);
+    //NSLog(@"Loading image File: %@", file);
     NSData *imageData = [NSData dataWithContentsOfFile:[file filepathIncludingLocalDirectory]];
     
     if (imageData) {
@@ -209,6 +220,29 @@
       NSLog(@"Error! Cannot write image file: [%@] error: %@", pathWithExtension, error.localizedDescription);
       return;
     }
+  }
+}
+
+- (void)checkIfRepoExists:(NSString *)repoName {
+  
+  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+  NSString *accessToken = appDelegate.accessToken;
+  NSString *userName = appDelegate.userName;
+  
+  if (accessToken && userName) {
+    self.repoExists = GitHubResponsePending;
+    GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:repoName userName:userName accessToken:accessToken];
+    [gitHubRepo retrieveWithCompletion:^(NSError *error, Repo *repo) {
+      if (error) {
+        // TODO - we get an error if this repo doesn't exist yet on GitHub but what if it does exist but a different error occurs?
+        NSLog(@"Repo %@ does not exist.", repoName);
+        self.repoExists = DoesNotExistOnGitHub;
+      }
+      if ([repo.name isEqualToString:repoName]) {
+        NSLog(@"Repo %@ exists.", repoName);
+        self.repoExists = ExistsOnGitHub;
+      }
+    }];
   }
 }
 
