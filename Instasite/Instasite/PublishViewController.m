@@ -39,8 +39,7 @@
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
   
   self.ghPagesUrlLabel.delegate = self;
-  self.ghPagesUrlLabel.text = kWebPageNotPublished;
-  self.ghPagesUrlLabel.alpha = 0.35;
+  self.ghPagesUrlLabel.text = @"";
   
   self.webView = [[WKWebView alloc] init];
   self.webView.navigationDelegate = self;
@@ -57,6 +56,8 @@
   [self signUpOrLogInIfNeeded];     // call in viewWillAppear in case previous viewWillAppear required signUp or LogIn
   
   [self getUserNameIfNeeded];
+  
+  [self updateUI];
 }
 
 #pragma mark - IBActions, Selector Methods
@@ -90,8 +91,7 @@
 }
 
 - (void)refreshButtonTapped {
-  [self checkPagesBuildStatus];
-  [self.webView reloadFromOrigin];
+  [self updateUI];
 }
 
 #pragma mark - Helper Methods
@@ -123,59 +123,26 @@
   }
 }
 
-- (void)checkPagesBuildStatus {
-  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-  NSString *accessToken = appDelegate.accessToken;
-  NSString *userName = appDelegate.userName;
-  
-  if (accessToken && userName && self.tabBarVC.repoExists == ExistsOnGitHub) {
-    GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:self.tabBarVC.repoName userName:userName accessToken:accessToken];
-    [gitHubRepo retrievePagesStatusWithCompletion:^(NSError *error, GitHubPagesStatus pagesStatus) {
-      if (error) {
-        // TODO - alert popover?
-        return;
-      }
-      
-      // GitHub seems to delay a return of "built 15" to 60 seconds
-      NSString *status;
-      switch (pagesStatus) {
-        case GitHubPagesNone:
-          status = @"GitHub Pages does not exist.";
-          break;
-        case GitHubPagesInProgress:
-          status = @"GitHub Pages build in progress.";
-          break;
-        case GitHubPagesBuilt:
-          status = @"GitHub Pages ready.";
-          break;
-        case GitHubPagesError:
-          status = @"GitHub Pages error.";
-          break;
-      }
-      NSLog(@"Pages Build Status: %@", status);
-    }];
-  }
-}
-
 - (void)publishToGitHub {
   
   [self.busyIndicator startAnimating];
+  
+  BOOL shouldCreateRepo = self.tabBarVC.repoExists == GitHubRepoDoesNotExist;
+  BOOL shouldCreatePages = self.tabBarVC.pagesStatus == GitHubPagesNone;
+  BOOL shouldRepublishAllFiles = self.tabBarVC.pagesStatus == GitHubPagesError;
+  BOOL shouldWait = self.tabBarVC.repoExists == GitHubResponsePending;
   
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
   NSString *accessToken = appDelegate.accessToken;
   NSString *userName = appDelegate.userName;
   
   // TODO - use the label where we now show URL to show a status if waiting on GitHub GET repo response
-  switch (self.tabBarVC.repoExists) {
-    case DoesNotExistOnGitHub:
-      [self publishAllFilesForRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
-      break;
-    case ExistsOnGitHub:
-      [self republishRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
-      break;
-    case GitHubResponsePending:
-      [self.busyIndicator stopAnimating];
-      break;
+  if (shouldCreateRepo || shouldCreatePages) {
+    [self publishAllFilesForRepo:self.tabBarVC.repoName withUserName:userName createRepo:shouldCreateRepo usingAccessToken:accessToken];
+  } else if (!shouldWait) {
+    [self republishRepo:self.tabBarVC.repoName withUserName:userName allFiles:shouldRepublishAllFiles usingAccessToken:accessToken];
+  } else {
+    [self.busyIndicator stopAnimating];
   }
 }
 
@@ -208,25 +175,39 @@
   
   NSString *userName = [(AppDelegate *)[UIApplication sharedApplication].delegate userName];
   NSURL *repoURL = [self ghPagesURLforRepo:self.tabBarVC.repoName withUserName:userName];
-  //NSLog(@"WKWebView:loadRequest: [%@]", repoURL.absoluteString);
-  [self.webView loadRequest:[NSURLRequest requestWithURL:repoURL]];
-  [self.webView reloadFromOrigin];
+  
+  if ([repoURL.absoluteString isEqualToString:self.webView.URL.absoluteString]) {
+    [self.webView reloadFromOrigin];
+    NSLog(@"reloadFromOrigin");
+  } else {
+    [self.webView loadRequest:[NSURLRequest requestWithURL:repoURL]];
+    NSLog(@"loadRequest");
+  }
 }
 
-- (void)publishAllFilesForRepo:(NSString *)repoName withUserName:(NSString *)userName usingAccessToken:(NSString *)accessToken {
+- (void)publishAllFilesForRepo:(NSString *)repoName withUserName:(NSString *)userName createRepo:(BOOL)createRepo usingAccessToken:(NSString *)accessToken {
   
   NSString *comment = [NSString stringWithFormat:@"This repository created with a GitHub Pages branch for %@ (with HTML template %@ from Start Bootstrap) by iOS app InstaSite v1.0.", userName, self.tabBarVC.templateDirectory];
  
   FileInfoMutableArray *initialFiles = [[FileInfoMutableArray alloc] initWithArray:[self initialFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
   
-  [self createRepoWithFiles:initialFiles user:userName repo:repoName branch:kBranchName comment:comment accessToken:accessToken];
+  if (createRepo) {
+    [self createRepoWithFiles:initialFiles user:userName repo:repoName branch:kBranchName comment:comment accessToken:accessToken];
+  } else {
+    [self makeRepoWithFiles:initialFiles user:userName repo:repoName branch:kBranchName accessToken:accessToken];
+  }
 }
 
-- (void)republishRepo:(NSString *)repoName withUserName:(NSString *)userName usingAccessToken:(NSString *)accessToken{
+- (void)republishRepo:(NSString *)repoName withUserName:(NSString *)userName allFiles:(BOOL)allFiles usingAccessToken:(NSString *)accessToken{
   
-  FileInfoMutableArray *changedFiles = [[FileInfoMutableArray alloc] initWithArray:[self changedFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
+  FileInfoMutableArray *files;
+  if (allFiles) {
+    files = [[FileInfoMutableArray alloc] initWithArray:[self initialFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
+  } else {
+    files = [[FileInfoMutableArray alloc] initWithArray:[self changedFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
+  }
   
-  [self updateRepoWithFiles:changedFiles user:userName repo:repoName branch:kBranchName accessToken:accessToken];
+  [self updateRepoWithFiles:files user:userName repo:repoName branch:kBranchName accessToken:accessToken];
 }
 
 - (FileInfoArray *)initialFileListForDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
@@ -244,28 +225,12 @@
   [gitHubRepo createWithComment:comment completion:^(NSError *error) {
 
     if (error) {
-      // TODO - alert popover
-      return;
+      // TODO - alert popover to say repo aleady exists (if status 422) and user must rename to something else
+      // or go back to initialVC to choose an existing repo so user doesn't accidently publish to exisiting repo
     }
     NSLog(@"Repo %@ created.", repoName);
-    self.tabBarVC.repoExists = ExistsOnGitHub;
-
-    GitHubTree *gitHubTree = [[GitHubTree alloc] initWithFiles:files userName:userName repoName:repoName branch:branch accessToken:accessToken];
-    [gitHubTree createAndCommitWithCompletion:^(NSError *error) {
-      if (error) {
-        // TODO - alert popover
-        return;
-      }
-      NSLog(@"GitHub tree created for %@.", branch);
-      self.ghPagesUrlLabel.text = !self.tabBarVC.repoName || [self.tabBarVC.repoName isEqualToString:kUnpublishedRepoName] ? nil : [[self ghPagesURLforRepo:self.tabBarVC.repoName withUserName:userName] absoluteString];
-      self.ghPagesUrlLabel.alpha = 1.0;
-      
-      double delay = 3.0;     // give GitHub pages some time to finish build
-      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self checkPagesBuildStatus];
-        [self loadWebView];
-      });
-    }];
+    self.tabBarVC.repoExists = GitHubRepoExists;
+    [self makeRepoWithFiles:files user:userName repo:repoName branch:branch accessToken:accessToken];
   }];
 }
 
@@ -278,22 +243,61 @@
       return;
     }
     NSLog(@"GitHub tree updated for %@.", branch);
-    self.ghPagesUrlLabel.text = !self.tabBarVC.repoName || [self.tabBarVC.repoName isEqualToString:kUnpublishedRepoName] ? nil : [[self ghPagesURLforRepo:self.tabBarVC.repoName withUserName:userName] absoluteString];
-    self.ghPagesUrlLabel.alpha = 1.0;
-    
+    self.tabBarVC.pagesStatus = GitHubPagesInProgress;
     double delay = 3.0;     // give GitHub pages some time to finish build
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-      [self checkPagesBuildStatus];
-      [self loadWebView];
+      [self updateUI];
     });
   }];
+}
+
+- (void)makeRepoWithFiles:(FileInfoArray *)files user:(NSString *)userName repo:(NSString *)repoName branch:(NSString *)branch accessToken:(NSString *)accessToken {
+  
+  GitHubTree *gitHubTree = [[GitHubTree alloc] initWithFiles:files userName:userName repoName:repoName branch:branch accessToken:accessToken];
+  [gitHubTree makeAndCommitWithCompletion:^(NSError *error) {
+    if (error) {
+      // TODO - alert popover
+      return;
+    }
+    NSLog(@"GitHub tree created for %@.", branch);
+    self.tabBarVC.pagesStatus = GitHubPagesInProgress;
+    double delay = 3.0;     // give GitHub pages some time to finish build
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      [self updateUI];
+    });
+  }];
+}
+
+- (void)updateUI {
+
+  if (self.tabBarVC.pagesStatus == GitHubPagesNone) {
+    [self.webView loadHTMLString:@"" baseURL:nil];
+  } else {
+    [self loadWebView];
+  }
+}
+
+- (void)updateLabel {
+
+  // TODO - better way to detect still waiting on build?
+  if ([self.webView.title hasPrefix:@"Page not found"]) {
+    self.ghPagesUrlLabel.alpha = 0.35;
+    self.ghPagesUrlLabel.text = kWebPageBuildInProgress;
+  } else if (self.webView.title.length == 0) {
+    self.ghPagesUrlLabel.alpha = 0.35;
+    self.ghPagesUrlLabel.text =  kWebPageNotPublished;
+  } else {
+    self.tabBarVC.pagesStatus = GitHubPagesBuilt;
+    self.ghPagesUrlLabel.alpha = 1.0;
+    self.ghPagesUrlLabel.text =  self.webView.URL.absoluteString;
+  }
 }
 
 #pragma mark - LabelDelegate
 
 - (void)labelTouchBegin:(UILabel *)sender {
   
-  if ([self.ghPagesUrlLabel.text isEqualToString:kWebPageNotPublished]) {
+  if (self.tabBarVC.pagesStatus != GitHubPagesBuilt) {
     return;
   }
   if (self.ghPagesUrlLabel.backgroundColor == [UIColor whiteColor]) {
@@ -308,12 +312,18 @@
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
   NSLog(@"Error! webView:didFailNavigation: error: %@", error.localizedDescription);
+  [self updateLabel];
 }
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
   NSLog(@"Error! webView:didFailProvisionalNavigation: error: %@", error.localizedDescription);
 }
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-  //NSLog(@"webView:didFinishNavigation:");
+  NSLog(@"webView:didFinishNavigation:");
+  [self updateLabel];
 }
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {
+  //NSLog(@"webView:didCommitNavigation:");
+}
+
 
 @end

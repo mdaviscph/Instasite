@@ -13,7 +13,7 @@
 
 - (instancetype)initWithFiles:(FileInfoArray *)files userName:(NSString *)userName repoName:(NSString *)repoName branch:(NSString *)branch accessToken:(NSString *)accessToken;
 
-- (void)createAndCommitWithCompletion:(void(^)(NSError *))finalCompletion;
+- (void)makeAndCommitWithCompletion:(void(^)(NSError *))finalCompletion;
 - (void)updateAndCommitWithCompletion:(void(^)(NSError *))finalCompletion;
 
 

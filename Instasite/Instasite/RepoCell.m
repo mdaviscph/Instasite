@@ -43,7 +43,7 @@
     _descriptionLabel = [[UILabel alloc] init];
     _descriptionLabel.backgroundColor = [UIColor whiteColor];
     _descriptionLabel.numberOfLines = 0;
-    _nameLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    _descriptionLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     [self.stackView addArrangedSubview:_descriptionLabel];
   }
   return _descriptionLabel;

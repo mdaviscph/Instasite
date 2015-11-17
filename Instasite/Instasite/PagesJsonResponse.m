@@ -27,4 +27,12 @@
   return self;
 }
 
+- (instancetype)initWithStatus:(GitHubPagesStatus)status {
+  self = [super init];
+  if (self) {
+    _status = status;
+  }
+  return self;
+}
+
 @end

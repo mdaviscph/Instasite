@@ -62,9 +62,10 @@
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
   
-  self.repoExists = DoesNotExistOnGitHub;
-  if (![self.repoName isEqualToString:kUnpublishedRepoName]) {
-    [self checkIfRepoExists:self.repoName];
+  self.repoExists = GitHubRepoDoesNotExist;
+  self.pagesStatus = GitHubPagesNone;
+  if (self.repoName && ![self.repoName isEqualToString:kUnpublishedRepoName]) {
+    [self checkRepoAndPagesStatus:self.repoName];
   }
 }
 
@@ -223,25 +224,60 @@
   }
 }
 
-- (void)checkIfRepoExists:(NSString *)repoName {
+- (void)checkRepoAndPagesStatus:(NSString *)repoName {
   
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
   NSString *accessToken = appDelegate.accessToken;
   NSString *userName = appDelegate.userName;
   
-  if (accessToken && userName) {
+  if (accessToken && userName && repoName) {
     self.repoExists = GitHubResponsePending;
     GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:repoName userName:userName accessToken:accessToken];
     [gitHubRepo retrieveWithCompletion:^(NSError *error, Repo *repo) {
       if (error) {
-        // TODO - we get an error if this repo doesn't exist yet on GitHub but what if it does exist but a different error occurs?
+        // TODO - we get a 404 error if this repo doesn't exist yet on GitHub, but what if it does exist but a different error occurs?
         NSLog(@"Repo %@ does not exist.", repoName);
-        self.repoExists = DoesNotExistOnGitHub;
+        self.repoExists = GitHubRepoDoesNotExist;
       }
       if ([repo.name isEqualToString:repoName]) {
         NSLog(@"Repo %@ exists.", repoName);
-        self.repoExists = ExistsOnGitHub;
+        self.repoExists = GitHubRepoExists;
+        
+        [self checkPagesBuildStatus];
       }
+    }];
+  }
+}
+
+- (void)checkPagesBuildStatus {
+  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+  NSString *accessToken = appDelegate.accessToken;
+  NSString *userName = appDelegate.userName;
+  
+  if (accessToken && userName && self.repoExists == GitHubRepoExists) {
+    GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:self.repoName userName:userName accessToken:accessToken];
+    [gitHubRepo retrievePagesStatusWithCompletion:^(NSError *error, GitHubPagesStatus pagesStatus) {
+      if (error) {
+        // TODO - alert popover? note: will get error if repo exists but no gh-pages branch
+      }
+      
+      // GitHub seems to delay a return of "built" 15 to 60 seconds so we shouldn't use this
+      // after publish to determine when to load webView.
+      switch (pagesStatus) {
+        case GitHubPagesNone:
+          NSLog(@"GitHub Pages does not exist.");
+          break;
+        case GitHubPagesInProgress:
+          NSLog(@"GitHub Pages build in progress.");
+          break;
+        case GitHubPagesBuilt:
+          NSLog(@"GitHub Pages ready.");
+          break;
+        case GitHubPagesError:
+          NSLog(@"GitHub Pages error.");
+          break;
+      }
+      self.pagesStatus = pagesStatus;
     }];
   }
 }

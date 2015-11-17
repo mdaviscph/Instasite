@@ -69,7 +69,7 @@
       message = responseDictionary[@"message"];
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubRepoApiWrapper:getRepoUsingManager: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+    NSLog(@"GitHubRepoApiWrapper:getRepoUsingManager: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
     if (completion) {
       completion(error, nil);
     }
@@ -96,9 +96,15 @@
       message = responseDictionary[@"message"];
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubRepoApiWrapper:getPagesStatusUsingManager: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+    NSLog(@"GitHubRepoApiWrapper:getPagesStatusUsingManager: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
     if (completion) {
-      completion(error, nil);
+      PagesJsonResponse *pagesResponse;
+      if (taskResponse.statusCode == 404) {
+        pagesResponse = [[PagesJsonResponse alloc] initWithStatus:GitHubPagesNone];
+      } else {
+        pagesResponse = [[PagesJsonResponse alloc] initWithStatus:GitHubPagesError];
+      }
+      completion(error, pagesResponse);
     }
   }];
 }

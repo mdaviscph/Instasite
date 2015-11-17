@@ -45,7 +45,7 @@
   return self;
 }
 
-- (void)createAndCommitWithCompletion:(void(^)(NSError *))finalCompletion {
+- (void)makeAndCommitWithCompletion:(void(^)(NSError *))finalCompletion {
   
   [self.dataApiWrapper postFileBlobsUsingManager:self.manager completion:^(NSError *error) {
 
@@ -173,7 +173,7 @@
             } else {
               
               self.committedTreeFiles = treeResponse.files;
-              [self createAndCommitWithCompletion:^(NSError *error) {
+              [self makeAndCommitWithCompletion:^(NSError *error) {
                 if (finalCompletion) {
                   finalCompletion(error);
                 }

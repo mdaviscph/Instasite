@@ -36,10 +36,6 @@
     [requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     _manager.requestSerializer = requestSerializer;
 
-    //AFJSONResponseSerializer *responseSerializer = [AFJSONResponseSerializer serializer];
-    //responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
-    //_manager.responseSerializer = responseSerializer;
-    
     _code = code;
     _clientId = clientId;
     _clientSecret = clientSecret;

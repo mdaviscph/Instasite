@@ -6,10 +6,10 @@
 //  Copyright © 2015 Instasite. All rights reserved.
 //
 
-enum GitHubEntityExists {
-  ExistsOnGitHub, DoesNotExistOnGitHub, GitHubResponsePending
+enum GitHubRepoTest {
+  GitHubRepoExists, GitHubRepoDoesNotExist, GitHubResponsePending
 };
-typedef enum GitHubEntityExists GitHubEntityExists;
+typedef enum GitHubRepoTest GitHubRepoTest;
 
 enum GitHubPagesStatus {
   GitHubPagesNone, GitHubPagesInProgress, GitHubPagesBuilt, GitHubPagesError

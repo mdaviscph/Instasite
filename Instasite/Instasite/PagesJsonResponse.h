@@ -14,5 +14,6 @@
 @property (nonatomic) GitHubPagesStatus status;
 
 - (instancetype)initFromJson:(NSDictionary *)json;
+- (instancetype)initWithStatus:(GitHubPagesStatus)status;
 
 @end
