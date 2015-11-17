@@ -60,8 +60,10 @@
 
 #pragma mark - Lifecycle Methods
 
-- (void)viewDidLoad {
-  [super viewDidLoad];
+- (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  
+  self.navigationController.navigationBarHidden = NO;   // need to reset due to OauthVC hidding navigation bar
   
   if (self.repoName) {
     [self.webPageButton setTitle:self.repoName forState:UIControlStateNormal];
@@ -73,12 +75,6 @@
   } else {
     [self setTemplateName:kDefaultTemplateName];
   }
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:animated];
-  
-  self.navigationController.navigationBarHidden = NO;   // need to reset due to OauthVC hidding navigation bar
 }
 
 #pragma mark - IBActions, Selector Methods
@@ -113,7 +109,7 @@
     [self renameWebPage];
   }];
   [alert addAction:action2];
-  UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"Choose a GitHub Repository" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+  UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"Choose existing Repository" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
     [self pickRepository];
   }];
   [alert addAction:action3];

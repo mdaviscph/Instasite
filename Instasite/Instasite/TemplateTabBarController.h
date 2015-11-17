@@ -18,10 +18,11 @@
 @property (strong, nonatomic) NSString *templateDirectory;
 
 @property (strong, nonatomic) NSString *repoName;
+@property (nonatomic) GitHubRepoTest repoExists;
+@property (nonatomic) GitHubPagesStatus pagesStatus;
 
 @property (strong, nonatomic) UserInput *userInput;
 @property (strong, nonatomic) ImagesDictionary *images;
-@property (strong, nonatomic) NSSet *repoNames;
 
 - (NSURL *)htmlFileURL:(NSString *)fileName;
 - (NSURL *)indexDirectoryURL;

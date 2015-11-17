@@ -12,8 +12,10 @@
 @interface TreeJsonRequest : NSObject
 
 @property (strong, nonatomic) FileJsonRequestArray *files;
+@property (strong, nonatomic) FileJsonResponseArray *existingFiles;
 
-- (instancetype)initWithFileList:(FileJsonRequestArray *)files;
+- (instancetype)initWithFileList:(FileJsonRequestArray *)files existingFileList:(FileJsonResponseArray *)existingFiles;
+
 - (NSDictionary *)createJson;
 
 @end

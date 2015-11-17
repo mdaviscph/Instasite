@@ -30,3 +30,4 @@ NSString *const kBranchName = @"gh-pages";
 NSString *const kUnpublishedRepoName = @"unpublished";
 NSString *const kDefaultTemplateName = @"startbootstrap-1-col-portfolio-1.0.3";
 NSString *const kWebPageNotPublished = @"not published";
+NSString *const kWebPageBuildInProgress = @"Git Hub Pages build in progress";

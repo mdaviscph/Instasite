@@ -39,8 +39,7 @@
   self.tabBarVC = (TemplateTabBarController *)self.tabBarController;
   
   self.ghPagesUrlLabel.delegate = self;
-  self.ghPagesUrlLabel.text = kWebPageNotPublished;
-  self.ghPagesUrlLabel.alpha = 0.35;
+  self.ghPagesUrlLabel.text = @"";
   
   self.webView = [[WKWebView alloc] init];
   self.webView.navigationDelegate = self;
@@ -54,25 +53,11 @@
   
   self.tabBarVC.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(publishButtonTapped)], [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped)]];
 
-  [self signUpOrLogInIfNeeded];
+  [self signUpOrLogInIfNeeded];     // call in viewWillAppear in case previous viewWillAppear required signUp or LogIn
   
-  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-  NSString *accessToken = appDelegate.accessToken;
-  NSString *userName = appDelegate.userName;
-
-  if (accessToken && !userName) {
-    GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:[(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]];
-    [gitHubUser retrieveNameWithCompletion:^(NSError *error, NSString *name) {
-      if (error) {
-        // TODO - alert popover saying retry Log In and then
-        // TODO - only reset accessToken if error status 401
-        [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:nil];
-        return;
-      }
-      
-      [(AppDelegate *)[UIApplication sharedApplication].delegate setUserName:name];
-    }];
-  }
+  [self getUserNameIfNeeded];
+  
+  [self updateUI];
 }
 
 #pragma mark - IBActions, Selector Methods
@@ -106,7 +91,7 @@
 }
 
 - (void)refreshButtonTapped {
-  [self.webView reloadFromOrigin];
+  [self updateUI];
 }
 
 #pragma mark - Helper Methods
@@ -118,18 +103,46 @@
   }
 }
 
+- (void)getUserNameIfNeeded {
+  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+  NSString *accessToken = appDelegate.accessToken;
+  NSString *userName = appDelegate.userName;
+  
+  if (accessToken && !userName) {
+    GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:[(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]];
+    [gitHubUser retrieveNameWithCompletion:^(NSError *error, NSString *name) {
+      if (error) {
+        // TODO - alert popover saying retry Log In and then
+        // TODO - only reset accessToken if error status 401
+        [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:nil];
+        return;
+      }
+      
+      [(AppDelegate *)[UIApplication sharedApplication].delegate setUserName:name];
+    }];
+  }
+}
+
 - (void)publishToGitHub {
   
   [self.busyIndicator startAnimating];
+  
+  BOOL shouldCreateRepo = self.tabBarVC.repoExists == GitHubRepoDoesNotExist;
+  BOOL shouldCreatePages = self.tabBarVC.pagesStatus == GitHubPagesNone;
+  BOOL shouldRepublishAllFiles = self.tabBarVC.pagesStatus == GitHubPagesError;
+  BOOL shouldWait = self.tabBarVC.repoExists == GitHubResponsePending;
   
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
   NSString *accessToken = appDelegate.accessToken;
   NSString *userName = appDelegate.userName;
   
-  if ([self.tabBarVC.repoNames containsObject:self.tabBarVC.repoName]) {
-    [self republishRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
+  // TODO - use the label where we now show URL to show a status if waiting on GitHub GET repo response
+  if (shouldCreateRepo || shouldCreatePages) {
+    [self publishAllFilesForRepo:self.tabBarVC.repoName withUserName:userName createRepo:shouldCreateRepo usingAccessToken:accessToken];
+  } else if (!shouldWait) {
+    [self republishRepo:self.tabBarVC.repoName withUserName:userName allFiles:shouldRepublishAllFiles usingAccessToken:accessToken];
   } else {
-    [self publishAllFilesForRepo:self.tabBarVC.repoName withUserName:userName usingAccessToken:accessToken];
+    [self.busyIndicator stopAnimating];
   }
 }
 
@@ -162,23 +175,39 @@
   
   NSString *userName = [(AppDelegate *)[UIApplication sharedApplication].delegate userName];
   NSURL *repoURL = [self ghPagesURLforRepo:self.tabBarVC.repoName withUserName:userName];
-  NSLog(@"WKWebView:loadRequest: [%@]", repoURL.absoluteString);
-  [self.webView loadRequest:[NSURLRequest requestWithURL:repoURL]];
+  
+  if ([repoURL.absoluteString isEqualToString:self.webView.URL.absoluteString]) {
+    [self.webView reloadFromOrigin];
+    NSLog(@"reloadFromOrigin");
+  } else {
+    [self.webView loadRequest:[NSURLRequest requestWithURL:repoURL]];
+    NSLog(@"loadRequest");
+  }
 }
 
-- (void)publishAllFilesForRepo:(NSString *)repoName withUserName:(NSString *)userName usingAccessToken:(NSString *)accessToken {
+- (void)publishAllFilesForRepo:(NSString *)repoName withUserName:(NSString *)userName createRepo:(BOOL)createRepo usingAccessToken:(NSString *)accessToken {
   
-  NSString *description = [NSString stringWithFormat:@"This repository created with a GitHub Pages branch for %@ (with HTML template %@ from Start Bootstrap) by iOS app InstaSite v1.0.", userName, self.tabBarVC.templateDirectory];
+  NSString *comment = [NSString stringWithFormat:@"This repository created with a GitHub Pages branch for %@ (with HTML template %@ from Start Bootstrap) by iOS app InstaSite v1.0.", userName, self.tabBarVC.templateDirectory];
  
   FileInfoMutableArray *initialFiles = [[FileInfoMutableArray alloc] initWithArray:[self initialFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
   
-  [self createRepoWithFiles:initialFiles user:userName repo:repoName branch:kBranchName comment:description accessToken:accessToken];
+  if (createRepo) {
+    [self createRepoWithFiles:initialFiles user:userName repo:repoName branch:kBranchName comment:comment accessToken:accessToken];
+  } else {
+    [self makeRepoWithFiles:initialFiles user:userName repo:repoName branch:kBranchName accessToken:accessToken];
+  }
 }
 
-- (void)republishRepo:(NSString *)repoName withUserName:(NSString *)userName usingAccessToken:(NSString *)accessToken{
+- (void)republishRepo:(NSString *)repoName withUserName:(NSString *)userName allFiles:(BOOL)allFiles usingAccessToken:(NSString *)accessToken{
   
-  FileInfoMutableArray *changedFiles = [[FileInfoMutableArray alloc] initWithArray:[self changedFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
-  // TODO - rest of this method
+  FileInfoMutableArray *files;
+  if (allFiles) {
+    files = [[FileInfoMutableArray alloc] initWithArray:[self initialFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
+  } else {
+    files = [[FileInfoMutableArray alloc] initWithArray:[self changedFileListForDirectory:self.tabBarVC.templateDirectory rootDirectory:self.tabBarVC.documentsDirectory]];
+  }
+  
+  [self updateRepoWithFiles:files user:userName repo:repoName branch:kBranchName accessToken:accessToken];
 }
 
 - (FileInfoArray *)initialFileListForDirectory:(NSString *)directory rootDirectory:(NSString *)rootDirectory {
@@ -192,38 +221,83 @@
 
 - (void)createRepoWithFiles:(FileInfoArray *)files user:(NSString *)userName repo:(NSString *)repoName branch:(NSString *)branch comment:(NSString *)comment accessToken:(NSString *)accessToken {
 
-  GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:repoName accessToken:accessToken];
+  GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:repoName userName:userName accessToken:accessToken];
   [gitHubRepo createWithComment:comment completion:^(NSError *error) {
 
+    if (error) {
+      // TODO - alert popover to say repo aleady exists (if status 422) and user must rename to something else
+      // or go back to initialVC to choose an existing repo so user doesn't accidently publish to exisiting repo
+    }
+    NSLog(@"Repo %@ created.", repoName);
+    self.tabBarVC.repoExists = GitHubRepoExists;
+    [self makeRepoWithFiles:files user:userName repo:repoName branch:branch accessToken:accessToken];
+  }];
+}
+
+- (void)updateRepoWithFiles:(FileInfoArray *)files user:(NSString *)userName repo:(NSString *)repoName branch:(NSString *)branch accessToken:(NSString *)accessToken {
+  
+  GitHubTree *gitHubTree = [[GitHubTree alloc] initWithFiles:files userName:userName repoName:repoName branch:branch accessToken:accessToken];
+  [gitHubTree updateAndCommitWithCompletion:^(NSError *error) {
     if (error) {
       // TODO - alert popover
       return;
     }
-    NSLog(@"Repo %@ created.", repoName);
-
-    GitHubTree *gitHubTree = [[GitHubTree alloc] initWithFiles:files userName:userName repoName:repoName branch:branch accessToken:accessToken];
-    [gitHubTree createAndCommitWithCompletion:^(NSError *error) {
-      if (error) {
-        // TODO - alert popover
-        return;
-      }
-      NSLog(@"GitHub tree created for %@.", branch);
-      self.ghPagesUrlLabel.text = !self.tabBarVC.repoName || [self.tabBarVC.repoName isEqualToString:kUnpublishedRepoName] ? nil : [[self ghPagesURLforRepo:self.tabBarVC.repoName withUserName:userName] absoluteString];
-      self.ghPagesUrlLabel.alpha = 1.0;
-      
-      double delay = 3.0;     // give GitHub pages some time to finish build
-      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{        
-        [self loadWebView];
-      });
-    }];
+    NSLog(@"GitHub tree updated for %@.", branch);
+    self.tabBarVC.pagesStatus = GitHubPagesInProgress;
+    double delay = 3.0;     // give GitHub pages some time to finish build
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      [self updateUI];
+    });
   }];
+}
+
+- (void)makeRepoWithFiles:(FileInfoArray *)files user:(NSString *)userName repo:(NSString *)repoName branch:(NSString *)branch accessToken:(NSString *)accessToken {
+  
+  GitHubTree *gitHubTree = [[GitHubTree alloc] initWithFiles:files userName:userName repoName:repoName branch:branch accessToken:accessToken];
+  [gitHubTree makeAndCommitWithCompletion:^(NSError *error) {
+    if (error) {
+      // TODO - alert popover
+      return;
+    }
+    NSLog(@"GitHub tree created for %@.", branch);
+    self.tabBarVC.pagesStatus = GitHubPagesInProgress;
+    double delay = 3.0;     // give GitHub pages some time to finish build
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      [self updateUI];
+    });
+  }];
+}
+
+- (void)updateUI {
+
+  if (self.tabBarVC.pagesStatus == GitHubPagesNone) {
+    [self.webView loadHTMLString:@"" baseURL:nil];
+  } else {
+    [self loadWebView];
+  }
+}
+
+- (void)updateLabel {
+
+  // TODO - better way to detect still waiting on build?
+  if ([self.webView.title hasPrefix:@"Page not found"]) {
+    self.ghPagesUrlLabel.alpha = 0.35;
+    self.ghPagesUrlLabel.text = kWebPageBuildInProgress;
+  } else if (self.webView.title.length == 0) {
+    self.ghPagesUrlLabel.alpha = 0.35;
+    self.ghPagesUrlLabel.text =  kWebPageNotPublished;
+  } else {
+    self.tabBarVC.pagesStatus = GitHubPagesBuilt;
+    self.ghPagesUrlLabel.alpha = 1.0;
+    self.ghPagesUrlLabel.text =  self.webView.URL.absoluteString;
+  }
 }
 
 #pragma mark - LabelDelegate
 
 - (void)labelTouchBegin:(UILabel *)sender {
   
-  if ([self.ghPagesUrlLabel.text isEqualToString:kWebPageNotPublished]) {
+  if (self.tabBarVC.pagesStatus != GitHubPagesBuilt) {
     return;
   }
   if (self.ghPagesUrlLabel.backgroundColor == [UIColor whiteColor]) {
@@ -238,12 +312,18 @@
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
   NSLog(@"Error! webView:didFailNavigation: error: %@", error.localizedDescription);
+  [self updateLabel];
 }
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
   NSLog(@"Error! webView:didFailProvisionalNavigation: error: %@", error.localizedDescription);
 }
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-  //NSLog(@"webView:didFinishNavigation:");
+  NSLog(@"webView:didFinishNavigation:");
+  [self updateLabel];
 }
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {
+  //NSLog(@"webView:didCommitNavigation:");
+}
+
 
 @end

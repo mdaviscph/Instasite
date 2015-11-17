@@ -13,10 +13,10 @@
 - (instancetype)initFromJson:(NSDictionary *)json {
   self = [super init];
   if (self) {
-    _path     = json[@"path"];
-    _sha      = json[@"sha"];
-    _encoding = json[@"encoding"];
-    _content  = json[@"content"];
+    _path = json[@"path"];
+    _sha  = json[@"sha"];
+    _mode = json[@"mode"];
+    _type = json[@"type"];
   }
   return self;
 }

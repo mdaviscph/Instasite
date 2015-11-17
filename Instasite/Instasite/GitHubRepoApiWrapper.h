@@ -10,12 +10,17 @@
 #import <AFNetworking/AFNetworking.h>
 #import "TypeDefsEnums.h"
 
-@class UserReposJsonRequest;
 @class RepoJsonRequest;
 @class RepoJsonResponse;
+@class PagesJsonResponse;
 
 @interface GitHubRepoApiWrapper : NSObject
 
+- (instancetype)initWithRepoName:(NSString *)repoName userName:(NSString *)userName;
+
 - (void)createRepo:(RepoJsonRequest *)repoRequest usingManager:(AFHTTPSessionManager *)manager completion:(void (^)(NSError *, RepoJsonResponse *))completion;
+- (void)getRepoUsingManager:(AFHTTPSessionManager *)manager completion:(void (^)(NSError *, RepoJsonResponse *))completion;
+- (void)getPagesStatusUsingManager:(AFHTTPSessionManager *)manager completion:(void (^)(NSError *, PagesJsonResponse *))completion;
+
 
 @end

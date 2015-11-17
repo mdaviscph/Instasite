@@ -11,6 +11,7 @@
 @interface CommitTreeJsonResponse : NSObject
 
 @property (strong, nonatomic) NSString *sha;
+@property (strong, nonatomic) NSString *treeSha;
 
 - (instancetype)initFromJson:(NSDictionary *)jsonDict;
 

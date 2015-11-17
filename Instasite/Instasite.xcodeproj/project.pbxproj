@@ -32,6 +32,7 @@
 		007D48031BC2F90A0057B5D1 /* RepoPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D48021BC2F90A0057B5D1 /* RepoPickerViewController.m */; };
 		007D48061BC2FAA30057B5D1 /* RepoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 007D48051BC2FAA30057B5D1 /* RepoCell.m */; };
 		008035021BB7141C00EB91C6 /* SegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 008035011BB7141C00EB91C6 /* SegmentedControl.m */; };
+		008289BB1BFA86170078C9B6 /* PagesJsonResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 008289BA1BFA86170078C9B6 /* PagesJsonResponse.m */; };
 		00A45B301BF676A800F0367B /* Label.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A45B2F1BF676A800F0367B /* Label.m */; };
 		00BB501C1BF93C140041BDEA /* 1-col-portfolio.png in Resources */ = {isa = PBXBuildFile; fileRef = 00BB500E1BF93C140041BDEA /* 1-col-portfolio.png */; };
 		00BB501D1BF93C140041BDEA /* agency.png in Resources */ = {isa = PBXBuildFile; fileRef = 00BB500F1BF93C140041BDEA /* agency.png */; };
@@ -153,6 +154,8 @@
 		007D48051BC2FAA30057B5D1 /* RepoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RepoCell.m; sourceTree = "<group>"; };
 		008035001BB7141C00EB91C6 /* SegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentedControl.h; sourceTree = "<group>"; };
 		008035011BB7141C00EB91C6 /* SegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentedControl.m; sourceTree = "<group>"; };
+		008289B91BFA86170078C9B6 /* PagesJsonResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagesJsonResponse.h; sourceTree = "<group>"; };
+		008289BA1BFA86170078C9B6 /* PagesJsonResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagesJsonResponse.m; sourceTree = "<group>"; };
 		00A45B2D1BF504F600F0367B /* RepoPickerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RepoPickerDelegate.h; sourceTree = "<group>"; };
 		00A45B2E1BF676A800F0367B /* Label.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Label.h; sourceTree = "<group>"; };
 		00A45B2F1BF676A800F0367B /* Label.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Label.m; sourceTree = "<group>"; };
@@ -349,10 +352,10 @@
 				0073C47F1BD5E3A700760638 /* BlobJsonRequest.m */,
 				0073C4811BD5E66B00760638 /* BlobJsonResponse.h */,
 				0073C4821BD5E66B00760638 /* BlobJsonResponse.m */,
-				00D3535A1BDEBC9500EA97E7 /* FileJsonResponse.h */,
-				00D3535B1BDEBC9500EA97E7 /* FileJsonResponse.m */,
 				00EA77321BBC9FF700A70B8A /* FileJsonRequest.h */,
 				00EA77331BBC9FF700A70B8A /* FileJsonRequest.m */,
+				00D3535A1BDEBC9500EA97E7 /* FileJsonResponse.h */,
+				00D3535B1BDEBC9500EA97E7 /* FileJsonResponse.m */,
 				0073C4841BD5E7AF00760638 /* TreeJsonRequest.h */,
 				0073C4851BD5E7AF00760638 /* TreeJsonRequest.m */,
 				0073C4871BD6A1F300760638 /* TreeJsonResponse.h */,
@@ -361,6 +364,8 @@
 				0073C48B1BD6A27B00760638 /* CommitTreeJsonRequest.m */,
 				0073C48D1BD6A3C300760638 /* CommitTreeJsonResponse.h */,
 				0073C48E1BD6A3C300760638 /* CommitTreeJsonResponse.m */,
+				008289B91BFA86170078C9B6 /* PagesJsonResponse.h */,
+				008289BA1BFA86170078C9B6 /* PagesJsonResponse.m */,
 				0073C4901BD6A45E00760638 /* RefJsonRequest.h */,
 				0073C4911BD6A45E00760638 /* RefJsonRequest.m */,
 				00EA772C1BBC8A3600A70B8A /* RefJsonResponse.h */,
@@ -772,6 +777,7 @@
 				6B05A0071BB32765002627BA /* DisplayTemplateViewController.m in Sources */,
 				00D353451BDBF43D00EA97E7 /* RepoJsonRequest.m in Sources */,
 				00D353421BDBD63700EA97E7 /* UserReposJsonRequest.m in Sources */,
+				008289BB1BFA86170078C9B6 /* PagesJsonResponse.m in Sources */,
 				00EA772E1BBC8A3600A70B8A /* RefJsonResponse.m in Sources */,
 				0073C4991BD861E400760638 /* GitHubTree.m in Sources */,
 				00D3535C1BDEBC9500EA97E7 /* FileJsonResponse.m in Sources */,
