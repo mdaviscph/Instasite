@@ -15,6 +15,6 @@
 @property (nonatomic) NSInteger maxGroupTag, maxCategoryTag, maxFieldTag;
 
 - (NSData *)createJsonData;
-- (void)updateUsingJsonData:(NSData *)data;
+- (BOOL)updateUsingJsonData:(NSData *)data;
 
 @end

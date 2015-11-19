@@ -32,7 +32,7 @@
 }
 
 - (void)safariLogin:(NSNotification *)notification {
-  // get the url from the auth callback
+  // get the url from the OAuth callback
   NSURL *openURL = notification.userInfo[kOpenURLdictionaryKey];
   //NSLog(@"safariLogin: %@", openURL);
   
@@ -49,7 +49,7 @@
       [gitHubToken retrieveTokenWithCompletion:^(NSError *error, NSString *token) {
         
         if (error) {
-          // TODO - alert popover
+          [self showErrorAlertWithTitle:@"Authorization Error" usingError:error];
           return;
         }
         
@@ -75,6 +75,9 @@
   
   [self.navigationController popToRootViewControllerAnimated:YES];
 }
+
+#pragma mark - IBActions
+
 - (IBAction)signUpButtonTapped:(UIButton *)sender {
   
   NSString *message = @"InstaSite uses GitHub.com's project repositories and GitHub Pages free hosting of public web pages. GitHub offers free accounts for users and organizations working on open source projects, as well as paid accounts for users and organizations that need private repositories.";
@@ -123,6 +126,21 @@
 
 - (IBAction)cancelButtonTapped:(UIButton *)sender {
   [self popBackToCallingVC];
+}
+
+#pragma mark - Helper Methods
+
+- (void)showErrorAlertWithTitle:(NSString *)title usingError:(NSError *)error {
+  
+  NSString *detail = error.userInfo[NSLocalizedDescriptionKey];
+  NSString *recovery = error.userInfo[NSLocalizedRecoverySuggestionErrorKey];
+  NSString *message = recovery ? [NSString stringWithFormat:@"%@\n%@", detail, recovery] : detail;
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+  alert.modalPresentationStyle = UIModalPresentationPopover;
+  UIAlertAction *action1 = [UIAlertAction actionWithTitle: @"Ok" style:UIAlertActionStyleDefault handler:nil];
+  [alert addAction:action1];
+  
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - SFSafariViewControllerDelegate

@@ -17,6 +17,7 @@
 #import "CommitTreeJsonResponse.h"
 #import "RefJsonRequest.h"
 #import "RefJsonResponse.h"
+#import "Constants.h"
 #import <AFNetworking/AFNetworking.h>
 
 @interface GitHubDataApiWrapper ()
@@ -58,6 +59,8 @@
 // note that for update GitHub seems to compare image files and returns same sha if file is the same
 - (void)postFileBlobsUsingManager:(AFHTTPSessionManager *)manager completion:(void(^)(NSError *))completion {
 
+  __block NSError *lastError;
+  
   // need a dispatch group for notification of all of the file blobs being posted
   dispatch_group_t postBlobs = dispatch_group_create();
 
@@ -71,9 +74,8 @@
       //NSLog(@"POST file(blob) %@ sha: %@", file, blobResponse.sha);
 
       if (error) {
-        NSLog(@"Error! GitHubDataApiWrapper:postFileBlobsUsingManager: file: %@ error: %@", file, error.localizedDescription);
+        lastError = error;
       } else {
-        
         FileJsonRequest *fileJson = [[FileJsonRequest alloc] initWithPath:[file filepathFromRemoteDirectory] sha:blobResponse.sha];
         [self.fileJsonList addObject:fileJson];
       }
@@ -82,7 +84,7 @@
   
   dispatch_group_notify(postBlobs, dispatch_get_main_queue(), ^ {
     if (completion) {
-      completion(nil);
+      completion(lastError);
     }
   });
 }
@@ -107,9 +109,10 @@
       message = responseDictionary[@"message"];
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubDataApiWrapper:postBlob: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+    NSLog(@"GitHubDataApiWrapper:postBlob: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
-      completion(error, nil);
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], nil);
     }
   }];
 }
@@ -134,9 +137,10 @@
       message = responseDictionary[@"message"];
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubDataApiWrapper:postTree: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+    NSLog(@"GitHubDataApiWrapper:postTree: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
-      completion(error, nil);
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], nil);
     }
   }];
 }
@@ -161,9 +165,10 @@
       message = responseDictionary[@"message"];
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubDataApiWrapper:postTreeCommit: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+    NSLog(@"GitHubDataApiWrapper:postTreeCommit: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
-      completion(error, nil);
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], nil);
     }
   }];
 }
@@ -189,9 +194,10 @@
       message = responseDictionary[@"message"];
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubDataApiWrapper:postTreeRef: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+    NSLog(@"GitHubDataApiWrapper:postTreeRef: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
-      completion(error, nil);
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], nil);
     }
   }];
 }
@@ -216,9 +222,10 @@
       message = responseDictionary[@"message"];
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubDataApiWrapper:patchTreeRef: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+    NSLog(@"GitHubDataApiWrapper:patchTreeRef: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
-      completion(error, nil);
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], nil);
     }
   }];
 }
@@ -243,9 +250,10 @@
       message = responseDictionary[@"message"];
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubDataApiWrapper:getRef: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+    NSLog(@"GitHubDataApiWrapper:getRef: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
-      completion(error, nil);
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], nil);
     }
   }];
 }
@@ -257,6 +265,7 @@
   [manager GET:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
     
     CommitTreeJsonResponse *commitTreeResponse = [[CommitTreeJsonResponse alloc] initFromJson:responseObject];
+
     if (completion) {
       completion(nil, commitTreeResponse);
     }
@@ -270,41 +279,15 @@
       message = responseDictionary[@"message"];
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubDataApiWrapper:getTreeCommitWithRef: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+    NSLog(@"GitHubDataApiWrapper:getTreeCommitWithRef: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
-      completion(error, nil);
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], nil);
     }
   }];
 }
 
 - (void)getTreeWithCommit:(CommitTreeJsonResponse *)commitTreeResponse usingManager:(AFHTTPSessionManager *)manager completion:(void(^)(NSError *, TreeJsonResponse *))completion {
-
-  NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/git/trees/%@", self.userName, self.repoName, commitTreeResponse.sha];
-  
-  [manager GET:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-    
-    TreeJsonResponse *treeResponse = [[TreeJsonResponse alloc] initFromJson:responseObject];
-    if (completion) {
-      completion(nil, treeResponse);
-    }
-    
-  } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-    
-    NSString *message;
-    NSData *responseError = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
-    if (responseError) {
-      NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseError options:kNilOptions error:nil];
-      message = responseDictionary[@"message"];
-    }
-    NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubDataApiWrapper:getTreeWithCommit: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
-    if (completion) {
-      completion(error, nil);
-    }
-  }];
-}
-
-- (void)getTreeRecursivelyWithCommit:(CommitTreeJsonResponse *)commitTreeResponse usingManager:(AFHTTPSessionManager *)manager completion:(void(^)(NSError *, TreeJsonResponse *))completion {
   
   NSString *url = [NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/git/trees/%@", self.userName, self.repoName, commitTreeResponse.sha];
   
@@ -312,6 +295,7 @@
   [manager GET:url parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
     
     TreeJsonResponse *treeResponse = [[TreeJsonResponse alloc] initFromJson:responseObject];
+
     if (completion) {
       completion(nil, treeResponse);
     }
@@ -325,11 +309,20 @@
       message = responseDictionary[@"message"];
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubDataApiWrapper:getTreeRecursivelyWithCommit: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+    NSLog(@"GitHubDataApiWrapper:getTreeWithCommit: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
-      completion(error, nil);
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], nil);
     }
   }];
+}
+
+// repackage AFNetworking error to include code from NSHTTPURLResponse and message, if any
+- (NSError *)afErrorWithCode:(NSInteger)code description:(NSString *)description message:(NSString *)message {
+  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+  userInfo[NSLocalizedDescriptionKey] = description;
+  userInfo[NSUnderlyingErrorKey] = message;
+  return [[NSError alloc] initWithDomain:kErrorDomainAF code:code userInfo:userInfo];
 }
 
 @end

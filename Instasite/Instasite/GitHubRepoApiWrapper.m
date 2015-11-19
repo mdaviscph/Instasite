@@ -10,6 +10,8 @@
 #import "RepoJsonRequest.h"
 #import "RepoJsonResponse.h"
 #import "PagesJsonResponse.h"
+#import "Constants.h"
+#import <AFNetworking/AFNetworking.h>
 
 @interface GitHubRepoApiWrapper ()
 
@@ -41,10 +43,24 @@
     }
     
   } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-    
-    NSLog(@"Error! GitHubRepoApiWrapper:createRepo: error: %@", error.localizedDescription);
+
+    NSString *message;
+    NSData *responseError = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+    if (responseError) {
+      NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseError options:kNilOptions error:nil];
+      message = responseDictionary[@"message"];
+    }
+    NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
+    NSLog(@"GitHubRepoApiWrapper:createRepo: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
-      completion(error, nil);
+      RepoJsonResponse *repoResponse;
+      if (taskResponse.statusCode == 422) {
+        repoResponse = [[RepoJsonResponse alloc] initWithTest:GitHubRepoExists];    // attempt to create a repo that already exists
+      } else {
+        repoResponse = [[RepoJsonResponse alloc] initWithTest:GitHubRepoError];
+      }
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], repoResponse);
     }
   }];
 }
@@ -70,8 +86,15 @@
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
     NSLog(@"GitHubRepoApiWrapper:getRepoUsingManager: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
-      completion(error, nil);
+      RepoJsonResponse *repoResponse;
+      if (taskResponse.statusCode == 404) {
+        repoResponse = [[RepoJsonResponse alloc] initWithTest:GitHubRepoDoesNotExist];
+      } else {
+        repoResponse = [[RepoJsonResponse alloc] initWithTest:GitHubRepoError];
+      }
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], repoResponse);
     }
   }];
 }
@@ -97,6 +120,7 @@
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
     NSLog(@"GitHubRepoApiWrapper:getPagesStatusUsingManager: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
       PagesJsonResponse *pagesResponse;
       if (taskResponse.statusCode == 404) {
@@ -104,10 +128,17 @@
       } else {
         pagesResponse = [[PagesJsonResponse alloc] initWithStatus:GitHubPagesError];
       }
-      completion(error, pagesResponse);
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], pagesResponse);
     }
   }];
 }
 
+// repackage AFNetworking error to include code from NSHTTPURLResponse and message, if any
+- (NSError *)afErrorWithCode:(NSInteger)code description:(NSString *)description message:(NSString *)message {
+  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+  userInfo[NSLocalizedDescriptionKey] = description;
+  userInfo[NSUnderlyingErrorKey] = message;
+  return [[NSError alloc] initWithDomain:kErrorDomainAF code:code userInfo:userInfo];
+}
 
 @end

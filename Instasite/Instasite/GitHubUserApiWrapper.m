@@ -10,6 +10,8 @@
 #import "UserJsonResponse.h"
 #import "RepoJsonResponse.h"
 #import "UserReposJsonRequest.h"
+#import "Constants.h"
+#import <AFNetworking/AFNetworking.h>
 
 @implementation GitHubUserApiWrapper
 
@@ -25,10 +27,18 @@
     }
     
   } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+
+    NSString *message;
+    NSData *responseError = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+    if (responseError) {
+      NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseError options:kNilOptions error:nil];
+      message = responseDictionary[@"message"];
+    }
+    NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
+    NSLog(@"GitHubUserApiWrapper:GitHubUserApiWrapper:getUserUsingManager status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
     
-    NSLog(@"Error! GitHubUserApiWrapper:getUserUsingManager: error: %@", error.localizedDescription);
     if (completion) {
-      completion(error, nil);
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], nil);
     }
   }];
 }
@@ -58,11 +68,20 @@
       message = responseDictionary[@"message"];
     }
     NSHTTPURLResponse *taskResponse = (NSHTTPURLResponse *)task.response;
-    NSLog(@"Error! GitHubUserApiWrapper:getRepos: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+    NSLog(@"GitHubUserApiWrapper:getRepos: status: %lu error: %@ message: %@", (long)taskResponse.statusCode, error.localizedDescription, message);
+
     if (completion) {
-      completion(error, nil);
+      completion([self afErrorWithCode:taskResponse.statusCode description:error.localizedDescription message:message], nil);
     }
   }];
 }
-  
+
+// repackage AFNetworking error to include code from NSHTTPURLResponse and message, if any
+- (NSError *)afErrorWithCode:(NSInteger)code description:(NSString *)description message:(NSString *)message {
+  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+  userInfo[NSLocalizedDescriptionKey] = description;
+  userInfo[NSUnderlyingErrorKey] = message;
+  return [[NSError alloc] initWithDomain:kErrorDomainAF code:code userInfo:userInfo];
+}
+
 @end

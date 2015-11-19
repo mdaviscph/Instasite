@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AFNetworking/AFNetworking.h>
 
 @class OAuthJsonRequest;
 @class OAuthJsonResponse;
+@class AFHTTPSessionManager;
 
 @interface GitHubOAuthApiWrapper : NSObject
 

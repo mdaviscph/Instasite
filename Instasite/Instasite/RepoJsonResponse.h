@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TypeDefsEnums.h"
 
 @interface RepoJsonResponse : NSObject
 
@@ -17,6 +18,9 @@
 @property (strong, nonatomic) NSString *owner;
 @property (strong, nonatomic) NSDate *updatedAt;
 
+@property (nonatomic) GitHubRepoTest exists;
+
 - (instancetype)initFromJson:(NSDictionary *)json;
+- (instancetype)initWithTest:(GitHubRepoTest)exists;
 
 @end

@@ -15,6 +15,7 @@
 #import "RefJsonRequest.h"
 #import "RefJsonResponse.h"
 #import "FileJsonResponse.h"
+#import "Constants.h"
 #import <AFNetworking/AFNetworking.h>
 
 @interface GitHubTree ()
@@ -45,27 +46,23 @@
   return self;
 }
 
-- (void)makeAndCommitWithCompletion:(void(^)(NSError *))finalCompletion {
+- (void)makeAndCommitWithCompletion:(void(^)(NSError *, GitHubPagesStatus))finalCompletion {
   
   [self.dataApiWrapper postFileBlobsUsingManager:self.manager completion:^(NSError *error) {
 
-    // TODO - alert popover?
-    if (error) {
-      NSLog(@"Error! GitHubTree:createAndCommitWithCompletion: postFileBlobsUsingManager");
-      if (finalCompletion) {
-        finalCompletion(error);
-      }
+    if (error && finalCompletion) {
+      finalCompletion([self ourErrorWithCode:error.code description:@"Unable to publish to GitHub repository." message:@"Please retry the operation."], GitHubPagesError);
     } else {
-      [self postsWithCompletion:^(NSError *error) {
+      [self postsWithCompletion:^(NSError *error, GitHubPagesStatus status) {
         if (finalCompletion) {
-          finalCompletion(error);
+          finalCompletion(error, status);
         }
       }];
     }
   }];
 }
 
-- (void)postsWithCompletion:(void(^)(NSError *))finalCompletion {
+- (void)postsWithCompletion:(void(^)(NSError *, GitHubPagesStatus status))finalCompletion {
   
   FileJsonRequestArray *filesForTree = [self.dataApiWrapper filesForTree];
   
@@ -73,12 +70,8 @@
   TreeJsonRequest *treeRequest = [[TreeJsonRequest alloc] initWithFileList:filesForTree existingFileList:self.committedTreeFiles];
   [self.dataApiWrapper postTree:treeRequest usingManager:self.manager completion:^(NSError *error, TreeJsonResponse *treeResponse) {
     
-    // TODO - alert popover?
-    if (error) {
-      NSLog(@"Error! GitHubTree:postsWithCompletion: postTree");
-      if (finalCompletion) {
-        finalCompletion(error);
-      }
+    if (error && finalCompletion) {
+      finalCompletion([self ourErrorWithCode:error.code description:@"Unable to publish to GitHub repository." message:@"Please retry the operation."], GitHubPagesError);
     } else {
 
       // note: if we are doing an update then self.parentSha is not nil
@@ -86,12 +79,8 @@
       CommitTreeJsonRequest *commitRequest = [[CommitTreeJsonRequest alloc] initWithTreeSha:treeResponse.sha message:message parentSha:self.parentSha];
       [self.dataApiWrapper postTreeCommit:commitRequest usingManager:self.manager completion:^(NSError *error, CommitTreeJsonResponse *commitResponse) {
         
-        // TODO - alert popover?
-        if (error) {
-          NSLog(@"Error! GitHubTree:createAndCommitTreeWithCompletion: postTreeCommit");
-          if (finalCompletion) {
-            finalCompletion(error);
-          }
+        if (error && finalCompletion) {
+          finalCompletion([self ourErrorWithCode:error.code description:@"Unable to publish to GitHub repository." message:@"Please retry the operation."], GitHubPagesError);
         } else {
           
           NSString *ref = [NSString stringWithFormat:@"refs/heads/%@", self.branch];
@@ -100,17 +89,13 @@
           if (self.parentSha) {
             
             [self.dataApiWrapper patchTreeRef:refRequest usingManager:self.manager completion:^(NSError *error, RefJsonResponse *refResponse) {
-              
-              // TODO - alert popover?
-              if (error) {
-                NSLog(@"Error! GitHubTree:createAndCommitTreeWithCompletion: patchTreeRef");
-                if (finalCompletion) {
-                  finalCompletion(error);
-                }
+
+              if (error && finalCompletion) {
+                finalCompletion([self ourErrorWithCode:error.code description:@"Unable to publish to GitHub repository." message:@"Please retry the operation."], GitHubPagesError);
               } else {
                 //NSLog(@"GitHubTree creation, commit, refs complete.");
                 if (finalCompletion) {
-                  finalCompletion(nil);
+                  finalCompletion(nil, GitHubPagesInProgress);
                 }
               }
             }];
@@ -119,16 +104,12 @@
             
             [self.dataApiWrapper postTreeRef:refRequest usingManager:self.manager completion:^(NSError *error, RefJsonResponse *refResponse) {
 
-              // TODO - alert popover?
-              if (error) {
-                NSLog(@"Error! GitHubTree:createAndCommitTreeWithCompletion: postTreeRef");
-                if (finalCompletion) {
-                  finalCompletion(error);
-                }
+              if (error && finalCompletion) {
+                finalCompletion([self ourErrorWithCode:error.code description:@"Unable to publish to GitHub repository." message:@"Please retry the operation."], GitHubPagesError);
               } else {
                 //NSLog(@"GitHubTree creation, commit, refs complete.");
                 if (finalCompletion) {
-                  finalCompletion(nil);
+                  finalCompletion(nil, GitHubPagesInProgress);
                 }
               }
             }];
@@ -139,43 +120,31 @@
   }];
 }
 
-- (void)updateAndCommitWithCompletion:(void(^)(NSError *))finalCompletion {
+- (void)updateAndCommitWithCompletion:(void(^)(NSError *, GitHubPagesStatus))finalCompletion {
   
   [self.dataApiWrapper getRefUsingManager:self.manager completion:^(NSError *error, RefJsonResponse *refResponse) {
     
-    // TODO - alert popover?
-    if (error) {
-      NSLog(@"Error! getRefUsingManager:");
-      if (finalCompletion) {
-        finalCompletion(error);
-      }
+    if (error && finalCompletion) {
+      finalCompletion([self ourErrorWithCode:error.code description:@"Unable to access GitHub Pages." message:@"Please retry the operation."], GitHubPagesError);
     } else {
       
       [self.dataApiWrapper getTreeCommitWithRef:refResponse usingManager:self.manager completion:^(NSError *error, CommitTreeJsonResponse *commitTreeResponse) {
         
-        // TODO - alert popover?
-        if (error) {
-          NSLog(@"Error! getTreeCommitWithRef:");
-          if (finalCompletion) {
-            finalCompletion(error);
-          }
+        if (error && finalCompletion) {
+          finalCompletion([self ourErrorWithCode:error.code description:@"Unable to retrieve information from GitHub repository." message:@"Please retry the operation."], GitHubPagesError);
         } else {
           
           self.parentSha = commitTreeResponse.sha;
-          [self.dataApiWrapper getTreeRecursivelyWithCommit:commitTreeResponse usingManager:self.manager completion:^(NSError *error, TreeJsonResponse *treeResponse) {
+          [self.dataApiWrapper getTreeWithCommit:commitTreeResponse usingManager:self.manager completion:^(NSError *error, TreeJsonResponse *treeResponse) {
             
-            // TODO - alert popover?
-            if (error) {
-              NSLog(@"Error! getTreeCommitWithRef:");
-              if (finalCompletion) {
-                finalCompletion(error);
-              }
+            if (error && finalCompletion) {
+              finalCompletion([self ourErrorWithCode:error.code description:@"Unable to retrieve information from GitHub repository." message:@"Please retry the operation."], GitHubPagesError);
             } else {
               
               self.committedTreeFiles = treeResponse.files;
-              [self makeAndCommitWithCompletion:^(NSError *error) {
+              [self makeAndCommitWithCompletion:^(NSError *error, GitHubPagesStatus status) {
                 if (finalCompletion) {
-                  finalCompletion(error);
+                  finalCompletion(error, status);
                 }
               }];
             }
@@ -184,6 +153,29 @@
       }];
     }
   }];
+}
+
+// repackage error to include project specific code and retry suggestion, if any
+- (NSError *)ourErrorWithCode:(NSInteger)code description:(NSString *)description message:(NSString *)message {
+  NSInteger ourCode;
+  switch (code) {
+    case 401:
+      ourCode = ErrorCodeNotAuthorized;
+      break;
+    case 404:
+      ourCode = ErrorCodeEntityNotFound;
+      break;
+    case 422:
+      ourCode = ErrorCodeOperationIncomplete;
+      break;
+    default:
+      ourCode = ErrorCodeUnknownError;
+      break;
+  }
+  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+  userInfo[NSLocalizedDescriptionKey] = description;
+  userInfo[NSLocalizedRecoverySuggestionErrorKey] = message;
+  return [[NSError alloc] initWithDomain:kErrorDomain code:ourCode userInfo:userInfo];
 }
 
 @end

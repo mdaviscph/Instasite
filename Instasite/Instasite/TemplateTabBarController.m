@@ -188,13 +188,14 @@
   return jsonData;
 }
 
-- (void)writeImageFiles:(ImagesDictionary *)images {
+- (BOOL)writeImageFiles:(ImagesDictionary *)images {
   
   NSFileManager *fileManager = [NSFileManager defaultManager];
   fileManager.delegate = self;    // prevent EXC_BAD_ACCESS when using removeItemAtPath
   NSString *workingDirectory = [self.documentsDirectory stringByAppendingPathComponent:self.templateDirectory];
   NSString *imagesDirectory = [workingDirectory stringByAppendingPathComponent:kFileImageDirectory];
   
+  // TODO - remove image files no longer used
   // some templates have sample images in this directory
   //[fileManager removeItemAtPath:imagesDirectory error:nil];
   
@@ -203,7 +204,7 @@
     [fileManager createDirectoryAtPath:imagesDirectory withIntermediateDirectories:NO attributes:nil error:&error];
     if (error) {
       NSLog(@"Error! Cannot create directory: [%@] error: %@", imagesDirectory, error.localizedDescription);
-      return;
+      return NO;
     }
   }
   
@@ -219,9 +220,10 @@
     [data writeToFile:pathWithExtension options:NSDataWritingAtomic error:&error];
     if (error) {
       NSLog(@"Error! Cannot write image file: [%@] error: %@", pathWithExtension, error.localizedDescription);
-      return;
+      return NO;
     }
   }
+  return YES;
 }
 
 - (void)checkRepoAndPagesStatus:(NSString *)repoName {
@@ -233,18 +235,19 @@
   if (accessToken && userName && repoName) {
     self.repoExists = GitHubResponsePending;
     GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:repoName userName:userName accessToken:accessToken];
-    [gitHubRepo retrieveWithCompletion:^(NSError *error, Repo *repo) {
+    [gitHubRepo retrieveExistenceWithCompletion:^(NSError *error, GitHubRepoTest exists) {
+
+      self.repoExists = exists;
       if (error) {
-        // TODO - we get a 404 error if this repo doesn't exist yet on GitHub, but what if it does exist but a different error occurs?
+        [self showErrorAlertWithTitle:@"Check Repository Error" usingError:error];
+        return;
+      }
+      if (exists == GitHubRepoDoesNotExist) {
         NSLog(@"Repo %@ does not exist.", repoName);
-        self.repoExists = GitHubRepoDoesNotExist;
+        return;
       }
-      if ([repo.name isEqualToString:repoName]) {
-        NSLog(@"Repo %@ exists.", repoName);
-        self.repoExists = GitHubRepoExists;
-        
-        [self checkPagesBuildStatus];
-      }
+      NSLog(@"Repo %@ exists.", repoName);
+      [self checkPagesBuildStatus];
     }];
   }
 }
@@ -255,31 +258,45 @@
   NSString *userName = appDelegate.userName;
   
   if (accessToken && userName && self.repoExists == GitHubRepoExists) {
+
+    // Note: GitHub seems to delay a return of "built" 15 to 60 seconds so we shouldn't
+    // use this after publish to determine when to load webView.
     GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:self.repoName userName:userName accessToken:accessToken];
-    [gitHubRepo retrievePagesStatusWithCompletion:^(NSError *error, GitHubPagesStatus pagesStatus) {
+    [gitHubRepo retrievePagesStatusWithCompletion:^(NSError *error, GitHubPagesStatus status) {
+
+      self.pagesStatus = status;
       if (error) {
-        // TODO - alert popover? note: will get error if repo exists but no gh-pages branch
+        [self showErrorAlertWithTitle:@"Check GitHub Pages Error" usingError:error];
+        return;
       }
-      
-      // GitHub seems to delay a return of "built" 15 to 60 seconds so we shouldn't use this
-      // after publish to determine when to load webView.
-      switch (pagesStatus) {
-        case GitHubPagesNone:
-          NSLog(@"GitHub Pages does not exist.");
-          break;
-        case GitHubPagesInProgress:
-          NSLog(@"GitHub Pages build in progress.");
-          break;
-        case GitHubPagesBuilt:
-          NSLog(@"GitHub Pages ready.");
-          break;
-        case GitHubPagesError:
-          NSLog(@"GitHub Pages error.");
-          break;
+      if (status == GitHubPagesNone) {
+        NSLog(@"GitHub Pages does not exist.");
+        return;
       }
-      self.pagesStatus = pagesStatus;
+      NSLog(@"GitHub Pages %@", status == GitHubPagesBuilt ? @"ready." : @"build in progress.");
     }];
   }
+}
+
+// create error to include project specific code and retry suggestion, if any
+- (NSError *)ourErrorWithOurCode:(NSInteger)ourCode description:(NSString *)description message:(NSString *)message {
+  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+  userInfo[NSLocalizedDescriptionKey] = description;
+  userInfo[NSLocalizedRecoverySuggestionErrorKey] = message;
+  return [[NSError alloc] initWithDomain:kErrorDomain code:ourCode userInfo:userInfo];
+}
+
+- (void)showErrorAlertWithTitle:(NSString *)title usingError:(NSError *)error {
+  
+  NSString *detail = error.userInfo[NSLocalizedDescriptionKey];
+  NSString *recovery = error.userInfo[NSLocalizedRecoverySuggestionErrorKey];
+  NSString *message = recovery ? [NSString stringWithFormat:@"%@\n%@", detail, recovery] : detail;
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+  alert.modalPresentationStyle = UIModalPresentationPopover;
+  UIAlertAction *action1 = [UIAlertAction actionWithTitle: @"Ok" style:UIAlertActionStyleDefault handler:nil];
+  [alert addAction:action1];
+  
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - UITabBarControllerDelegate
@@ -294,9 +311,19 @@
     HtmlTemplate *template = self.htmlTemplates[fileName];
     [self writeHtmlFile:[self htmlFileURL:fileName] fromTemplate:template usingGroups:self.userInput.groups];
   }
-  [self writeJsonData:[self.userInput createJsonData] fileURL:[self jsonFileURL:kFileJsonName]];
-  [self writeImageFiles:self.images];
-
+  NSData *jsonData = [self.userInput createJsonData];
+  if (!jsonData) {
+    [self showErrorAlertWithTitle:@"Write Error" usingError:[self ourErrorWithOurCode:ErrorCodeWritingUserData description:@"Unable to save your data." message:@"Please retry operation or restart application."]];
+    return NO;
+  }
+  if (![self writeJsonData:jsonData fileURL:[self jsonFileURL:kFileJsonName]]) {
+    [self showErrorAlertWithTitle:@"Write Error" usingError:[self ourErrorWithOurCode:ErrorCodeWritingUserData description:@"Unable to save your data." message:@"Please retry operation or restart application."]];
+    return NO;
+  }
+  if (![self writeImageFiles:self.images]) {
+    [self showErrorAlertWithTitle:@"Write Error" usingError:[self ourErrorWithOurCode:ErrorCodeWritingUserData description:@"Unable to save your image files." message:@"Please retry operation or restart application."]];
+    return NO;
+  }
   return YES;
 }
 

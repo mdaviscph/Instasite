@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AFNetworking/AFNetworking.h>
 #import "TypeDefsEnums.h"
 
 @class UserJsonResponse;
 @class UserReposJsonRequest;
+@class AFHTTPSessionManager;
 
 @interface GitHubUserApiWrapper : NSObject
 

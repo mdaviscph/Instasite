@@ -56,7 +56,6 @@ static NSString *kCellId = @"RepoCell";
   [gitHubUser retrieveReposWithCompletion:^(NSError *error, NSArray *repos) {
     
     if (error) {
-      // TODO - alert popover
       if ([self.delegate respondsToSelector:@selector(repoPicker:didFailWithError:)]) {
         [self.delegate repoPicker:self didFailWithError:error];
       }
