@@ -25,6 +25,12 @@
 
 @implementation TemplateTabBarController
 
+- (void)setRepoName:(NSString *)repoName {
+  _repoName = repoName;
+  [[NSUserDefaults standardUserDefaults] setObject:repoName forKey:kUserDefaultsRepoNameKey];
+  self.navigationItem.title = repoName;
+}
+
 - (UserInput *)userInput {
   if (!_userInput) {
     _userInput = [[UserInput alloc] init];
@@ -32,9 +38,14 @@
   return _userInput;
 }
 
+// lazy load user's image files for template
 - (ImagesDictionary *)images {
   if (!_images) {
-    _images = [self loadImageDataFromFiles];
+    NSError *error;
+    _images = [self loadImageDataFromFilesInTemplateDirectory:self.templateDirectory withDocumentsDirectory:self.documentsDirectory error:&error];
+    if (error) {
+      [self showErrorAlertWithTitle:@"Read Error" usingError:error];
+    }
   }
   return _images;
 }
@@ -47,16 +58,24 @@
   self.delegate = self;
   
   NSLog(@"Documents directory: %@", self.documentsDirectory);
-  [self copyBundleTemplateDirectory];
-  
-  self.htmlTemplates = [self loadHtmlTemplatesAndCreateUserInput];
-
-  NSData *jsonData = [self readJsonFile:[self jsonFileURL:kFileJsonName]];
-  if (jsonData) {
-    [self.userInput updateUsingJsonData:jsonData];
+  if (![self copyBundleTemplateDirectory]) {
+    NSError *error = [self ourErrorWithOurCode:ErrorCodeWritingUserData description:@"Unable to copy template directory." message:@"Please retry operation or restart application."];
+    [self showErrorAlertWithTitle:@"Copy Error" usingError:error];
   }
   
-  self.navigationItem.title = self.repoName;
+  NSError *htmlTemplateError;
+  self.htmlTemplates = [self loadHtmlTemplatesAndCreateUserInputFromTemplateDirectory:self.templateDirectory withDocumentsDirectory:self.documentsDirectory error:&htmlTemplateError];
+  if (htmlTemplateError) {
+    [self showErrorAlertWithTitle:@"Read Error" usingError:htmlTemplateError];
+  }
+  
+  NSData *jsonData = [self readJsonFile:[self jsonFileURL:kFileJsonName]];
+  if (jsonData) {
+    if (![self.userInput updateUsingJsonData:jsonData]) {
+      NSError *error = [self ourErrorWithOurCode:ErrorCodeReadingUserData description:@"Unable to read your saved data." message:@"Please retry operation or restart application."];
+      [self showErrorAlertWithTitle:@"Read Error" usingError:error];
+    }
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -108,37 +127,43 @@
 }
 
 // Copy the entire template folder from main bundle to the documents directory one time
--(void)copyBundleTemplateDirectory {
+-(BOOL)copyBundleTemplateDirectory {
   
   FileService *fileService = [[FileService alloc] init];
-  [fileService copyDirectory:self.templateDirectory overwrite:NO toDirectory:self.documentsDirectory];
+  return [fileService copyDirectory:self.templateDirectory overwrite:NO toDirectory:self.documentsDirectory];
 }
 
--(HtmlTemplateDictionary *)loadHtmlTemplatesAndCreateUserInput {
+-(HtmlTemplateDictionary *)loadHtmlTemplatesAndCreateUserInputFromTemplateDirectory:(NSString *)templateDirectory withDocumentsDirectory:(NSString *)documentsDirectory error:(NSError **)outError {
   
   HtmlTemplateMutableDictionary *htmlTemplates = [[HtmlTemplateMutableDictionary alloc] init];
   FileService *fileService = [[FileService alloc] init];
-  FileInfoArray *htmlTemplateFiles = [fileService enumerateFilesInDirectory:self.templateDirectory type:FileTypeTemplate rootDirectory:self.documentsDirectory];
+  FileInfoArray *htmlTemplateFiles = [fileService enumerateFilesInDirectory:templateDirectory type:FileTypeTemplate rootDirectory:documentsDirectory];
   for (FileInfo *file in htmlTemplateFiles) {
+    BOOL success = NO;
     NSURL *fileURL = [NSURL fileURLWithPath:[file filepathIncludingLocalDirectory]];
     if (fileURL) {
       HtmlTemplate *template = [[HtmlTemplate alloc] initWithURL:fileURL];
-      [template addInputGroupsToUserInput:self.userInput];
+      success = [template addInputGroupsToUserInput:self.userInput];
       htmlTemplates[file.name] = template;
     } else {
       NSLog(@"Error! NSURL:fileURLWithPath: [%@]", [file filepathIncludingLocalDirectory]);
+    }
+    if (!success) {
+      if (outError) {
+        *outError = [self ourErrorWithOurCode:ErrorCodeReadingProjectData description:@"Error reading HTML file." message:@"Please retry operation or restart application."];
+      }
     }
   }
   return htmlTemplates;
 }
 
-- (ImagesDictionary *)loadImageDataFromFiles {
+- (ImagesDictionary *)loadImageDataFromFilesInTemplateDirectory:(NSString *)templateDirectory withDocumentsDirectory:(NSString *)documentsDirectory error:(NSError **)outError {
   
   ImagesMutableDictionary *images = [[ImagesMutableDictionary alloc] init];
-  NSString *imageDirectory = [self.templateDirectory stringByAppendingPathComponent:kFileImageDirectory];
+  NSString *imageDirectory = [templateDirectory stringByAppendingPathComponent:kFileImageDirectory];
   
   FileService *fileService = [[FileService alloc] init];
-  FileInfoArray *imageFiles = [fileService enumerateFilesInDirectory:imageDirectory type:FileTypeJpeg rootDirectory:self.documentsDirectory];
+  FileInfoArray *imageFiles = [fileService enumerateFilesInDirectory:imageDirectory type:FileTypeJpeg rootDirectory:documentsDirectory];
   
   for (FileInfo *file in imageFiles) {
     
@@ -147,6 +172,11 @@
     
     if (imageData) {
       images[file.name] = imageData;
+    } else {
+      NSLog(@"Error! NSData:dataWithContentsOfFile: [%@]", [file filepathIncludingLocalDirectory]);
+      if (outError) {
+        *outError = [self ourErrorWithOurCode:ErrorCodeReadingProjectData description:@"Unable to read HTML file." message:@"Please retry operation."];
+      }
     }
   }
   return images;
@@ -154,10 +184,7 @@
 
 - (BOOL)writeHtmlFile:(NSURL *)fileURL fromTemplate:(HtmlTemplate *)template usingGroups:(InputGroupDictionary *)groups {
   
-  if ([template writeToURL:fileURL withInputGroups:groups]) {
-    return YES;
-  }
-  return NO;
+  return [template writeToURL:fileURL withInputGroups:groups];
 }
 
 - (BOOL)writeJsonData:(NSData *)data fileURL:(NSURL *)fileURL {
@@ -174,6 +201,7 @@
   return YES;
 }
 
+// note: json file will not exist for first use of new template
 - (NSData *)readJsonFile:(NSURL *)fileURL {
   
   //NSLog(@"Reading file: %@", fileURL.relativePath);
@@ -181,7 +209,7 @@
   NSError *error;
   NSData *jsonData = [NSData dataWithContentsOfURL:fileURL options:NSDataReadingUncached error:&error];
   if (error) {
-    //NSLog(@"Error! NSData:dataWithContentsOfFile: [%@] error: %@", fileURL, error.localizedDescription);
+    //NSLog(@"Warning! NSData:dataWithContentsOfFile: [%@] error: %@", fileURL, error.localizedDescription);
     return nil;
   }
   
@@ -309,19 +337,22 @@
   }
   for (NSString *fileName in self.htmlTemplates.allKeys) {
     HtmlTemplate *template = self.htmlTemplates[fileName];
-    [self writeHtmlFile:[self htmlFileURL:fileName] fromTemplate:template usingGroups:self.userInput.groups];
+    if (![self writeHtmlFile:[self htmlFileURL:fileName] fromTemplate:template usingGroups:self.userInput.groups]) {
+      [self showErrorAlertWithTitle:@"Save Error" usingError:[self ourErrorWithOurCode:ErrorCodeWritingUserData description:@"Unable to save your HTML file." message:@"Please retry operation or restart application."]];
+      return NO;
+    }
   }
   NSData *jsonData = [self.userInput createJsonData];
   if (!jsonData) {
-    [self showErrorAlertWithTitle:@"Write Error" usingError:[self ourErrorWithOurCode:ErrorCodeWritingUserData description:@"Unable to save your data." message:@"Please retry operation or restart application."]];
+    [self showErrorAlertWithTitle:@"Save Error" usingError:[self ourErrorWithOurCode:ErrorCodeWritingUserData description:@"Unable to save your data." message:@"Please retry operation or restart application."]];
     return NO;
   }
   if (![self writeJsonData:jsonData fileURL:[self jsonFileURL:kFileJsonName]]) {
-    [self showErrorAlertWithTitle:@"Write Error" usingError:[self ourErrorWithOurCode:ErrorCodeWritingUserData description:@"Unable to save your data." message:@"Please retry operation or restart application."]];
+    [self showErrorAlertWithTitle:@"Save Error" usingError:[self ourErrorWithOurCode:ErrorCodeWritingUserData description:@"Unable to save your data." message:@"Please retry operation or restart application."]];
     return NO;
   }
   if (![self writeImageFiles:self.images]) {
-    [self showErrorAlertWithTitle:@"Write Error" usingError:[self ourErrorWithOurCode:ErrorCodeWritingUserData description:@"Unable to save your image files." message:@"Please retry operation or restart application."]];
+    [self showErrorAlertWithTitle:@"Save Error" usingError:[self ourErrorWithOurCode:ErrorCodeWritingUserData description:@"Unable to save your image files." message:@"Please retry operation or restart application."]];
     return NO;
   }
   return YES;

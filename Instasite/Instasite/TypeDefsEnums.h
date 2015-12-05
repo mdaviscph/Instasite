@@ -37,6 +37,8 @@ enum ErrorCode {
   ErrorCodeOperationIncomplete = 103,
   ErrorCodeWritingUserData = 201,
   ErrorCodeReadingUserData = 202,
+  ErrorCodeWritingProjectData = 211,
+  ErrorCodeReadingProjectData = 212,
   ErrorCodeUnknownError = 999
 };
 typedef enum ErrorCode ErrorCode;

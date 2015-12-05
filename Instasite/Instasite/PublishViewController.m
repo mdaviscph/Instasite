@@ -76,12 +76,12 @@
   }
   
   UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Publish to GitHub" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    NSString *repoName = self.tabBarVC.repoName;
     UITextField *textField = alert.textFields.firstObject;
     if (textField && textField.text.length > 0) {
-      self.tabBarVC.repoName = textField.text;
-      [[NSUserDefaults standardUserDefaults] setObject:textField.text forKey:kUserDefaultsRepoNameKey];
+      repoName = textField.text;
     }
-    [self publishToGitHub];
+    [self publishToGitHub:repoName];
   }];
   [alert addAction:action1];
   UIAlertAction *action2 = [UIAlertAction actionWithTitle: @"Cancel" style:UIAlertActionStyleCancel handler:nil];
@@ -127,7 +127,7 @@
   }
 }
 
-- (void)publishToGitHub {
+- (void)publishToGitHub:(NSString *)repoName {
   
   [self.busyIndicator startAnimating];
   
@@ -141,9 +141,9 @@
   NSString *userName = appDelegate.userName;
   
   if (shouldCreateRepo || shouldCreatePages) {
-    [self publishAllFilesForRepo:self.tabBarVC.repoName withUserName:userName createRepo:shouldCreateRepo usingAccessToken:accessToken];
+    [self publishAllFilesForRepo:repoName withUserName:userName createRepo:shouldCreateRepo usingAccessToken:accessToken];
   } else if (!shouldWait) {
-    [self republishRepo:self.tabBarVC.repoName withUserName:userName allFiles:shouldRepublishAllFiles usingAccessToken:accessToken];
+    [self republishRepo:repoName withUserName:userName allFiles:shouldRepublishAllFiles usingAccessToken:accessToken];
   } else {
     [self.busyIndicator stopAnimating];
   }
@@ -181,10 +181,10 @@
   
   if ([repoURL.absoluteString isEqualToString:self.webView.URL.absoluteString]) {
     [self.webView reloadFromOrigin];
-    NSLog(@"reloadFromOrigin");
+    //NSLog(@"reloadFromOrigin");
   } else {
     [self.webView loadRequest:[NSURLRequest requestWithURL:repoURL]];
-    NSLog(@"loadRequest");
+    //NSLog(@"loadRequest");
   }
 }
 
@@ -238,6 +238,9 @@
       return;
     }
     NSLog(@"Repo %@ created.", repoName);
+    if (![repoName isEqualToString:self.tabBarVC.repoName]) {
+      self.tabBarVC.repoName = repoName;
+    }
     [self makeRepoWithFiles:files user:userName repo:repoName branch:branch accessToken:accessToken];
   }];
 }
@@ -343,7 +346,7 @@
   NSLog(@"Error! webView:didFailProvisionalNavigation: error: %@", error.localizedDescription);
 }
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-  NSLog(@"webView:didFinishNavigation:");
+  //NSLog(@"webView:didFinishNavigation:");
   [self updateLabel];
 }
 - (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {

@@ -51,7 +51,7 @@
   [self.dataApiWrapper postFileBlobsUsingManager:self.manager completion:^(NSError *error) {
 
     if (error && finalCompletion) {
-      finalCompletion([self ourErrorWithCode:error.code description:@"Unable to publish to GitHub repository." message:@"Please retry the operation."], GitHubPagesError);
+      finalCompletion([self ourErrorWithCode:error.code description:@"Unable to publish to GitHub repository." message:@"Please retry the operation. One possible cause of this error is a corrupt image file."], GitHubPagesError);
     } else {
       [self postsWithCompletion:^(NSError *error, GitHubPagesStatus status) {
         if (finalCompletion) {
@@ -93,7 +93,7 @@
               if (error && finalCompletion) {
                 finalCompletion([self ourErrorWithCode:error.code description:@"Unable to publish to GitHub repository." message:@"Please retry the operation."], GitHubPagesError);
               } else {
-                //NSLog(@"GitHubTree creation, commit, refs complete.");
+                //NSLog(@"GitHubTree re-commit, refs complete.");
                 if (finalCompletion) {
                   finalCompletion(nil, GitHubPagesInProgress);
                 }

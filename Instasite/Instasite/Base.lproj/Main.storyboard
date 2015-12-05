@@ -30,7 +30,7 @@
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="253" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aof-mY-B2U">
                                         <rect key="frame" x="0.0" y="101" width="560" height="62"/>
                                         <animations/>
-                                        <string key="text">Create a simple web page, providing text and images, using an HTML template from Start Bootstrap. Save to a new or existing GitHub repository. Publish as a personal GitHub Pages website.</string>
+                                        <string key="text">Create a simple web page using an HTML template from Start Bootstrap. Add text and images. Save to a GitHub repository. Publish as a personal GitHub Pages website.</string>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>

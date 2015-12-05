@@ -19,6 +19,6 @@
 
 - (BOOL)writeToURL:(NSURL *)htmlURL withInputGroups:(InputGroupDictionary *)groups;
 
-- (void)addInputGroupsToUserInput:(UserInput *)userInput;
+- (BOOL)addInputGroupsToUserInput:(UserInput *)userInput;
 
 @end
