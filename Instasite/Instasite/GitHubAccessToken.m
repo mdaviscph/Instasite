@@ -10,6 +10,8 @@
 #import "GitHubOAuthApiWrapper.h"
 #import "OAuthJsonRequest.h"
 #import "OAuthJsonResponse.h"
+#import "Constants.h"
+#import "TypeDefsEnums.h"
 #import <AFNetworking/AFNetworking.h>
 
 @interface GitHubAccessToken ()
@@ -48,14 +50,35 @@
   OAuthJsonRequest *oauthRequest = [[OAuthJsonRequest alloc] initWithCode:self.code clientId:self.clientId clientSecret:self.clientSecret];
   [self.oauthApiWrapper postOAuthRequest:oauthRequest usingManager:self.manager completion:^(NSError *error, OAuthJsonResponse *oauthResponse) {
 
-    // TODO - alert popover?
-    if (error) {
-      NSLog(@"Error! GitHubAccessToken:retrieveTokenWithCompletion:");
-    }
-    if (finalCompletion) {
-      finalCompletion(error, oauthResponse.accessToken);
+    if (error && finalCompletion) {
+      finalCompletion([self ourErrorWithCode:error.code description:@"Unable to complete GitHub authorization request." message:@"Please retry the operation."], nil);
+    } else if (finalCompletion) {
+      finalCompletion(nil, oauthResponse.accessToken);
     }
   }];
+}
+
+// repackage error to include project specific code and retry suggestion, if any
+- (NSError *)ourErrorWithCode:(NSInteger)code description:(NSString *)description message:(NSString *)message {
+  NSInteger ourCode;
+  switch (code) {
+    case 401:
+      ourCode = ErrorCodeNotAuthorized;
+      break;
+    case 404:
+      ourCode = ErrorCodeEntityNotFound;
+      break;
+    case 422:
+      ourCode = ErrorCodeOperationIncomplete;
+      break;
+    default:
+      ourCode = ErrorCodeUnknownError;
+      break;
+  }
+  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+  userInfo[NSLocalizedDescriptionKey] = description;
+  userInfo[NSLocalizedRecoverySuggestionErrorKey] = message;
+  return [[NSError alloc] initWithDomain:kErrorDomain code:ourCode userInfo:userInfo];
 }
 
 @end

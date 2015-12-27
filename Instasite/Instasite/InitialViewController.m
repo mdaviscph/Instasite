@@ -203,6 +203,19 @@
   [self.navigationController pushViewController:templatePickerVC animated:YES];
 }
 
+- (void)showErrorAlertWithTitle:(NSString *)title usingError:(NSError *)error {
+  
+  NSString *detail = error.userInfo[NSLocalizedDescriptionKey];
+  NSString *recovery = error.userInfo[NSLocalizedRecoverySuggestionErrorKey];
+  NSString *message = recovery ? [NSString stringWithFormat:@"%@\n%@", detail, recovery] : detail;
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+  alert.modalPresentationStyle = UIModalPresentationPopover;
+  UIAlertAction *action1 = [UIAlertAction actionWithTitle: @"Ok" style:UIAlertActionStyleDefault handler:nil];
+  [alert addAction:action1];
+  
+  [self presentViewController:alert animated:YES completion:nil];
+}
+
 #pragma mark - RepoPickerDelegate
 
 - (void)repoPicker:(RepoPickerViewController *)picker didFinishPickingWithName:(NSString *)name {
@@ -219,9 +232,12 @@
 
 - (void)repoPicker:(RepoPickerViewController *)picker didFailWithError:(NSError *)error {
 
-  // TODO - alert popover saying Log In and then call signUpOrLogInIfNeeded again
-  // TODO - only reset accessToken if error status is 401
-  [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:nil];
+  [self showErrorAlertWithTitle:@"Authorization Error" usingError:error];
+
+  if (error.code == ErrorCodeNotAuthorized) {
+    [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:nil];
+  }
+  [self signUpOrLogInIfNeeded];
 }
 
 #pragma mark - TemplatePickerDelegate

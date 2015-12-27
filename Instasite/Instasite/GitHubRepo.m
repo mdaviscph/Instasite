@@ -11,7 +11,7 @@
 #import "RepoJsonRequest.h"
 #import "RepoJsonResponse.h"
 #import "PagesJsonResponse.h"
-#import "Repo.h"
+#import "Constants.h"
 #import <AFNetworking/AFNetworking.h>
 
 @interface GitHubRepo ()
@@ -41,32 +41,35 @@
   return self;
 }
 
-- (void)createWithComment:(NSString *)comment completion:(void(^)(NSError *))finalCompletion {
+- (void)createWithComment:(NSString *)comment completion:(void(^)(NSError *, GitHubRepoTest))finalCompletion {
   
   RepoJsonRequest *repoRequest = [[RepoJsonRequest alloc] initWithName:self.repoName comment:comment];
   [self.repoApiWrapper createRepo:repoRequest usingManager:self.manager completion:^(NSError *error, RepoJsonResponse *repoResponse) {
 
-    // TODO - alert popover?
+    NSError *ourError;
     if (error) {
-      NSLog(@"Error! GitHubRepo:createWithComment:");
+      if (error.code == 422) {
+        ourError = [self ourErrorWithCode:error.code description:@"This GitHub repository already exists." message:@"To publish to an existing repository, you must explicitly choose that repository. Or you can rename this Web Page repository to a new name."];
+      } else {
+        ourError = [self ourErrorWithCode:error.code description:@"Unable to create GitHub repository." message:@"Please retry the operation."];
+      }
     }
     if (finalCompletion) {
-      finalCompletion(error);
+      finalCompletion(ourError, repoResponse.exists);
     }
   }];
 }
 
-- (void)retrieveWithCompletion:(void(^)(NSError *, Repo *))finalCompletion {
+- (void)retrieveExistenceWithCompletion:(void(^)(NSError *, GitHubRepoTest))finalCompletion {
   
   [self.repoApiWrapper getRepoUsingManager:self.manager completion:^(NSError *error, RepoJsonResponse *repoResponse) {
     
-    // TODO - alert popover?
-    if (error) {
-      NSLog(@"Error! GitHubRepo:retrieveWithCompletion:");
+    NSError *ourError;
+    if (error && error.code != 404) {
+      ourError = [self ourErrorWithCode:error.code description:@"Unable to determine existence of GitHub repository." message:@"Please retry the operation."];
     }
-    Repo *repo = [[Repo alloc] initWithName:repoResponse.name description:repoResponse.aDescription owner:repoResponse.owner updatedAt:repoResponse.updatedAt];
     if (finalCompletion) {
-      finalCompletion(error, repo);
+      finalCompletion(ourError, repoResponse.exists);
     }
   }];
 }
@@ -75,14 +78,37 @@
   
   [self.repoApiWrapper getPagesStatusUsingManager:self.manager completion:^(NSError *error, PagesJsonResponse *pagesResponse) {
     
-    // TODO - alert popover?
-    if (error) {
-      NSLog(@"Error! GitHubRepo:retrievePagesStatusWithCompletion:");
+    NSError *ourError;
+    if (error && error.code != 404) {
+      ourError = [self ourErrorWithCode:error.code description:@"Unable to determine status of GitHub Pages build." message:@"Please retry the operation."];
     }
     if (finalCompletion) {
-      finalCompletion(error, pagesResponse.status);
+      finalCompletion(ourError, pagesResponse.status);
     }
   }];
+}
+
+// repackage error to include project specific code and retry suggestion, if any
+- (NSError *)ourErrorWithCode:(NSInteger)code description:(NSString *)description message:(NSString *)message {
+  NSInteger ourCode;
+  switch (code) {
+    case 401:
+      ourCode = ErrorCodeNotAuthorized;
+      break;
+    case 404:
+      ourCode = ErrorCodeEntityNotFound;
+      break;
+    case 422:
+      ourCode = ErrorCodeOperationIncomplete;
+      break;
+    default:
+      ourCode = ErrorCodeUnknownError;
+      break;
+  }
+  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+  userInfo[NSLocalizedDescriptionKey] = description;
+  userInfo[NSLocalizedRecoverySuggestionErrorKey] = message;
+  return [[NSError alloc] initWithDomain:kErrorDomain code:ourCode userInfo:userInfo];
 }
 
 @end

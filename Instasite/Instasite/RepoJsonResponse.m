@@ -36,6 +36,16 @@
     } else {
       return nil;
     }
+    
+    _exists = GitHubRepoExists;
+  }
+  return self;
+}
+
+- (instancetype)initWithTest:(GitHubRepoTest)exists {
+  self = [super init];
+  if (self) {
+    _exists = exists;
   }
   return self;
 }

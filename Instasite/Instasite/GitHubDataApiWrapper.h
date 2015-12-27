@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "TypeDefsEnums.h"
-#import <AFNetworking/AFNetworking.h>
 
 @class TreeJsonRequest;
 @class TreeJsonResponse;
@@ -16,6 +15,7 @@
 @class CommitTreeJsonResponse;
 @class RefJsonRequest;
 @class RefJsonResponse;
+@class AFHTTPSessionManager;
 
 @interface GitHubDataApiWrapper : NSObject
 
@@ -30,7 +30,6 @@
 - (void)getRefUsingManager:(AFHTTPSessionManager *)manager  completion:(void(^)(NSError *, RefJsonResponse *))completion;
 - (void)getTreeCommitWithRef:(RefJsonResponse *)refResponse usingManager:(AFHTTPSessionManager *)manager completion:(void(^)(NSError *, CommitTreeJsonResponse *))completion;
 - (void)getTreeWithCommit:(CommitTreeJsonResponse *)commitTreeResponse usingManager:(AFHTTPSessionManager *)manager completion:(void(^)(NSError *, TreeJsonResponse *))completion;
-- (void)getTreeRecursivelyWithCommit:(CommitTreeJsonResponse *)commitTreeResponse usingManager:(AFHTTPSessionManager *)manager completion:(void(^)(NSError *, TreeJsonResponse *))completion;
 
 - (FileJsonRequestArray *)filesForTree;
 

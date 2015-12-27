@@ -34,19 +34,19 @@
   NSData* jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:NSJSONWritingPrettyPrinted error:&error];
   if (error) {
     NSLog(@"NSJSONSerialization:dataWithJSONObject: error: %@", error.localizedDescription);
-    // TODO - alert popover?
+    return nil;
   }
   
   return jsonData;
 }
 
-- (void)updateUsingJsonData:(NSData *)data {
+- (BOOL)updateUsingJsonData:(NSData *)data {
   
   NSError *error;
   NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
   if (error) {
     NSLog(@"NSJSONSerialization:JSONObjectWithData: error: %@", error.localizedDescription);
-    // TODO - alert popover?
+    return NO;
   }
   
   NSArray *jsonGroupArray = jsonDictionary[@"groups"];
@@ -69,6 +69,7 @@
       }
     }
   }
+  return YES;
 }
 
 @end

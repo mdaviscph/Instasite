@@ -73,8 +73,9 @@ static NSString *const kMarkerField = @"INSTASITE-FIELD";
   return modifiedHtml;
 }
 
-- (void)addInputGroupsToUserInput:(UserInput *)userInput {
+- (BOOL)addInputGroupsToUserInput:(UserInput *)userInput {
   
+  BOOL success = YES;
   InputGroupMutableDictionary *groups = [[InputGroupMutableDictionary alloc] initWithDictionary:userInput.groups];
   NSInteger groupTag = userInput.maxGroupTag;
   NSInteger categoryTag = userInput.maxCategoryTag;
@@ -89,6 +90,7 @@ static NSString *const kMarkerField = @"INSTASITE-FIELD";
     
     if (inParens.count < 2) {
       NSLog(@"Error! Invalid Template Field: %@", [component abbreviate:20]);
+      success = NO;
       continue;
     }
     // parse INSTASITE-FIELD tuple
@@ -108,7 +110,8 @@ static NSString *const kMarkerField = @"INSTASITE-FIELD";
     InputFieldMutableDictionary *fields = [[InputFieldMutableDictionary alloc] initWithDictionary:category.fields];
     InputField *field = fields[templateField.fieldName];
     if (field) {
-      NSLog(@"Error! Duplicate Template Field: (%@)", inParens[1]);
+      NSLog(@"Warning! Duplicate Template Field: (%@)", inParens[1]);
+      //success = NO;
       continue;
     }
     field = [[InputField alloc] initFromTemplateField:templateField];
@@ -125,6 +128,8 @@ static NSString *const kMarkerField = @"INSTASITE-FIELD";
   userInput.maxGroupTag = groupTag;
   userInput.maxCategoryTag = categoryTag;
   userInput.maxFieldTag = fieldTag;
+  
+  return success;
 }
 
 - (BOOL)writeToURL:(NSURL *)htmlURL withInputGroups:(InputGroupDictionary *)groups {

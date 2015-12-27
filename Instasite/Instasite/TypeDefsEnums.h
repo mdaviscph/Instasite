@@ -7,7 +7,7 @@
 //
 
 enum GitHubRepoTest {
-  GitHubRepoExists, GitHubRepoDoesNotExist, GitHubResponsePending
+  GitHubRepoExists, GitHubRepoDoesNotExist, GitHubResponsePending, GitHubRepoError
 };
 typedef enum GitHubRepoTest GitHubRepoTest;
 
@@ -29,6 +29,19 @@ enum FileType {
   FileTypeOther     = 1 << 4
 };
 typedef enum FileType FileType;
+
+enum ErrorCode {
+  ErrorCodeNone = 0,
+  ErrorCodeNotAuthorized = 101,
+  ErrorCodeEntityNotFound = 102,
+  ErrorCodeOperationIncomplete = 103,
+  ErrorCodeWritingUserData = 201,
+  ErrorCodeReadingUserData = 202,
+  ErrorCodeWritingProjectData = 211,
+  ErrorCodeReadingProjectData = 212,
+  ErrorCodeUnknownError = 999
+};
+typedef enum ErrorCode ErrorCode;
 
 typedef NSArray FileInfoArray;
 typedef NSMutableArray FileInfoMutableArray;

@@ -32,3 +32,6 @@ extern NSString *const kUnpublishedRepoName;
 extern NSString *const kDefaultTemplateName;
 extern NSString *const kWebPageNotPublished;
 extern NSString *const kWebPageBuildInProgress;
+
+extern NSString *const kErrorDomain;
+extern NSString *const kErrorDomainAF;

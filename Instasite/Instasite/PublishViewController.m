@@ -70,18 +70,19 @@
   alert.modalPresentationStyle = UIModalPresentationPopover;
   
   if (renameRequired) {
+    self.tabBarVC.repoExists = GitHubRepoDoesNotExist;        // assume repo does not exist and we will catch existing repo in create call
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
       textField.placeholder =  @"Web Page Repository";
     }];
   }
   
   UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Publish to GitHub" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    NSString *repoName = self.tabBarVC.repoName;
     UITextField *textField = alert.textFields.firstObject;
     if (textField && textField.text.length > 0) {
-      self.tabBarVC.repoName = textField.text;
-      [[NSUserDefaults standardUserDefaults] setObject:textField.text forKey:kUserDefaultsRepoNameKey];
+      repoName = textField.text;
     }
-    [self publishToGitHub];
+    [self publishToGitHub:repoName];
   }];
   [alert addAction:action1];
   UIAlertAction *action2 = [UIAlertAction actionWithTitle: @"Cancel" style:UIAlertActionStyleCancel handler:nil];
@@ -109,12 +110,16 @@
   NSString *userName = appDelegate.userName;
   
   if (accessToken && !userName) {
+
     GitHubUser *gitHubUser = [[GitHubUser alloc] initWithAccessToken:[(AppDelegate *)[UIApplication sharedApplication].delegate accessToken]];
     [gitHubUser retrieveNameWithCompletion:^(NSError *error, NSString *name) {
+
       if (error) {
-        // TODO - alert popover saying retry Log In and then
-        // TODO - only reset accessToken if error status 401
-        [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:nil];
+        [self showErrorAlertWithTitle:@"Authorization Error" usingError:error];
+        
+        if (error.code == ErrorCodeNotAuthorized) {
+          [(AppDelegate *)[UIApplication sharedApplication].delegate setAccessToken:nil];
+        }
         return;
       }
       
@@ -123,7 +128,7 @@
   }
 }
 
-- (void)publishToGitHub {
+- (void)publishToGitHub:(NSString *)repoName {
   
   [self.busyIndicator startAnimating];
   
@@ -136,11 +141,10 @@
   NSString *accessToken = appDelegate.accessToken;
   NSString *userName = appDelegate.userName;
   
-  // TODO - use the label where we now show URL to show a status if waiting on GitHub GET repo response
   if (shouldCreateRepo || shouldCreatePages) {
-    [self publishAllFilesForRepo:self.tabBarVC.repoName withUserName:userName createRepo:shouldCreateRepo usingAccessToken:accessToken];
+    [self publishAllFilesForRepo:repoName withUserName:userName createRepo:shouldCreateRepo usingAccessToken:accessToken];
   } else if (!shouldWait) {
-    [self republishRepo:self.tabBarVC.repoName withUserName:userName allFiles:shouldRepublishAllFiles usingAccessToken:accessToken];
+    [self republishRepo:repoName withUserName:userName allFiles:shouldRepublishAllFiles usingAccessToken:accessToken];
   } else {
     [self.busyIndicator stopAnimating];
   }
@@ -178,10 +182,10 @@
   
   if ([repoURL.absoluteString isEqualToString:self.webView.URL.absoluteString]) {
     [self.webView reloadFromOrigin];
-    NSLog(@"reloadFromOrigin");
+    //NSLog(@"reloadFromOrigin");
   } else {
     [self.webView loadRequest:[NSURLRequest requestWithURL:repoURL]];
-    NSLog(@"loadRequest");
+    //NSLog(@"loadRequest");
   }
 }
 
@@ -222,14 +226,22 @@
 - (void)createRepoWithFiles:(FileInfoArray *)files user:(NSString *)userName repo:(NSString *)repoName branch:(NSString *)branch comment:(NSString *)comment accessToken:(NSString *)accessToken {
 
   GitHubRepo *gitHubRepo = [[GitHubRepo alloc] initWithName:repoName userName:userName accessToken:accessToken];
-  [gitHubRepo createWithComment:comment completion:^(NSError *error) {
+  [gitHubRepo createWithComment:comment completion:^(NSError *error, GitHubRepoTest exists) {
 
+    self.tabBarVC.repoExists = exists;
     if (error) {
-      // TODO - alert popover to say repo aleady exists (if status 422) and user must rename to something else
-      // or go back to initialVC to choose an existing repo so user doesn't accidently publish to exisiting repo
+      if (exists == GitHubRepoExists) {
+        [self showErrorAlertWithTitle:@"Create Repository Error" usingError:error];
+      } else {
+        [self showErrorAlertWithTitle:@"Create Repository Error" usingError:error];
+      }
+      [self.busyIndicator stopAnimating];
+      return;
     }
     NSLog(@"Repo %@ created.", repoName);
-    self.tabBarVC.repoExists = GitHubRepoExists;
+    if (![repoName isEqualToString:self.tabBarVC.repoName]) {
+      self.tabBarVC.repoName = repoName;
+    }
     [self makeRepoWithFiles:files user:userName repo:repoName branch:branch accessToken:accessToken];
   }];
 }
@@ -237,13 +249,15 @@
 - (void)updateRepoWithFiles:(FileInfoArray *)files user:(NSString *)userName repo:(NSString *)repoName branch:(NSString *)branch accessToken:(NSString *)accessToken {
   
   GitHubTree *gitHubTree = [[GitHubTree alloc] initWithFiles:files userName:userName repoName:repoName branch:branch accessToken:accessToken];
-  [gitHubTree updateAndCommitWithCompletion:^(NSError *error) {
+  [gitHubTree updateAndCommitWithCompletion:^(NSError *error, GitHubPagesStatus status) {
+
+    self.tabBarVC.pagesStatus = status;
     if (error) {
-      // TODO - alert popover
+      [self showErrorAlertWithTitle:@"Republish Error" usingError:error];
+      [self.busyIndicator stopAnimating];
       return;
     }
     NSLog(@"GitHub tree updated for %@.", branch);
-    self.tabBarVC.pagesStatus = GitHubPagesInProgress;
     double delay = 3.0;     // give GitHub pages some time to finish build
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
       [self updateUI];
@@ -254,13 +268,15 @@
 - (void)makeRepoWithFiles:(FileInfoArray *)files user:(NSString *)userName repo:(NSString *)repoName branch:(NSString *)branch accessToken:(NSString *)accessToken {
   
   GitHubTree *gitHubTree = [[GitHubTree alloc] initWithFiles:files userName:userName repoName:repoName branch:branch accessToken:accessToken];
-  [gitHubTree makeAndCommitWithCompletion:^(NSError *error) {
+  [gitHubTree makeAndCommitWithCompletion:^(NSError *error, GitHubPagesStatus status) {
+
+    self.tabBarVC.pagesStatus = status;
     if (error) {
-      // TODO - alert popover
+      [self showErrorAlertWithTitle:@"Publish Error" usingError:error];
+      [self.busyIndicator stopAnimating];
       return;
     }
     NSLog(@"GitHub tree created for %@.", branch);
-    self.tabBarVC.pagesStatus = GitHubPagesInProgress;
     double delay = 3.0;     // give GitHub pages some time to finish build
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
       [self updateUI];
@@ -293,6 +309,19 @@
   }
 }
 
+- (void)showErrorAlertWithTitle:(NSString *)title usingError:(NSError *)error {
+  
+  NSString *detail = error.userInfo[NSLocalizedDescriptionKey];
+  NSString *recovery = error.userInfo[NSLocalizedRecoverySuggestionErrorKey];
+  NSString *message = recovery ? [NSString stringWithFormat:@"%@\n%@", detail, recovery] : detail;
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+  alert.modalPresentationStyle = UIModalPresentationPopover;
+  UIAlertAction *action1 = [UIAlertAction actionWithTitle: @"Ok" style:UIAlertActionStyleDefault handler:nil];
+  [alert addAction:action1];
+  
+  [self presentViewController:alert animated:YES completion:nil];
+}
+
 #pragma mark - LabelDelegate
 
 - (void)labelTouchBegin:(UILabel *)sender {
@@ -318,7 +347,7 @@
   NSLog(@"Error! webView:didFailProvisionalNavigation: error: %@", error.localizedDescription);
 }
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-  NSLog(@"webView:didFinishNavigation:");
+  //NSLog(@"webView:didFinishNavigation:");
   [self updateLabel];
 }
 - (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {

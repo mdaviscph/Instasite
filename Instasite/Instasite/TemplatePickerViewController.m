@@ -28,7 +28,7 @@ static NSString *kCellId = @"MainCell";
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  // TODO - read this list from the bundle directory
+  // TODO - read this list from the bundle directory or plist?
   self.templateDirectories = @[@"startbootstrap-1-col-portfolio-1.0.3",
                                @"startbootstrap-one-page-wonder-1.0.3",
                                @"startbootstrap-landing-page-1.0.4",

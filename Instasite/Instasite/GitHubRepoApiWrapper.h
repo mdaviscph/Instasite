@@ -7,12 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AFNetworking/AFNetworking.h>
 #import "TypeDefsEnums.h"
 
 @class RepoJsonRequest;
 @class RepoJsonResponse;
 @class PagesJsonResponse;
+@class AFHTTPSessionManager;
 
 @interface GitHubRepoApiWrapper : NSObject
 

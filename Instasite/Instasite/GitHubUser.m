@@ -12,6 +12,8 @@
 #import "UserReposJsonRequest.h"
 #import "RepoJsonResponse.h"
 #import "Repo.h"
+#import "Constants.h"
+#import "TypeDefsEnums.h"
 #import <AFNetworking/AFNetworking.h>
 
 @interface GitHubUser ()
@@ -40,12 +42,17 @@
   
   [self.userApiWrapper getUserUsingManager:self.manager completion:^(NSError *error, UserJsonResponse *userResponse) {
     
-    // TODO - alert popover?
+    NSError *ourError;
     if (error) {
-      NSLog(@"Error! GitHubUser:retrieveNameWithCompletion:");
+      if (error.code == 401) {
+        ourError = [self ourErrorWithCode:error.code description:@"You must have a GitHub account and be logged in to proceed." message:@"You will be prompted to create an account (Sign In) if necessary or to Log In when you retry the operation."];
+      } else {
+        ourError = [self ourErrorWithCode:error.code description:@"Unable to retrieve GitHub user name." message:@"Please retry the operation."];
+      }
     }
+    
     if (finalCompletion) {
-      finalCompletion(error, userResponse.name);
+      finalCompletion(ourError, userResponse.name);
     }
   }];
 }
@@ -55,10 +62,15 @@
   UserReposJsonRequest *userRequest = [[UserReposJsonRequest alloc] initWithType:@"owner"];
   [self.userApiWrapper getRepos:userRequest usingManager:self.manager completion:^(NSError *error, RepoJsonResponseArray *repoResponses) {
     
-    // TODO - alert popover?
+    NSError *ourError;
     if (error) {
-      NSLog(@"Error! GitHubUser:retrieveReposWithCompletion:");
+      if (error.code == 404) {
+        ourError = nil;                 // no repos is not an error, it just means the user is brand new to GitHub
+      } else {
+        ourError = [self ourErrorWithCode:error.code description:@"You must have a GitHub account and be logged in to proceed." message:@"You will be prompted to create an account (Sign In) if necessary or to Log In."];
+      }
     }
+
     NSMutableArray *repos = [[NSMutableArray alloc] init];
     for (RepoJsonResponse *repoResponse in repoResponses) {
       Repo *repo = [[Repo alloc] initWithName:repoResponse.name description:repoResponse.aDescription owner:repoResponse.owner updatedAt:repoResponse.updatedAt];
@@ -66,9 +78,32 @@
     }
 
     if (finalCompletion) {
-      finalCompletion(error, repos);
+      finalCompletion(ourError, repos);
     }
   }];
+}
+
+// repackage error to include project specific code and retry suggestion, if any
+- (NSError *)ourErrorWithCode:(NSInteger)code description:(NSString *)description message:(NSString *)message {
+  NSInteger ourCode;
+  switch (code) {
+    case 401:
+      ourCode = ErrorCodeNotAuthorized;
+      break;
+    case 404:
+      ourCode = ErrorCodeEntityNotFound;
+      break;
+    case 422:
+      ourCode = ErrorCodeOperationIncomplete;
+      break;
+    default:
+      ourCode = ErrorCodeUnknownError;
+      break;
+  }
+  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+  userInfo[NSLocalizedDescriptionKey] = description;
+  userInfo[NSLocalizedRecoverySuggestionErrorKey] = message;
+  return [[NSError alloc] initWithDomain:kErrorDomain code:ourCode userInfo:userInfo];
 }
 
 @end

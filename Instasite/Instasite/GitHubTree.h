@@ -13,8 +13,8 @@
 
 - (instancetype)initWithFiles:(FileInfoArray *)files userName:(NSString *)userName repoName:(NSString *)repoName branch:(NSString *)branch accessToken:(NSString *)accessToken;
 
-- (void)makeAndCommitWithCompletion:(void(^)(NSError *))finalCompletion;
-- (void)updateAndCommitWithCompletion:(void(^)(NSError *))finalCompletion;
+- (void)makeAndCommitWithCompletion:(void(^)(NSError *, GitHubPagesStatus))finalCompletion;
+- (void)updateAndCommitWithCompletion:(void(^)(NSError *, GitHubPagesStatus))finalCompletion;
 
 
 @end

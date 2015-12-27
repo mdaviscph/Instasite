@@ -34,7 +34,11 @@
   
   NSError *error;
   NSArray *files = [fileManager contentsOfDirectoryAtPath:directoryPath error:&error];
-  // TODO - handle error
+  // TODO - return error to caller
+  if (error) {
+    NSLog(@"Error! Enumerating directory: [%@] error: %@", directoryPath, error.localizedDescription);
+  }
+
   
   for (NSString *file in files) {
     
