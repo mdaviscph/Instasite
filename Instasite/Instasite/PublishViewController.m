@@ -70,6 +70,7 @@
   alert.modalPresentationStyle = UIModalPresentationPopover;
   
   if (renameRequired) {
+    self.tabBarVC.repoExists = GitHubRepoDoesNotExist;        // assume repo does not exist and we will catch existing repo in create call
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
       textField.placeholder =  @"Web Page Repository";
     }];
